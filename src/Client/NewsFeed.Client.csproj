@@ -15,4 +15,8 @@
     <ProjectReference Include="..\Shared\NewsFeed.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\" />
+  </ItemGroup>
+
 </Project>

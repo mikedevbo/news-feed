@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewsFeed.Client", "src\Clie
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewsFeed.Server", "src\Server\NewsFeed.Server.csproj", "{48BCAB3F-CF4B-429A-A308-4E6AD12A6010}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewsFeed.Shared.Tests", "tests\NewsFeed.Shared.Tests\NewsFeed.Shared.Tests.csproj", "{3B09CA3D-2AB4-40EA-A6E8-47235CE117F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewsFeed.Shared.Tests", "tests\NewsFeed.Shared.Tests\NewsFeed.Shared.Tests.csproj", "{3B09CA3D-2AB4-40EA-A6E8-47235CE117F3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
