@@ -1,52 +1,71 @@
-﻿<aside class="menu ">
-    <p class="menu-label ">
-        General
-    </p>
-    <ul class="menu-list">
-        <li>
-            <a>User 1</a>
-        </li>
-        <li>
-            <a >User 2</a>
-        </li>
-        <li>
-            <a >User 3</a>
-        </li>
-
-        <li>
-            <a >User 4</a>
-        </li>
-    </ul>
-    <p class="menu-label ">
-        IT
-    </p>
-    <ul class="menu-list ">
-        <li>
-            <a >User 5</a>
-        </li>
-        <li>
-            <a >User 6</a>
-        </li>
-        <li>
-            <a >User 7</a>
-        </li>
-    </ul>
-    <p class="menu-label ">
-        Sport
-    </p>
-    <ul class="menu-list ">
-        <li>
-            <a >User 8</a>
-        </li>
-        <li>
-            <a >User 9</a>
-        </li>
-        <li>
-            <a >User 10</a>
-        </li>
-    </ul>
+﻿<aside class="menu">
+    @foreach(var group in this.Groups)
+    {
+        <p class="menu-label">@group.Id</p>
+        <ul class="menu-list">
+            @foreach(var account in group.Accounts)
+            {
+                <li><a class="@(account.IsActive ? "is-active" : string.Empty)" @onclick="() => SelectItem(account)">@account.Id</a></li>
+            }
+        </ul>
+    }
 </aside>
 
 @code {
 
+    public class Group
+    {
+        public string Id { get; set; } = "";
+        public List<Account> Accounts { get; set; } = new List<Account>();
+    }
+
+    public class Account
+    {
+        public string Id { get; set; } = "";
+        public bool IsActive { get; set; }
+    }
+
+    public List<Group> Groups = new List<Group>
+    {
+        new Group
+        {
+            Id = "Generl",
+            Accounts = new List<Account>
+            {
+                new Account { Id = "User 1", IsActive = true },
+                new Account { Id = "User 2" },
+                new Account { Id = "User 3", IsActive = true }
+            }
+        },
+        new Group
+        {
+            Id = "IT",
+            Accounts = new List<Account>
+            {
+                new Account { Id = "User 4" },
+                new Account { Id = "User 5" },
+                new Account { Id = "User 6" },
+            }
+        },
+        new Group
+        {
+            Id = "Sport",
+            Accounts = new List<Account>
+            {
+                new Account { Id = "User 7" },
+                new Account { Id = "User 8" },
+                new Account { Id = "User 9" },
+            }
+        }
+    };
+
+    public void SelectItem(Account account)
+    {
+        var r = (from g in this.Groups
+                 from a in g.Accounts
+                 where a.Id == account.Id
+                 select a).First();
+
+        r.IsActive = true;
+    }
 }
