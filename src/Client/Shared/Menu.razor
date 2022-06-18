@@ -1,11 +1,13 @@
-﻿<aside class="menu">
+﻿@inject StateContainer StateContainer
+
+<aside class="menu">
     @foreach(var group in this.Groups)
     {
         <p class="menu-label">@group.Id</p>
         <ul class="menu-list">
             @foreach(var account in group.Accounts)
             {
-                <li><a class="@(account.IsActive ? "is-active" : string.Empty)" @onclick="() => SelectItem(account)">@account.Id</a></li>
+                <li><a class="@(account.IsActive ? "is-active" : string.Empty)" @onclick="() => SetAccountAsSelected(account)">@account.Id</a></li>
             }
         </ul>
     }
@@ -32,9 +34,9 @@
             Id = "Generl",
             Accounts = new List<Account>
             {
-                new Account { Id = "User 1", IsActive = true },
+                new Account { Id = "User 1" },
                 new Account { Id = "User 2" },
-                new Account { Id = "User 3", IsActive = true }
+                new Account { Id = "User 3" }
             }
         },
         new Group
@@ -59,13 +61,29 @@
         }
     };
 
-    public void SelectItem(Account account)
+    public void SetAccountAsSelected(Account account)
     {
-        var r = (from g in this.Groups
-                 from a in g.Accounts
-                 where a.Id == account.Id
-                 select a).First();
+        var prev = (from g in this.Groups
+                    from a in g.Accounts
+                    where a.Id == this.StateContainer.SelectedAccountId
+                    select a).FirstOrDefault();
 
-        r.IsActive = true;
+
+        if (prev != null)
+        {
+            prev.IsActive = false;
+        }
+
+        var current = (from g in this.Groups
+                       from a in g.Accounts
+                       where a.Id == account.Id
+                       select a).FirstOrDefault();
+
+
+        if (current != null)
+        {
+            current.IsActive = true;
+            this.StateContainer.SelectedAccountId = account.Id;
+        }
     }
 }

@@ -1,0 +1,46 @@
+﻿@implements IDisposable
+@inject StateContainer StateContainer
+
+<div class="block">
+  @this.AccountId
+</div>
+
+@if (!string.IsNullOrEmpty(this.AccountId) && this.tweets.ContainsKey(this.AccountId))
+{
+    @foreach(var tweet in this.tweets[this.AccountId])
+    {
+        <div class="box">
+            @tweet
+        </div>
+    }
+}
+
+
+@code
+{
+    public string AccountId = "";
+
+    public Dictionary<string, List<string>> tweets = new Dictionary<string, List<string>>
+    {
+        { "User 1", new List<string> { "u1_t1", "u1_t2", "u1_t3" } },
+        { "User 2", new List<string> { "u2_t1", "u2_t2", "u2_t3" } },
+        { "User 3", new List<string> { "u3_t1", "u3_t2", "u3_t3" } }
+    };
+
+    protected override void OnInitialized()
+    {
+        this.StateContainer.OnSelectedAccountIdChange += ChangePropertyValue;
+    }
+
+    private void ChangePropertyValue(string accountId)
+    {
+        this.AccountId = accountId;
+        base.StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        this.StateContainer.OnSelectedAccountIdChange -= ChangePropertyValue;
+    }
+
+}
