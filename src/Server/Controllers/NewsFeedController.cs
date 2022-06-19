@@ -23,7 +23,7 @@ public class NewsFeedController : ControllerBase
     }
 
     [HttpGet("GetTweets")]
-    public IEnumerable<Tweet> GetAccounts(string accountId)
+    public IEnumerable<Tweet> GetTweets(string accountId)
     {
         var result = new List<Tweet>();
 
