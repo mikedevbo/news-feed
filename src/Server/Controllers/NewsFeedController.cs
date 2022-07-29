@@ -5,10 +5,7 @@ using NewsFeed.Shared;
 [Route("[controller]")]
 public class NewsFeedController : ControllerBase
 {
-    [HttpGet("GetAccounts")]
-    public IEnumerable<Account> GetAccounts()
-    {
-        return new List<Account>
+    private List<Account> accounts = new List<Account>
         {
             new Account { Id = "User_1", GroupName = "General" },
             new Account { Id = "User_2", GroupName = "General" },
@@ -20,46 +17,74 @@ public class NewsFeedController : ControllerBase
             new Account { Id = "User_8", GroupName = "Sport" },
             new Account { Id = "User_9", GroupName = "Sport" }
         };
+
+    private List<Tweet> tweets = new List<Tweet>
+    {
+        new Tweet { AccountId = "User_1", Text = "u1_t1" },
+        new Tweet { AccountId = "User_1", Text = "u1_t2" },
+        new Tweet { AccountId = "User_1", Text = "u1_t3" },
+        new Tweet { AccountId = "User_2", Text = "u2_t1" },
+        new Tweet { AccountId = "User_2", Text = "u2_t2" },
+        new Tweet { AccountId = "User_2", Text = "u2_t3" },
+        new Tweet { AccountId = "User_2", Text = "u2_t4" },
+        new Tweet { AccountId = "User_3", Text = "u3_t1" },
+        new Tweet { AccountId = "User_3", Text = "u3_t2" },
+        new Tweet { AccountId = "User_3", Text = "u3_t3" },
+        new Tweet { AccountId = "User_3", Text = "u3_t4" },
+        new Tweet { AccountId = "User_3", Text = "u3_t5" }
+    };
+
+    private Dictionary<string, int> attemptSimulator = new Dictionary<string, int>()
+    {
+        { "User_1", 0 },
+        { "User_2", 0 },
+        { "User_3", 0 },
+    };
+
+    [HttpGet("GetAccounts")]
+    public IEnumerable<Account> GetAccounts()
+    {
+        return accounts;
     }
 
     [HttpGet("GetTweets")]
     public IEnumerable<Tweet> GetTweets(string accountId)
     {
-        var result = new List<Tweet>();
+        return this.tweets.Where(tweet => tweet.AccountId == accountId).Select(tweet => tweet);
+    }
 
-        switch (accountId)
+    [HttpPost("StartGettingNewTweets")]
+    public void StartGettingNewTweets(string accountId)
+    {
+        var account = this.accounts.Find(acc => acc.Id == accountId);
+        if (account != null)
         {
-            case "User_1":
-                result.AddRange(new List<Tweet>
-                {
-                    new Tweet { AccountId = accountId, Text = "u1_t1" },
-                    new Tweet { AccountId = accountId, Text = "u1_t2" },
-                    new Tweet { AccountId = accountId, Text = "u1_t3" }
-                });
-                break;
-            case "User_2":
-                result.AddRange(new List<Tweet>
-                {
-                    new Tweet { AccountId = accountId, Text = "u2_t1" },
-                    new Tweet { AccountId = accountId, Text = "u2_t2" },
-                    new Tweet { AccountId = accountId, Text = "u2_t3" },
-                    new Tweet { AccountId = accountId, Text = "u2_t4" }
-                });
-                break;
-            case "User_3":
-                result.AddRange(new List<Tweet>
-                {
-                    new Tweet { AccountId = accountId, Text = "u3_t1" },
-                    new Tweet { AccountId = accountId, Text = "u3_t2" },
-                    new Tweet { AccountId = accountId, Text = "u3_t3" },
-                    new Tweet { AccountId = accountId, Text = "u3_t4" },
-                    new Tweet { AccountId = accountId, Text = "u3_t5" }
-                });
-                break;
-            default:
-                break;
+            account.IsGettingsNewTweets = true;
+        }
+    }
+
+    [HttpPost("IsGettingNewTweetsReady")]
+    public bool IsGettingNewTweetsReady(string accountId)
+    {
+        if (this.attemptSimulator.ContainsKey(accountId))
+        {
+            if (this.attemptSimulator[accountId] < 3)
+            {
+                this.attemptSimulator[accountId] += 1;
+                return false;
+            }
+
+            this.attemptSimulator[accountId] = 0;
+
+            var account = this.accounts.Find(acc => acc.Id == accountId);
+            if (account != null)
+            {
+                account.IsGettingsNewTweets = false;
+            }
+
+            return true;
         }
 
-        return result;
+        return true;
     }
 }

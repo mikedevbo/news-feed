@@ -2,15 +2,24 @@
 @inject StateContainer StateContainer
 @inject HttpClient Http
 
+@{
+    var groups = this.accounts.GroupBy(acc => acc.GroupName);
+}
 <aside class="menu">
-    @{var groups = this.accounts.GroupBy(acc => acc.GroupName);}
-    @foreach(var group in groups)
+    @foreach  (var group in groups)
     {
         <p class="menu-label">@group.Key</p>
         <ul class="menu-list">
-            @foreach(var account in group)
+            @foreach  (var account in group)
             {
-                <li><a class="@(account.IsActive ? "is-active" : string.Empty)" @onclick="() => SetAccountAsSelected(account)">@account.Id</a></li>
+                <li>
+                    <nav class="level is-mobile">
+                        <div class="level-left">
+                            <div class="level-item"><a class="@(account.IsActive ? "is-active" : string.Empty)" @onclick="() => SetAccountAsSelected(account)">@account.Id</a></div>
+                            <div class="level-item"><a>get</a></div>
+                        </div>
+                    </nav>
+                </li>
             }
         </ul>
     }
@@ -60,7 +69,7 @@
         {
             var result = new List<Account>();
 
-            foreach(var model in accounts)
+            foreach  (var model in accounts)
             {
                 result.Add(new Account
                     {
