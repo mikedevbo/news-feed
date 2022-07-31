@@ -16,7 +16,7 @@
                     <nav class="level is-mobile">
                         <div class="level-left">
                             <div class="level-item"><a class="@(account.IsActive ? "is-active" : string.Empty)" @onclick="() => SetAccountAsSelected(account)">@account.Id</a></div>
-                            <div class="level-item"><a>get</a></div>
+                            <div class="level-item" @onclick="() => DownloadNewTweets(account)"><a>get</a></div>
                         </div>
                     </nav>
                 </li>
@@ -32,7 +32,7 @@
     protected override async Task OnInitializedAsync()
     {
         var accounts = await Http.GetFromJsonAsync<List<Account>>("NewsFeed/GetAccounts");
-        if (accounts != null && accounts.Count() > 0)
+        if (accounts is not null)
         {
             this.accounts.AddRange(ViewModel.Map(accounts));
         }
@@ -54,6 +54,11 @@
             current.IsActive = true;
             this.StateContainer.SelectedAccountId = account.Id;
         }
+    }
+
+    public void DownloadNewTweets(ViewModel.Account account)
+    {
+        this.StateContainer.SelectedAccountIdDownloadNewTweets = account.Id;
     }
 
     public static class ViewModel

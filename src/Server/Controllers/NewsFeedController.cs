@@ -1,10 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NewsFeed.Server.Models.Messaging.Commands;
+using NewsFeed.Server.Models.Messaging.Messages;
 using NewsFeed.Shared;
+using NServiceBus;
 
 [ApiController]
 [Route("[controller]")]
 public class NewsFeedController : ControllerBase
 {
+    private readonly IMessageSession messageSession;
+
+    public NewsFeedController(IMessageSession messageSession)
+    {
+        this.messageSession = messageSession;
+    }
+
     private List<Account> accounts = new List<Account>
         {
             new Account { Id = "User_1", GroupName = "General" },
@@ -17,22 +27,6 @@ public class NewsFeedController : ControllerBase
             new Account { Id = "User_8", GroupName = "Sport" },
             new Account { Id = "User_9", GroupName = "Sport" }
         };
-
-    private List<Tweet> tweets = new List<Tweet>
-    {
-        new Tweet { AccountId = "User_1", Text = "u1_t1" },
-        new Tweet { AccountId = "User_1", Text = "u1_t2" },
-        new Tweet { AccountId = "User_1", Text = "u1_t3" },
-        new Tweet { AccountId = "User_2", Text = "u2_t1" },
-        new Tweet { AccountId = "User_2", Text = "u2_t2" },
-        new Tweet { AccountId = "User_2", Text = "u2_t3" },
-        new Tweet { AccountId = "User_2", Text = "u2_t4" },
-        new Tweet { AccountId = "User_3", Text = "u3_t1" },
-        new Tweet { AccountId = "User_3", Text = "u3_t2" },
-        new Tweet { AccountId = "User_3", Text = "u3_t3" },
-        new Tweet { AccountId = "User_3", Text = "u3_t4" },
-        new Tweet { AccountId = "User_3", Text = "u3_t5" }
-    };
 
     private Dictionary<string, int> attemptSimulator = new Dictionary<string, int>()
     {
@@ -47,11 +41,32 @@ public class NewsFeedController : ControllerBase
         return accounts;
     }
 
-    [HttpGet("GetTweets")]
-    public IEnumerable<Tweet> GetTweets(string accountId)
+    [HttpGet("GetDownloadedTweets")]
+    public async Task<IEnumerable<TweetDto>> GetDownloadedTweets(string userId)
     {
-        return this.tweets.Where(tweet => tweet.AccountId == accountId).Select(tweet => tweet);
+        var result = new List<TweetDto>();
+        var message = new GetDownloadedTweetsRequest { UserId = userId };
+        var response = await messageSession.Request<GetDownloadedTweetsResponse>(message);
+
+        if (response.Data is not null)
+        {
+            response.Data.Tweets.ForEach(t => result.Add(new TweetDto
+            {
+                UserId = response.Data.UserId,
+                Text = t.Text
+            }));
+        }
+
+        return result;
     }
+
+    [HttpGet("DownloadNewTweets")]
+    public async Task DownloadNewTweets(string userId)
+    {
+        var message = new DownloadNewTweets { UserId = userId };
+        await messageSession.Send(message).ConfigureAwait(false);
+    }
+
 
     [HttpPost("StartGettingNewTweets")]
     public void StartGettingNewTweets(string accountId)

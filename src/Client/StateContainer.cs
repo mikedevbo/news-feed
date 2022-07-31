@@ -2,6 +2,8 @@
 {
     private string selectedAccountId = "";
 
+    private string selectedAccountIdDownloadNewTweets = "";
+
     public string SelectedAccountId
     {
         get => selectedAccountId;
@@ -12,5 +14,17 @@
         }
     }
 
+    public string SelectedAccountIdDownloadNewTweets
+    {
+        get => selectedAccountIdDownloadNewTweets;
+        set
+        {
+            selectedAccountIdDownloadNewTweets = value;
+            this.OnSelectedAccountIdDownloadNewTweetsChange?.Invoke(this.selectedAccountIdDownloadNewTweets);
+        }
+    }
+
     public event Action<string>? OnSelectedAccountIdChange;
+
+    public event Action<string>? OnSelectedAccountIdDownloadNewTweetsChange;
 }

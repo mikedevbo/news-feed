@@ -8,6 +8,9 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.6" />
+    <PackageReference Include="NServiceBus" Version="7.7.4" />
+    <PackageReference Include="NServiceBus.Callbacks" Version="3.0.0" />
+    <PackageReference Include="NServiceBus.Extensions.Hosting" Version="1.1.0" />
   </ItemGroup>
 
   <ItemGroup>

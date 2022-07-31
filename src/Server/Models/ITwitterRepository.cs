@@ -4,6 +4,6 @@ namespace NewsFeed.Server.Models
 {
     public interface ITwitterRepository
     {
-        IList<Tweet> GetDownloadedTweets(string accountId);
+        IList<TweetDto> GetDownloadedTweets(string accountId);
     }
 }

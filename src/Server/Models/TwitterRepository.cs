@@ -11,10 +11,10 @@ namespace NewsFeed.Server.Models
             this.basePath = basePath;
         }
         
-        public IList<Tweet> GetDownloadedTweets(string accountId)
+        public IList<TweetDto> GetDownloadedTweets(string accountId)
         {
             //var empty = new List<Tweet>();
-            return new List<Tweet>();
+            return new List<TweetDto>();
         }
 
         private string CreateFilePath(string accountId)

@@ -1,6 +1,23 @@
-using Microsoft.AspNetCore.ResponseCompression;
+using NewsFeed.Server.Models.Messaging.Commands;
+using NServiceBus;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseNServiceBus(context =>
+ {
+     const string endpointName = "NewsFeed.Server";
+     var endpointConfiguration = new EndpointConfiguration(endpointName);
+     var transport = endpointConfiguration.UseTransport<LearningTransport>();
+     endpointConfiguration.UsePersistence<LearningPersistence>();
+
+     var routing = transport.Routing();
+     routing.RouteToEndpoint(typeof(DownloadNewTweets).Assembly, endpointName);
+
+     endpointConfiguration.MakeInstanceUniquelyAddressable("1");
+     endpointConfiguration.EnableCallbacks();
+
+     return endpointConfiguration;
+ });
 
 // Add services to the container.
 

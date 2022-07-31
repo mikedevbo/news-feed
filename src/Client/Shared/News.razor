@@ -17,27 +17,35 @@
 @code
 {
     public string AccountId = "";
-    public List<Tweet> tweets = new List<Tweet>();
+    public List<TweetDto> tweets = new List<TweetDto>();
 
     protected override void OnInitialized()
     {
         this.StateContainer.OnSelectedAccountIdChange += LoadTweets;
+        this.StateContainer.OnSelectedAccountIdDownloadNewTweetsChange += DownloadNewTweets;
     }
 
     private async void LoadTweets(string accountId)
     {
         this.AccountId = accountId;
-        var tweets = await Http.GetFromJsonAsync<List<Tweet>>($"NewsFeed/GetTweets?accountId={accountId}");
+        var tweets = await Http.GetFromJsonAsync<List<TweetDto>>($"NewsFeed/GetDownloadedTweets?userId={accountId}");
 
-        if (tweets != null && tweets.Count() > 0)
+        if (tweets is not null)
         {
             this.tweets = tweets;
             base.StateHasChanged();
         }
     }
 
+    private async void DownloadNewTweets(string accountId)
+    {
+        await Http.GetAsync($"NewsFeed/DownloadNewTweets?userId={accountId}");
+        base.StateHasChanged();
+    }
+
     public void Dispose()
     {
         this.StateContainer.OnSelectedAccountIdChange -= LoadTweets;
+        this.StateContainer.OnSelectedAccountIdDownloadNewTweetsChange -= DownloadNewTweets;
     }
 }
