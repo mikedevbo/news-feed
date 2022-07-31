@@ -4,8 +4,8 @@ using NServiceBus;
 
 namespace NewsFeed.Server.Models.Messaging.Sagas
 {
-    public class TweetsSaga
-        : Saga<TweetsSagaData>,
+    public class TweetsSaga :
+        Saga<TweetsSagaData>,
         IAmStartedByMessages<DownloadNewTweets>,
         IAmStartedByMessages<GetDownloadedTweetsRequest>,
         IHandleMessages<DownloadNewTweetsFromTwitterApiResponse>
@@ -27,10 +27,14 @@ namespace NewsFeed.Server.Models.Messaging.Sagas
         {
             foreach(var tweet in message.Tweets)
             {
-                this.Data.Tweets.Add(new TweetsSagaData.Tweet
+                if (this.Data.Tweets.FirstOrDefault(t => t.Id == tweet.Id) is null)
                 {
-                    Text = tweet.Text
-                });
+                    this.Data.Tweets.Add(new TweetsSagaData.Tweet
+                    {
+                        Id = tweet.Id,
+                        Text = tweet.Text
+                    });
+                }
             }
 
             return Task.CompletedTask;
@@ -51,18 +55,18 @@ namespace NewsFeed.Server.Models.Messaging.Sagas
         {
             var tweets = new List<DownloadNewTweetsFromTwitterApiResponse.Tweet>
             {
-                new DownloadNewTweetsFromTwitterApiResponse.Tweet { AuthorId = "User_1", Text = "u1_t1" },
-                new DownloadNewTweetsFromTwitterApiResponse.Tweet { AuthorId = "User_1", Text = "u1_t2" },
-                new DownloadNewTweetsFromTwitterApiResponse.Tweet { AuthorId = "User_1", Text = "u1_t3" },
-                new DownloadNewTweetsFromTwitterApiResponse.Tweet { AuthorId = "User_2", Text = "u2_t1" },
-                new DownloadNewTweetsFromTwitterApiResponse.Tweet { AuthorId = "User_2", Text = "u2_t2" },
-                new DownloadNewTweetsFromTwitterApiResponse.Tweet { AuthorId = "User_2", Text = "u2_t3" },
-                new DownloadNewTweetsFromTwitterApiResponse.Tweet { AuthorId = "User_2", Text = "u2_t4" },
-                new DownloadNewTweetsFromTwitterApiResponse.Tweet { AuthorId = "User_3", Text = "u3_t1" },
-                new DownloadNewTweetsFromTwitterApiResponse.Tweet { AuthorId = "User_3", Text = "u3_t2" },
-                new DownloadNewTweetsFromTwitterApiResponse.Tweet { AuthorId = "User_3", Text = "u3_t3" },
-                new DownloadNewTweetsFromTwitterApiResponse.Tweet { AuthorId = "User_3", Text = "u3_t4" },
-                new DownloadNewTweetsFromTwitterApiResponse.Tweet { AuthorId = "User_3", Text = "u3_t5" }
+                new DownloadNewTweetsFromTwitterApiResponse.Tweet { AuthorId = "User_1", Text = "u1_t1", Id = "1" },
+                new DownloadNewTweetsFromTwitterApiResponse.Tweet { AuthorId = "User_1", Text = "u1_t2", Id = "2" },
+                new DownloadNewTweetsFromTwitterApiResponse.Tweet { AuthorId = "User_1", Text = "u1_t3", Id = "3" },
+                new DownloadNewTweetsFromTwitterApiResponse.Tweet { AuthorId = "User_2", Text = "u2_t1", Id = "4" },
+                new DownloadNewTweetsFromTwitterApiResponse.Tweet { AuthorId = "User_2", Text = "u2_t2", Id = "5" },
+                new DownloadNewTweetsFromTwitterApiResponse.Tweet { AuthorId = "User_2", Text = "u2_t3", Id = "6" },
+                new DownloadNewTweetsFromTwitterApiResponse.Tweet { AuthorId = "User_2", Text = "u2_t4", Id = "7" },
+                new DownloadNewTweetsFromTwitterApiResponse.Tweet { AuthorId = "User_3", Text = "u3_t1", Id = "8" },
+                new DownloadNewTweetsFromTwitterApiResponse.Tweet { AuthorId = "User_3", Text = "u3_t2", Id = "9" },
+                new DownloadNewTweetsFromTwitterApiResponse.Tweet { AuthorId = "User_3", Text = "u3_t3", Id = "10" },
+                new DownloadNewTweetsFromTwitterApiResponse.Tweet { AuthorId = "User_3", Text = "u3_t4", Id = "11" },
+                new DownloadNewTweetsFromTwitterApiResponse.Tweet { AuthorId = "User_3", Text = "u3_t5", Id = "12" }
             };
 
             var result = tweets.Where(tweet => tweet.AuthorId == message.UserId).Select(tweet => tweet);

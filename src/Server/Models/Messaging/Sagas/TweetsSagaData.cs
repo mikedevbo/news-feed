@@ -10,7 +10,9 @@ namespace NewsFeed.Server.Models.Messaging.Sagas
 
         public class Tweet
         {
-            public string Text { get; set; } = "";
+            public string Id { get; set; } = string.Empty;
+
+            public string Text { get; set; } = string.Empty;
 
             // public string CreatedAt { get; set; }
 
