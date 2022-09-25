@@ -5,6 +5,7 @@ nsb_log_*
 
 *.dev.json
 *.pubxml
+appsettings.development.json
 appsettings.config
 connectionstrings.config
 nugets
