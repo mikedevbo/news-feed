@@ -11,11 +11,18 @@
     <PackageReference Include="NServiceBus" Version="7.7.4" />
     <PackageReference Include="NServiceBus.Callbacks" Version="3.0.0" />
     <PackageReference Include="NServiceBus.Extensions.Hosting" Version="1.1.0" />
+    <PackageReference Include="TwitterSharp" Version="2.3.0" />
   </ItemGroup>
 
   <ItemGroup>
 	<ProjectReference Include="..\Client\NewsFeed.Client.csproj" />
     <ProjectReference Include="..\Shared\NewsFeed.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="appsettings.development.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 
