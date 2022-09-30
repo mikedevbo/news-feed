@@ -1,5 +1,7 @@
+using NewsFeed.Server.Models;
 using NewsFeed.Server.Models.Messaging.Commands;
 using NServiceBus;
+using NServiceBus.Persistence.Sql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,19 @@ builder.Host.UseNServiceBus(context =>
 
      var routing = transport.Routing();
      routing.RouteToEndpoint(typeof(DownloadNewTweets).Assembly, endpointName);
+
+     endpointConfiguration.RegisterComponents(c =>
+     {
+         c.ConfigureComponent(b =>
+         {
+             var session = b.Build<ISqlStorageSession>();
+             var repository = new TwitterRepository(
+                 session.Connection,
+                 session.Transaction);
+
+             return repository;
+         }, DependencyLifecycle.InstancePerUnitOfWork);
+     });
 
      return endpointConfiguration;
  });
