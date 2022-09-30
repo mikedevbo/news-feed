@@ -13,9 +13,6 @@ builder.Host.UseNServiceBus(context =>
      var routing = transport.Routing();
      routing.RouteToEndpoint(typeof(DownloadNewTweets).Assembly, endpointName);
 
-     endpointConfiguration.MakeInstanceUniquelyAddressable("1");
-     endpointConfiguration.EnableCallbacks();
-
      return endpointConfiguration;
  });
 
