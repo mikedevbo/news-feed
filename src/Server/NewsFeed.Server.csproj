@@ -25,5 +25,10 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\Messaging\Messages\" />
+    <Folder Include="Models\Messaging\Sagas\" />
+  </ItemGroup>
+
 
 </Project>

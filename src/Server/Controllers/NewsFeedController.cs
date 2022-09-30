@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NewsFeed.Server.Models.Messaging.Commands;
-using NewsFeed.Server.Models.Messaging.Messages;
 using NewsFeed.Shared;
 using NServiceBus;
 
@@ -45,17 +44,6 @@ public class NewsFeedController : ControllerBase
     public async Task<IEnumerable<TweetDto>> GetDownloadedTweets(string userId)
     {
         var result = new List<TweetDto>();
-        var message = new GetDownloadedTweetsRequest { UserId = userId };
-        var response = await messageSession.Request<GetDownloadedTweetsResponse>(message);
-
-        if (response.Data is not null)
-        {
-            response.Data.Tweets.ForEach(t => result.Add(new TweetDto
-            {
-                UserId = response.Data.UserId,
-                Text = t.Text
-            }));
-        }
 
         return result;
     }
