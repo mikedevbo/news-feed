@@ -25,33 +25,39 @@ namespace NewsFeed.Server.Models.Messaging.Handlers
 
         public async Task Handle(DownloadTweets message, IMessageHandlerContext context)
         {
-            this.LogInfo(message);
+            this.Log(message, context);
 
             var tweets = await this.twitterApiClient.GetTweets(message.TwitterUserId);
+
             var command = new SaveTweetsAndMarkAsDownloaded(message.UserId, tweets);
             await context.Send(command);
         }
 
         public async Task Handle(SaveTweetsAndMarkAsDownloaded message, IMessageHandlerContext context)
         {
-            this.LogInfo(message);
+            this.Log(message, context);
 
-            //TODO: save tweets
+            await this.twitterRepository.SaveTweets(message.UserId, message.Tweets);
+
             var command = new ClearOldTweets(message.UserId);
             await context.Send(command);
         }
 
         public Task Handle(ClearOldTweets message, IMessageHandlerContext context)
         {
-            this.LogInfo(message);
+            this.Log(message, context);
 
             //TODO: clear tweets
             return Task.CompletedTask;
         }
 
-        private void LogInfo<TMessage>(TMessage message)
+        private void Log<TMessage>(
+            TMessage message,
+            IMessageHandlerContext context)
         {
-            this.logger.LogInformation($"{typeof(TMessage).Name} - {System.Text.Json.JsonSerializer.Serialize(message)}");
+            // var info = System.Text.Json.JsonSerializer.Serialize(message);
+            var info = context.MessageId;
+            this.logger.LogInformation($"{typeof(TMessage).Name} - {info} ");
         }
     }
 }

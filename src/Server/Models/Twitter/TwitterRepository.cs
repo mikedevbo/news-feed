@@ -1,4 +1,6 @@
-﻿using NewsFeed.Shared;
+﻿using Dapper.Contrib.Extensions;
+using NewsFeed.Server.Models.Twitter.Tables;
+using NewsFeed.Shared;
 using System.Data.Common;
 using TwitterSharp.Response.RTweet;
 
@@ -15,9 +17,30 @@ namespace NewsFeed.Server.Models.Twitter
             this.transaction = transaction;
         }
 
-        public Task SaveTweets(int UserId, List<Tweet> Tweets)
+        public async Task SaveTweets(int userId, List<Tweet> tweets)
         {
-            throw new NotImplementedException();
+            foreach(var tweet in tweets)
+            {
+                var tweetId = await this.connection.InsertAsync(
+                    new TwitterTweets
+                    {
+                        UserId = userId,
+                        IsPersisted = false
+                    },
+                    this.transaction
+                );
+
+                await this.connection.InsertAsync(
+                    new TwitterTweetsApi
+                    {
+                        Id = tweetId,
+                        TweetId = tweet.Id,
+                        Text = tweet.Text,
+                        CreatedAt = Convert.ToDateTime(tweet.CreatedAt)
+                    },
+                    this.transaction
+                );
+            }
         }
 
         public IList<TweetDto> GetDownloadedTweets(string accountId)
