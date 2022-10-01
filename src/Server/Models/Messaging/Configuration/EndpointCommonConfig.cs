@@ -14,22 +14,28 @@ namespace NewsFeed.Server.Models.Messaging.Configuration
             IConfiguration configuration,
             List<(Assembly assembly, string endpointName)> routingDefinitions)
         {
+            const string schemaTransport = "nsb_t";
+            const string schemaPersistence = "nsb_p";
+            var connectionStringPersistence = configuration.GetValue<string>("ConnectionStrings:NsbPersistence");
+            var connectionStringTransport = configuration.GetValue<string>("ConnectionStrings:NsbTransport");
+
             var endpointConfiguration = new EndpointConfiguration(endpointName);
 
             LogManager.Use<DefaultFactory>();
 
-            var transport = endpointConfiguration.UseTransport<LearningTransport>();
-            
+            var transport = endpointConfiguration.UseTransport<SqlServerTransport>();
+            transport.DefaultSchema(schemaTransport);
+            transport.ConnectionString(connectionStringTransport);
+
             var persistence = endpointConfiguration.UsePersistence<SqlPersistence>();
             var subscriptions = persistence.SubscriptionSettings();
             subscriptions.DisableCache();
             var dialect = persistence.SqlDialect<SqlDialect.MsSqlServer>();
-            dialect.Schema("nsb");
+            dialect.Schema(schemaPersistence);
             persistence.ConnectionBuilder(
                 connectionBuilder: () =>
                 {
-                    var connectionString = configuration.GetValue<string>("ConnectionStrings:NsbPersistence");
-                    return new SqlConnection(connectionString);
+                    return new SqlConnection(connectionStringPersistence);
                 });
 
             var routing = transport.Routing();

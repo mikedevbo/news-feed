@@ -2,16 +2,28 @@ USE [NewsFeed]
 GO
 
 /*
-drop schema nsb
 drop table dbo.Accounts
 drop table dbo.TwitterGroups
 drop table dbo.TwitterUsers
 drop table dbo.TwitterUsersApi
 drop table dbo.TwitterTweets
 drop table dbo.TwitterTweetsApi
+
+drop table [nsb].[error]
+drop table [nsb].[NewsFeed.Server]
+drop table [nsb].[NewsFeed.Server.Delayed]
+drop table [nsb].[NewsFeed_Server_OutboxData]
+drop table [nsb].[SubscriptionRouting]
+
+drop schema nsb_t
+drop schema nsb_p
 */
 
-CREATE SCHEMA nsb
+CREATE SCHEMA nsb_t
+GO
+
+CREATE SCHEMA nsb_p
+GO
 
 CREATE TABLE [dbo].[Accounts](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
