@@ -89,7 +89,7 @@ GO
 --
 
 CREATE TABLE [dbo].[TwitterTweetsApi](
-	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Id] [int] NOT NULL,
 	[TweetId] [varchar](50) NOT NULL,
 	[Text] [varchar](max) NOT NULL,
 	[CreatedAt] [datetime] NOT NULL
