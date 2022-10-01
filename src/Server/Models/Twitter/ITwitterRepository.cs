@@ -7,6 +7,8 @@ namespace NewsFeed.Server.Models.Twitter
     {
         Task SaveTweets(int userId, List<Tweet> tweets);
 
+        Task SetTweetsDownloadingState(int userId, bool isDownloading);
+
         IList<TweetDto> GetDownloadedTweets(string accountId);
     }
 }

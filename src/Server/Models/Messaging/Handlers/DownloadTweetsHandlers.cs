@@ -38,6 +38,7 @@ namespace NewsFeed.Server.Models.Messaging.Handlers
             this.Log(message, context);
 
             await this.twitterRepository.SaveTweets(message.UserId, message.Tweets);
+            await this.twitterRepository.SetTweetsDownloadingState(message.UserId, false);
 
             var command = new ClearOldTweets(message.UserId);
             await context.Send(command);

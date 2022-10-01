@@ -1,4 +1,5 @@
-﻿using Dapper.Contrib.Extensions;
+﻿using Dapper;
+using Dapper.Contrib.Extensions;
 using NewsFeed.Server.Models.Twitter.Tables;
 using NewsFeed.Shared;
 using System.Data.Common;
@@ -41,6 +42,17 @@ namespace NewsFeed.Server.Models.Twitter
                     this.transaction
                 );
             }
+        }
+
+        public async Task SetTweetsDownloadingState(int userId, bool isTweetsDownloading)
+        {
+            const string sql = $"update dbo.TwitterUsers set IsTweetsDownloading = @value where Id = @userId";
+
+            await this.connection.ExecuteAsync(
+                sql,
+                new { value = isTweetsDownloading, userId},
+                this.transaction
+            );
         }
 
         public IList<TweetDto> GetDownloadedTweets(string accountId)

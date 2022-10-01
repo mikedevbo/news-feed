@@ -10,7 +10,7 @@ namespace NewsFeed.Server.Models.Twitter
     {
         public Task<User> GetUser(string userName)
         {
-            return Task.FromResult(new User { Id = "100" });
+            return Task.FromResult(new User { Id = "1" });
         }
 
         public Task<List<Tweet>> GetTweets(string userId)

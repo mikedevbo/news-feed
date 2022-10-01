@@ -40,7 +40,7 @@ namespace NewsFeed.Server.IntegrationTests
         public async Task DownloadTweets_Send_Success()
         {
             // Arrange
-            const int userId = 100;
+            const int userId = 1;
             const string twitterUserId = "200";
             
             var message = new DownloadTweets(userId, twitterUserId);
