@@ -2,23 +2,25 @@ using NewsFeed.Server.Models;
 using NewsFeed.Server.Models.Messaging.Commands;
 using NewsFeed.Server.Models.Twitter;
 using NServiceBus;
+using NServiceBus.Logging;
 using NServiceBus.Persistence.Sql;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var config = builder.Configuration;
 
-builder.Host.ConfigureServices(services =>
+builder.Host.ConfigureLogging((ctx, logging) =>
 {
-    services.AddScoped<ITwitterApiClient>(provider =>
-        new TwitterApiClient(config.GetValue<string>("TwitterToken"))
-    );
+    logging.AddLog4Net();
 });
 
 builder.Host.UseNServiceBus(context =>
  {
      const string endpointName = "NewsFeed.Server";
      var endpointConfiguration = new EndpointConfiguration(endpointName);
+
+     var defaultFactory = LogManager.Use<DefaultFactory>();
+
      var transport = endpointConfiguration.UseTransport<LearningTransport>();
      endpointConfiguration.UsePersistence<LearningPersistence>();
 
@@ -40,6 +42,13 @@ builder.Host.UseNServiceBus(context =>
 
      return endpointConfiguration;
  });
+
+builder.Host.ConfigureServices(services =>
+{
+    services.AddScoped<ITwitterApiClient>(provider =>
+        new TwitterApiClient(config.GetValue<string>("TwitterToken"))
+    );
+});
 
 // Add services to the container.
 
