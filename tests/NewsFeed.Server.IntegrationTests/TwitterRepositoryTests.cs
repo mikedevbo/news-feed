@@ -49,5 +49,20 @@ namespace NewsFeed.Server.IntegrationTests
             // Assert
             Assert.Pass();
         }
+
+        [Test]
+        [Explicit]
+        public async Task ClearOldTweets_Execute_ProperResult()
+        {
+            // Arrange
+            const int userId = 1;
+            var createdAt = Convert.ToDateTime("2022-10-01 15:54:00.000");
+
+            // Act
+            await this.twitterRepository.ClearOldTweets(userId, createdAt);
+
+            // Assert
+            Assert.Pass();
+        }
     }
 }

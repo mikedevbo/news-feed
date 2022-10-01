@@ -9,6 +9,8 @@ namespace NewsFeed.Server.Models.Twitter
 
         Task SetTweetsDownloadingState(int userId, bool isDownloading);
 
+        Task ClearOldTweets(int userId, DateTime createdAt);
+
         IList<TweetDto> GetDownloadedTweets(string accountId);
     }
 }

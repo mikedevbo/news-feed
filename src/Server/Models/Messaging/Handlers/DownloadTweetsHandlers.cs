@@ -44,12 +44,11 @@ namespace NewsFeed.Server.Models.Messaging.Handlers
             await context.Send(command);
         }
 
-        public Task Handle(ClearOldTweets message, IMessageHandlerContext context)
+        public async Task Handle(ClearOldTweets message, IMessageHandlerContext context)
         {
             this.Log(message, context);
 
-            //TODO: clear tweets
-            return Task.CompletedTask;
+            await this.twitterRepository.ClearOldTweets(message.UserId, DateTime.Now.AddMonths(-1));
         }
 
         private void Log<TMessage>(

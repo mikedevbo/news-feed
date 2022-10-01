@@ -3,6 +3,8 @@ using Dapper.Contrib.Extensions;
 using NewsFeed.Server.Models.Twitter.Tables;
 using NewsFeed.Shared;
 using System.Data.Common;
+using System.Linq;
+using System.Text;
 using TwitterSharp.Response.RTweet;
 
 namespace NewsFeed.Server.Models.Twitter
@@ -53,6 +55,33 @@ namespace NewsFeed.Server.Models.Twitter
                 new { value = isTweetsDownloading, userId},
                 this.transaction
             );
+        }
+
+        public async Task ClearOldTweets(int userId, DateTime createdAt)
+        {
+            var sql = new StringBuilder();
+            sql.Append("select t.Id ");
+            sql.Append("from dbo.TwitterTweets t ");
+            sql.Append("inner join dbo.TwitterTweetsApi tapi on t.Id = tapi.Id ");
+            sql.Append("where t.UserId = @userId and tapi.CreatedAt < @createdAt");
+
+            var ids = (await this.connection.QueryAsync<int>(
+                sql.ToString(),
+                new { userId, createdAt },
+                this.transaction
+            )).ToList();
+
+            var tweets = new List<TwitterTweets>();
+            var tweetsApi = new List<TwitterTweetsApi>();
+            ids.ForEach(id =>
+            {
+                tweets.Add(new TwitterTweets { Id = id });
+                tweetsApi.Add(new TwitterTweetsApi { Id = id });
+            });
+
+
+            await this.connection.DeleteAsync(tweets, this.transaction);
+            await this.connection.DeleteAsync(tweetsApi, this.transaction);
         }
 
         public IList<TweetDto> GetDownloadedTweets(string accountId)
