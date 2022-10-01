@@ -9,19 +9,24 @@ namespace NewsFeed.Server.Models.Messaging.Handlers
         IHandleMessages<SaveTweetsAndMarkAsDownloaded>,
         IHandleMessages<ClearOldTweets>
     {
+        private readonly ILogger logger;
         private readonly ITwitterApiClient twitterApiClient;
         private readonly ITwitterRepository twitterRepository;
 
         public DownloadTweetsHandlers(
+            ILogger<DownloadTweetsHandlers> logger,
             ITwitterApiClient twitterApiClient,
             ITwitterRepository twitterRepository)
         {
+            this.logger = logger;
             this.twitterApiClient = twitterApiClient;
             this.twitterRepository = twitterRepository;
         }
 
         public async Task Handle(DownloadTweets message, IMessageHandlerContext context)
         {
+            this.logger.LogInformation(message.UserId.ToString());
+
             var tweets = await this.twitterApiClient.GetTweets(message.TwitterUserId);
             var command = new SaveTweetsAndMarkAsDownloaded(message.UserId, tweets);
             await context.Send(command);

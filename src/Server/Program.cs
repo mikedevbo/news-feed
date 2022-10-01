@@ -1,33 +1,29 @@
 using NewsFeed.Server.Models;
 using NewsFeed.Server.Models.Messaging.Commands;
+using NewsFeed.Server.Models.Messaging.Configuration;
 using NewsFeed.Server.Models.Twitter;
 using NServiceBus;
-using NServiceBus.Logging;
 using NServiceBus.Persistence.Sql;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var config = builder.Configuration;
 
-builder.Host.ConfigureLogging((ctx, logging) =>
-{
-    logging.AddLog4Net();
-});
+builder.Logging.AddLog4Net();
 
 builder.Host.UseNServiceBus(context =>
  {
-     const string endpointName = "NewsFeed.Server";
-     var endpointConfiguration = new EndpointConfiguration(endpointName);
+     var endpointName = typeof(Program).Assembly.GetName().Name!;
+     var endpointConfig = EndpointCommonConfig.Get(
+         endpointName,
+         config,
+         new List<(Assembly, string)>
+         {
+             (typeof(DownloadTweets).Assembly, endpointName)
+         });
 
-     var defaultFactory = LogManager.Use<DefaultFactory>();
-
-     var transport = endpointConfiguration.UseTransport<LearningTransport>();
-     endpointConfiguration.UsePersistence<LearningPersistence>();
-
-     var routing = transport.Routing();
-     routing.RouteToEndpoint(typeof(DownloadNewTweets).Assembly, endpointName);
-
-     endpointConfiguration.RegisterComponents(c =>
+     endpointConfig.RegisterComponents(c =>
      {
          c.ConfigureComponent(b =>
          {
@@ -40,20 +36,15 @@ builder.Host.UseNServiceBus(context =>
          }, DependencyLifecycle.InstancePerUnitOfWork);
      });
 
-     return endpointConfiguration;
+     return endpointConfig;
  });
-
-builder.Host.ConfigureServices(services =>
-{
-    services.AddScoped<ITwitterApiClient>(provider =>
-        new TwitterApiClient(config.GetValue<string>("TwitterToken"))
-    );
-});
 
 // Add services to the container.
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddScoped<ITwitterApiClient>(provider =>
+    new TwitterApiClient(config.GetValue<string>("TwitterToken")));
 
 var app = builder.Build();
 

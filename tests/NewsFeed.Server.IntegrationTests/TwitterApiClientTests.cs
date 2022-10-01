@@ -4,6 +4,8 @@ using System.Text.Json;
 
 namespace NewsFeed.Server.IntegrationTests
 {
+    [TestFixture]
+    [Explicit]
     public class TwitterApiClientTests
     {
         private TwitterApiClient twitterApiClient;

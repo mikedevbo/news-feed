@@ -2,6 +2,7 @@ USE [NewsFeed]
 GO
 
 /*
+drop schema nsb
 drop table dbo.Accounts
 drop table dbo.TwitterGroups
 drop table dbo.TwitterUsers
@@ -9,6 +10,8 @@ drop table dbo.TwitterUsersApi
 drop table dbo.TwitterTweets
 drop table dbo.TwitterTweetsApi
 */
+
+CREATE SCHEMA nsb
 
 CREATE TABLE [dbo].[Accounts](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
