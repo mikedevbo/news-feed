@@ -15,14 +15,14 @@ namespace NewsFeed.Server.Models.Twitter
 
         public Task<List<Tweet>> GetTweets(string userId)
         {
-            var result = new List<Tweet>
+            var tweets = new List<Tweet>
             {
                 new Tweet { Id = "1", CreatedAt = DateTime.Now, Text = "Test tweet 1" },
-                new Tweet { Id = "2", CreatedAt = DateTime.Now, Text = "Test tweet 2" },
-                new Tweet { Id = "3", CreatedAt = DateTime.Now, Text = "Test tweet 3" }
+                new Tweet { Id = "2", CreatedAt = DateTime.Now.AddSeconds(20), Text = "Test tweet 2" },
+                new Tweet { Id = "3", CreatedAt = DateTime.Now.AddSeconds(40), Text = "Test tweet 3" }
             };
 
-            return Task.FromResult(result);
+            return Task.FromResult(tweets.OrderByDescending(t => t.CreatedAt).ToList());
         }
     }
 }
