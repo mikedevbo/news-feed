@@ -65,7 +65,7 @@ GO
 
 CREATE TABLE [dbo].[TwitterUsersApi](
 	[Id] [int] NOT NULL,
-	[TwitterUserId] [varchar](50) NOT NULL,
+	[UserId] [varchar](50) NOT NULL,
  CONSTRAINT [PK_TwitterUsersApi] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
@@ -90,7 +90,7 @@ GO
 
 CREATE TABLE [dbo].[TwitterTweetsApi](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[TweeterTweetId] [varchar](50) NOT NULL,
+	[TweetId] [varchar](50) NOT NULL,
 	[Text] [varchar](max) NOT NULL,
 	[CreatedAt] [datetime] NOT NULL
  CONSTRAINT [PK_TwitterTweetsApi] PRIMARY KEY CLUSTERED 
