@@ -51,8 +51,8 @@ public class NewsFeedController : ControllerBase
     [HttpGet("DownloadNewTweets")]
     public async Task DownloadNewTweets(string userId)
     {
-        var message = new DownloadNewTweets { UserId = userId };
-        await messageSession.Send(message).ConfigureAwait(false);
+        //var message = new DownloadTweets()
+        //await messageSession.Send(message).ConfigureAwait(false);
     }
 
 

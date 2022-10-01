@@ -2,7 +2,7 @@
 using System.Data.Common;
 using TwitterSharp.Response.RTweet;
 
-namespace NewsFeed.Server.Models
+namespace NewsFeed.Server.Models.Twitter
 {
     public class TwitterRepository : ITwitterRepository
     {
