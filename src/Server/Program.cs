@@ -43,8 +43,17 @@ builder.Host.UseNServiceBus(context =>
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
-builder.Services.AddScoped<ITwitterApiClient>(provider =>
-    new TwitterApiClient(config.GetValue<string>("TwitterToken")));
+
+if (config.GetValue<bool>("IsUseFake"))
+{
+    builder.Services.AddScoped<ITwitterApiClient, TwitterApiClientFake>();
+}
+else
+{
+    builder.Services.AddScoped<ITwitterApiClient>(provider =>
+        new TwitterApiClient(config.GetValue<string>("TwitterToken")));
+}
+
 
 var app = builder.Build();
 
