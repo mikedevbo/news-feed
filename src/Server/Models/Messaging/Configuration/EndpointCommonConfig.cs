@@ -16,8 +16,8 @@ namespace NewsFeed.Server.Models.Messaging.Configuration
         {
             const string schemaTransport = "nsb_t";
             const string schemaPersistence = "nsb_p";
-            var connectionStringPersistence = configuration.GetValue<string>("ConnectionStrings:NsbPersistence");
-            var connectionStringTransport = configuration.GetValue<string>("ConnectionStrings:NsbTransport");
+            var connectionStringPersistence = configuration.GetValue<string>(Constants.ConnectionStringPersistenceKey);
+            var connectionStringTransport = configuration.GetValue<string>(Constants.ConnectionStringTransportKey);
 
             var endpointConfiguration = new EndpointConfiguration(endpointName);
 

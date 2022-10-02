@@ -20,7 +20,7 @@ namespace NewsFeed.Server.IntegrationTests
                 .AddJsonFile("appsettings.development.json", false, true)
                 .Build();
 
-            this.connection = new SqlConnection(config.GetValue<string>("ConnectionStrings:NsbPersistence"));
+            this.connection = new SqlConnection(config.GetValue<string>(Constants.ConnectionStringPersistenceKey));
             await this.connection.OpenAsync();
             this.transaction = await this.connection.BeginTransactionAsync();
             this.twitterRepository = new TwitterRepository(this.connection, this.transaction);

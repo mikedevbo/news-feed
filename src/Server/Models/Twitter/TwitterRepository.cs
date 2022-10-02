@@ -3,7 +3,6 @@ using Dapper.Contrib.Extensions;
 using NewsFeed.Server.Models.Twitter.Tables;
 using NewsFeed.Shared;
 using System.Data.Common;
-using System.Linq;
 using System.Text;
 using TwitterSharp.Response.RTweet;
 
