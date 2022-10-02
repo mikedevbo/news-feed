@@ -63,7 +63,7 @@ namespace NewsFeed.Server.Models.Twitter
             sql.Append("select t.Id ");
             sql.Append("from dbo.TwitterTweets t ");
             sql.Append("inner join dbo.TwitterTweetsApi tapi on t.Id = tapi.Id ");
-            sql.Append("where t.UserId = @userId and tapi.CreatedAt < @createdAt");
+            sql.Append("where t.UserId = @userId and t.IsPersisted = 0 and tapi.CreatedAt < @createdAt");
 
             var ids = (await this.connection.QueryAsync<int>(
                 sql.ToString(),

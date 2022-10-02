@@ -56,7 +56,7 @@ namespace NewsFeed.Server.IntegrationTests
         {
             // Arrange
             const int userId = 1;
-            var createdAt = Convert.ToDateTime("2022-10-01 15:54:00.000");
+            var createdAt = Convert.ToDateTime("2022-10-02 08:00:00.000");
 
             // Act
             await this.twitterRepository.ClearOldTweets(userId, createdAt);
