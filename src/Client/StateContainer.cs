@@ -1,8 +1,12 @@
-﻿public class StateContainer
+﻿using System.Reflection.Metadata.Ecma335;
+
+public class StateContainer
 {
     private int selectedUserId;
 
     private string selectedAccountIdDownloadNewTweets = "";
+
+    public int AccountId { get; set; } = 1;
 
     public int SelectedUserId
     {

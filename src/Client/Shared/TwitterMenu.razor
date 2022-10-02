@@ -3,7 +3,9 @@
 @inject HttpClient Http
 @inject NewsFeedApiClient apiClient
 
-
+<label>Group Name:</label>
+<input type="text" @bind="this.groupName" />
+<button @onclick="e => this.AddGroup()">Add Group</button>
 @foreach (var group in menu.Groups)
 {
     <p>@group.Name</p>
@@ -17,18 +19,19 @@
 
 @code {
     private TwitterMenuResponse menu = new TwitterMenuResponse(new List<Group>());
+    private string groupName = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
         this.menu = await apiClient.GetTwitterMenu();
     }
 
-    public string SetUserSelectionColor(bool isSelected)
+    private string SetUserSelectionColor(bool isSelected)
     {
         return isSelected ? "color: red" : string.Empty;
     }
 
-    public void SetUserAsSelected(int userId)
+    private void SetUserAsSelected(int userId)
     {
         // Arrange
         (User user, int groupIndex, int userIndex) FindUserData(int userId)
@@ -74,5 +77,10 @@
         // Act
         DeselectUser();
         SelectUser();
+    }
+
+    private async Task AddGroup()
+    {
+        this.apiClient.AddTwitterGroup(this.StateContainer.AccountId, this.groupName);
     }
 }

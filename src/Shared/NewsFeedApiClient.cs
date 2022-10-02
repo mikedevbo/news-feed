@@ -19,6 +19,11 @@ namespace NewsFeed.Shared
                 ?? new TwitterMenuResponse(new List<TwitterMenuResponse.Group>());
         }
 
+        public async Task AddTwitterGroup(int accountId, string groupName)
+        {
+            await this.httpClient.GetAsync($"Users/AddTwitterGroup?accountId={accountId}&groupName={groupName}");
+        }
+
         public async Task AddUser(string userName, int groupId)
         {
             await this.httpClient.GetAsync($"Users/AddUser?userName={userName}&groupId={groupId}");

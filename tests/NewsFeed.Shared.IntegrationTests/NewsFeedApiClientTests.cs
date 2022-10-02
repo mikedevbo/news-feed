@@ -30,6 +30,20 @@ namespace NewsFeed.Shared.IntegrationTests
         }
 
         [Test]
+        public async Task AddTwitterGroup_Execute_ProperResult()
+        {
+            // Arrange
+            const int accountId = 1;
+            const string groupName = "group_from_integration_test";
+
+            // Act
+            await this.apiClient.AddTwitterGroup(accountId, groupName);
+
+            // Assert
+            Assert.Pass();
+        }
+
+        [Test]
         public async Task AddUser_Execute_ProperResult()
         {
             // Arrange

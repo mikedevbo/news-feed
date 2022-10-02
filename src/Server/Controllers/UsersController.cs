@@ -35,6 +35,12 @@ public class UsersController : ControllerBase
         }));
     }
 
+    [HttpGet("AddTwitterGroup")]
+    public async Task AddTwitterGroup(int accountId, string groupName)
+    {
+        await this.twitterRepository.SaveGroup(accountId, groupName);
+    }
+
     [HttpGet("AddUser")]
     public async Task AddUser(string userName, int groupId)
     {
