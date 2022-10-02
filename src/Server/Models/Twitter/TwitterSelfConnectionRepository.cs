@@ -1,6 +1,8 @@
 ﻿using Dapper.Contrib.Extensions;
 using NewsFeed.Server.Models.Twitter.Tables;
 using System.Data.SqlClient;
+using System.Text.RegularExpressions;
+using System.Transactions;
 
 namespace NewsFeed.Server.Models.Twitter
 {
@@ -46,6 +48,20 @@ namespace NewsFeed.Server.Models.Twitter
                 transaction.Rollback();
                 throw;
             }
+        }
+
+        public async Task SaveGroup(int accountId, string groupName)
+        {
+            using var connection = new SqlConnection(this.configuration.GetValue<string>(Constants.ConnectionStringPersistenceKey));
+            await connection.OpenAsync();
+
+            await connection.InsertAsync(
+                new TwitterGroups
+                {
+                    Name = groupName,
+                    AccountId = accountId
+                }
+            );
         }
     }
 }

@@ -34,5 +34,20 @@ namespace NewsFeed.Server.IntegrationTests
             // Assert
             Assert.Pass();
         }
+
+        [Test]
+        [Explicit]
+        public async Task SaveGroup_Execute_ProperResult()
+        {
+            // Arrange
+            const int accountId = 2;
+            const string groupName = "test_group_2";
+
+            // Act
+            await this.repository.SaveGroup(accountId, groupName);
+
+            // Assert
+            Assert.Pass();
+        }
     }
 }

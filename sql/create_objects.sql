@@ -40,6 +40,7 @@ GO
 CREATE TABLE [dbo].[TwitterGroups](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[Name] [varchar](50) NOT NULL,
+	[AccountId] int NOT NULL,
  CONSTRAINT [PK_TwitterGroups] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
