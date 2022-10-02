@@ -1,0 +1,78 @@
+﻿@using static NewsFeed.Shared.Dto.TwitterMenuResponse
+@inject StateContainer StateContainer
+@inject HttpClient Http
+@inject NewsFeedApiClient apiClient
+
+
+@foreach (var group in menu.Groups)
+{
+    <p>@group.Name</p>
+    <ul>
+        @foreach (var user in group.Users)
+        {
+            <li><a style="@(this.SetUserSelectionColor(user.IsSelected))" @onclick="e => this.SetUserAsSelected(user.Id)">@user.Name</a></li>
+        }
+    </ul>
+}
+
+@code {
+    private TwitterMenuResponse menu = new TwitterMenuResponse(new List<Group>());
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.menu = await apiClient.GetTwitterMenu();
+    }
+
+    public string SetUserSelectionColor(bool isSelected)
+    {
+        return isSelected ? "color: red" : string.Empty;
+    }
+
+    public void SetUserAsSelected(int userId)
+    {
+        // Arrange
+        (User user, int groupIndex, int userIndex) FindUserData(int userId)
+        {
+            var data = (
+                from g in this.menu.Groups
+                from u in g.Users
+                where u.Id == userId
+                let groupIndex = this.menu.Groups.IndexOf(g)
+                let userIndex = this.menu.Groups[groupIndex].Users.IndexOf(u)
+                select (u, groupIndex, userIndex)
+            ).FirstOrDefault();
+
+            return data;
+        }
+
+        void ReplaceItem(User user, int groupIndex, int userIndex, bool isSelected)
+        {
+            this.menu.Groups[groupIndex].Users[userIndex] = user with { IsSelected = isSelected };
+        }
+
+        void DeselectUser()
+        {
+            var userData = FindUserData(StateContainer.SelectedUserId);
+
+            if (userData.user is not null)
+            {
+                ReplaceItem(userData.user, userData.groupIndex, userData.userIndex, false);
+            }
+        }
+
+        void SelectUser()
+        {
+            var userData = FindUserData(userId);
+
+            if (userData.user is not null)
+            {
+                ReplaceItem(userData.user, userData.groupIndex, userData.userIndex, true);
+                this.StateContainer.SelectedUserId = userId;
+            }
+        }
+
+        // Act
+        DeselectUser();
+        SelectUser();
+    }
+}

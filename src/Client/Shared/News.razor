@@ -21,20 +21,20 @@
 
     protected override void OnInitialized()
     {
-        this.StateContainer.OnSelectedAccountIdChange += LoadTweets;
+        this.StateContainer.OnSelectedUserIdChange += LoadTweets;
         this.StateContainer.OnSelectedAccountIdDownloadNewTweetsChange += DownloadNewTweets;
     }
 
-    private async void LoadTweets(string accountId)
+    private async void LoadTweets(int accountId)
     {
-        this.AccountId = accountId;
-        var tweets = await Http.GetFromJsonAsync<List<TweetDto>>($"NewsFeed/GetDownloadedTweets?userId={accountId}");
+        //this.AccountId = accountId;
+        //var tweets = await Http.GetFromJsonAsync<List<TweetDto>>($"NewsFeed/GetDownloadedTweets?userId={accountId}");
 
-        if (tweets is not null)
-        {
-            this.tweets = tweets;
-            base.StateHasChanged();
-        }
+        //if (tweets is not null)
+        //{
+        //    this.tweets = tweets;
+        //    base.StateHasChanged();
+        //}
     }
 
     private async void DownloadNewTweets(string accountId)
@@ -45,7 +45,7 @@
 
     public void Dispose()
     {
-        this.StateContainer.OnSelectedAccountIdChange -= LoadTweets;
+        this.StateContainer.OnSelectedUserIdChange -= LoadTweets;
         this.StateContainer.OnSelectedAccountIdDownloadNewTweetsChange -= DownloadNewTweets;
     }
 }

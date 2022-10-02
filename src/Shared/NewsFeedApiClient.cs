@@ -1,4 +1,7 @@
-﻿namespace NewsFeed.Shared
+﻿using NewsFeed.Shared.Dto;
+using System.Net.Http.Json;
+
+namespace NewsFeed.Shared
 {
     public class NewsFeedApiClient : INewsFeedApiClient
     {
@@ -7,6 +10,13 @@
         public NewsFeedApiClient(HttpClient httpClient)
         {
             this.httpClient = httpClient;
+        }
+
+        public async Task<TwitterMenuResponse> GetTwitterMenu()
+        {
+            return
+                await this.httpClient.GetFromJsonAsync<TwitterMenuResponse>($"Users/GetTwitterMenu")
+                ?? new TwitterMenuResponse(new List<TwitterMenuResponse.Group>());
         }
 
         public async Task AddUser(string userName, int groupId)

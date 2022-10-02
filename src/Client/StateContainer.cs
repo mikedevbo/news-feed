@@ -1,16 +1,16 @@
 ﻿public class StateContainer
 {
-    private string selectedAccountId = "";
+    private int selectedUserId;
 
     private string selectedAccountIdDownloadNewTweets = "";
 
-    public string SelectedAccountId
+    public int SelectedUserId
     {
-        get => selectedAccountId;
+        get => selectedUserId;
         set
         {
-            selectedAccountId = value;
-            this.OnSelectedAccountIdChange?.Invoke(this.selectedAccountId);
+            selectedUserId = value;
+            this.OnSelectedUserIdChange?.Invoke(this.selectedUserId);
         }
     }
 
@@ -24,7 +24,7 @@
         }
     }
 
-    public event Action<string>? OnSelectedAccountIdChange;
+    public event Action<int>? OnSelectedUserIdChange;
 
     public event Action<string>? OnSelectedAccountIdDownloadNewTweetsChange;
 }

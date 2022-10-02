@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace NewsFeed.Shared.IntegrationTests
 {
     [TestFixture]
@@ -12,6 +14,19 @@ namespace NewsFeed.Shared.IntegrationTests
         {
             httpClient.BaseAddress = new Uri(@"https://localhost:7057/");
             this.apiClient = new NewsFeedApiClient(httpClient);
+        }
+
+        [Test]
+        public async Task GetTwitterMenu_Execute_ProperResult()
+        {
+            // Arrange
+
+            // Act
+            var result = await this.apiClient.GetTwitterMenu();
+
+            // Assert
+            Console.WriteLine(JsonSerializer.Serialize(result));
+            Assert.Pass();
         }
 
         [Test]
