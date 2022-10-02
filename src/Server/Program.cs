@@ -44,6 +44,8 @@ builder.Host.UseNServiceBus(context =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
+builder.Services.AddScoped<ITwitterSelfConnectionRepository, TwitterSelfConnectionRepository>();
+
 if (config.GetValue<bool>("IsUseFake"))
 {
     builder.Services.AddScoped<ITwitterApiClient, TwitterApiClientFake>();

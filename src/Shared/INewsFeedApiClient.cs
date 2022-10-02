@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace NewsFeed.Shared
+﻿namespace NewsFeed.Shared
 {
     public interface INewsFeedApiClient
     {
+        Task AddUser(string userName, int groupId);
     }
 }
