@@ -4,27 +4,27 @@ namespace NewsFeed.Shared.IntegrationTests
 {
     [TestFixture]
     [Explicit]
-    public class NewsFeedApiClientTests
+    public class NewsFeeTwitterdApiClientTests
     {
         private static readonly HttpClient httpClient = new HttpClient();
-        private NewsFeedApiClient apiClient;
+        private NewsFeedTwitterApiClient apiClient;
 
         [SetUp]
         public void Setup()
         {
             httpClient.BaseAddress = new Uri(@"https://localhost:7057/");
-            this.apiClient = new NewsFeedApiClient(httpClient);
+            this.apiClient = new NewsFeedTwitterApiClient(httpClient);
         }
 
         [Test]
         [Explicit]
-        public async Task GetTwitterMenu_Execute_ProperResult()
+        public async Task GetMenu_Execute_ProperResult()
         {
             // Arrange
             const int accountId = 1;
 
             // Act
-            var result = await this.apiClient.GetTwitterMenu(accountId);
+            var result = await this.apiClient.GetMenu(accountId);
 
             // Assert
             Console.WriteLine(JsonSerializer.Serialize(result));
@@ -33,14 +33,14 @@ namespace NewsFeed.Shared.IntegrationTests
 
         [Test]
         [Explicit]
-        public async Task AddTwitterGroup_Execute_ProperResult()
+        public async Task AddGroup_Execute_ProperResult()
         {
             // Arrange
             const int accountId = 1;
             const string groupName = "group_from_integration_test";
 
             // Act
-            await this.apiClient.AddTwitterGroup(accountId, groupName);
+            await this.apiClient.AddGroup(accountId, groupName);
 
             // Assert
             Assert.Pass();

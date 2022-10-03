@@ -4,7 +4,7 @@ namespace NewsFeed.Server.Models.Twitter
 {
     public interface ITwitterSelfConnectionRepository
     {
-        Task<TwitterMenuResponse> GetTwitterMenu(int accountId);
+        Task<TwitterMenuResponse> GetMenu(int accountId);
 
         Task SaveGroup(int accountId, string groupName);
 

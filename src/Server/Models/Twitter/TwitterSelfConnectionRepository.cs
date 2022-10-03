@@ -15,7 +15,7 @@ namespace NewsFeed.Server.Models.Twitter
             this.configuration = configuration;
         }
 
-        public async Task<TwitterMenuResponse> GetTwitterMenu(int accountId)
+        public async Task<TwitterMenuResponse> GetMenu(int accountId)
         {
             var result = new TwitterMenuResponse(new List<TwitterMenuResponse.Group>());
 

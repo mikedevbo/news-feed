@@ -8,7 +8,7 @@ namespace NewsFeed.Server.IntegrationTests
     [Explicit]
     public class TwitterSelfConnectionRepositoryTests
     {
-        private TwitterSelfConnectionRepository repository;
+        private TwitterSelfConnectionRepository twitterRepository;
 
         [SetUp]
         public void SetUp()
@@ -17,18 +17,18 @@ namespace NewsFeed.Server.IntegrationTests
                 .AddJsonFile("appsettings.development.json", false, true)
                 .Build();
 
-            this.repository = new TwitterSelfConnectionRepository(config);
+            this.twitterRepository = new TwitterSelfConnectionRepository(config);
         }
 
         [Test]
         [Explicit]
-        public async Task GetTwitterMenu_Execute_ProperResult()
+        public async Task GetMenu_Execute_ProperResult()
         {
             // Arrange
             const int accountId = 1;
 
             // Act
-            var result = await this.repository.GetTwitterMenu(accountId);
+            var result = await this.twitterRepository.GetMenu(accountId);
 
             // Assert
             Console.WriteLine(JsonSerializer.Serialize(result));
@@ -45,7 +45,7 @@ namespace NewsFeed.Server.IntegrationTests
             const string twitterUserId = "12345";
 
             // Act
-            await this.repository.SaveUser(userName, groupId, twitterUserId);
+            await this.twitterRepository.SaveUser(userName, groupId, twitterUserId);
 
             // Assert
             Assert.Pass();
@@ -60,7 +60,7 @@ namespace NewsFeed.Server.IntegrationTests
             const string groupName = "test_group_2";
 
             // Act
-            await this.repository.SaveGroup(accountId, groupName);
+            await this.twitterRepository.SaveGroup(accountId, groupName);
 
             // Assert
             Assert.Pass();

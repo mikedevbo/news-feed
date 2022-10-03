@@ -1,7 +1,7 @@
 ﻿@using static NewsFeed.Shared.Dto.TwitterMenuResponse
 @inject StateContainer StateContainer
 @inject HttpClient Http
-@inject NewsFeedApiClient apiClient
+@inject NewsFeedTwitterApiClient apiClient
 
 <label>Group Name:</label>
 <input type="text" @bind="this.groupName" />
@@ -25,7 +25,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        this.menuData = await apiClient.GetTwitterMenu(this.StateContainer.AccountId);
+        this.menuData = await apiClient.GetMenu(this.StateContainer.AccountId);
     }
 
     private string SetUserSelectionColor(bool isSelected)
@@ -53,6 +53,6 @@
 
     private async Task AddGroup()
     {
-        await this.apiClient.AddTwitterGroup(this.StateContainer.AccountId, this.groupName);
+        await this.apiClient.AddGroup(this.StateContainer.AccountId, this.groupName);
     }
 }

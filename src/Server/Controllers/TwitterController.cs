@@ -5,12 +5,12 @@ using System.Reflection.Metadata.Ecma335;
 
 [ApiController]
 [Route("[controller]")]
-public class UsersController : ControllerBase
+public class TwitterController : ControllerBase
 {
     private readonly ITwitterApiClient twitterApiClient;
     private readonly ITwitterSelfConnectionRepository twitterRepository;
 
-    public UsersController(
+    public TwitterController(
         ITwitterApiClient twitterApiClient,
         ITwitterSelfConnectionRepository twitterRepository)
     {
@@ -18,14 +18,14 @@ public class UsersController : ControllerBase
         this.twitterRepository = twitterRepository;
     }
 
-    [HttpGet("GetTwitterMenu")]
-    public async Task<TwitterMenuResponse> GetTwitterMenu(int accountId)
+    [HttpGet("GetMenu")]
+    public async Task<TwitterMenuResponse> GetMenu(int accountId)
     {
-        return await this.twitterRepository.GetTwitterMenu(accountId);
+        return await this.twitterRepository.GetMenu(accountId);
     }
 
-    [HttpGet("AddTwitterGroup")]
-    public async Task AddTwitterGroup(int accountId, string groupName)
+    [HttpGet("AddGroup")]
+    public async Task AddGroup(int accountId, string groupName)
     {
         await this.twitterRepository.SaveGroup(accountId, groupName);
     }
