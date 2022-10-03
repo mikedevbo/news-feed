@@ -17,12 +17,14 @@ namespace NewsFeed.Shared.IntegrationTests
         }
 
         [Test]
+        [Explicit]
         public async Task GetTwitterMenu_Execute_ProperResult()
         {
             // Arrange
+            const int accountId = 1;
 
             // Act
-            var result = await this.apiClient.GetTwitterMenu();
+            var result = await this.apiClient.GetTwitterMenu(accountId);
 
             // Assert
             Console.WriteLine(JsonSerializer.Serialize(result));
@@ -30,6 +32,7 @@ namespace NewsFeed.Shared.IntegrationTests
         }
 
         [Test]
+        [Explicit]
         public async Task AddTwitterGroup_Execute_ProperResult()
         {
             // Arrange
@@ -44,6 +47,7 @@ namespace NewsFeed.Shared.IntegrationTests
         }
 
         [Test]
+        [Explicit]
         public async Task AddUser_Execute_ProperResult()
         {
             // Arrange

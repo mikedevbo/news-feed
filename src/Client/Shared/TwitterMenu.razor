@@ -6,24 +6,26 @@
 <label>Group Name:</label>
 <input type="text" @bind="this.groupName" />
 <button @onclick="e => this.AddGroup()">Add Group</button>
-@foreach (var group in menu.Groups)
+
+@foreach (var group in menuData.Groups)
 {
     <p>@group.Name</p>
     <ul>
         @foreach (var user in group.Users)
         {
-            <li><a style="@(this.SetUserSelectionColor(user.IsSelected))" @onclick="e => this.SetUserAsSelected(user.Id)">@user.Name</a></li>
+            <li><a style="@(this.SetUserSelectionColor(user.IsSelected))" @onclick="e => this.SetUserAsSelected(user)">@user.Name</a></li>
         }
     </ul>
 }
 
 @code {
-    private TwitterMenuResponse menu = new TwitterMenuResponse(new List<Group>());
+    private TwitterMenuResponse menuData = new TwitterMenuResponse(new List<Group>());
+    private (User user, int groupIndex, int userIndex) selectedItem = default;
     private string groupName = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
-        this.menu = await apiClient.GetTwitterMenu();
+        this.menuData = await apiClient.GetTwitterMenu(this.StateContainer.AccountId);
     }
 
     private string SetUserSelectionColor(bool isSelected)
@@ -31,56 +33,26 @@
         return isSelected ? "color: red" : string.Empty;
     }
 
-    private void SetUserAsSelected(int userId)
+    private void SetUserAsSelected(User user)
     {
-        // Arrange
-        (User user, int groupIndex, int userIndex) FindUserData(int userId)
+        // unselect previus item
+        if (selectedItem.user is not null)
         {
-            var data = (
-                from g in this.menu.Groups
-                from u in g.Users
-                where u.Id == userId
-                let groupIndex = this.menu.Groups.IndexOf(g)
-                let userIndex = this.menu.Groups[groupIndex].Users.IndexOf(u)
-                select (u, groupIndex, userIndex)
-            ).FirstOrDefault();
-
-            return data;
+            this.menuData.Groups[selectedItem.groupIndex].Users[selectedItem.userIndex] = selectedItem.user with { IsSelected = false };
         }
 
-        void ReplaceItem(User user, int groupIndex, int userIndex, bool isSelected)
-        {
-            this.menu.Groups[groupIndex].Users[userIndex] = user with { IsSelected = isSelected };
-        }
+        // select currnt item
+        var groupIndex = this.menuData.Groups.FindIndex(g => g.Id == user.GroupId);
+        var userIndex = this.menuData.Groups[groupIndex].Users.FindIndex(u => u.Id == user.Id);
 
-        void DeselectUser()
-        {
-            var userData = FindUserData(StateContainer.SelectedUserId);
+        this.menuData.Groups[groupIndex].Users[userIndex] = user with { IsSelected = true };
 
-            if (userData.user is not null)
-            {
-                ReplaceItem(userData.user, userData.groupIndex, userData.userIndex, false);
-            }
-        }
-
-        void SelectUser()
-        {
-            var userData = FindUserData(userId);
-
-            if (userData.user is not null)
-            {
-                ReplaceItem(userData.user, userData.groupIndex, userData.userIndex, true);
-                this.StateContainer.SelectedUserId = userId;
-            }
-        }
-
-        // Act
-        DeselectUser();
-        SelectUser();
+        this.selectedItem = (user, groupIndex, userIndex);
+        this.StateContainer.SelectedUserId = user.Id;
     }
 
     private async Task AddGroup()
     {
-        this.apiClient.AddTwitterGroup(this.StateContainer.AccountId, this.groupName);
+        await this.apiClient.AddTwitterGroup(this.StateContainer.AccountId, this.groupName);
     }
 }

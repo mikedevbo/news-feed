@@ -12,10 +12,10 @@ namespace NewsFeed.Shared
             this.httpClient = httpClient;
         }
 
-        public async Task<TwitterMenuResponse> GetTwitterMenu()
+        public async Task<TwitterMenuResponse> GetTwitterMenu(int accountId)
         {
             return
-                await this.httpClient.GetFromJsonAsync<TwitterMenuResponse>($"Users/GetTwitterMenu")
+                await this.httpClient.GetFromJsonAsync<TwitterMenuResponse>($"Users/GetTwitterMenu?accountId={accountId}")
                 ?? new TwitterMenuResponse(new List<TwitterMenuResponse.Group>());
         }
 

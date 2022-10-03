@@ -1,10 +1,8 @@
-﻿using Dapper.Contrib.Extensions;
+﻿using Dapper;
+using Dapper.Contrib.Extensions;
 using NewsFeed.Server.Models.Twitter.Tables;
 using NewsFeed.Shared.Dto;
 using System.Data.SqlClient;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Transactions;
 
 namespace NewsFeed.Server.Models.Twitter
 {
@@ -19,19 +17,48 @@ namespace NewsFeed.Server.Models.Twitter
 
         public async Task<TwitterMenuResponse> GetTwitterMenu(int accountId)
         {
-            //var sql = new StringBuilder();
-            //sql.Append("select t.Id ");
-            //sql.Append("from dbo.TwitterTweets t ");
-            //sql.Append("inner join dbo.TwitterTweetsApi tapi on t.Id = tapi.Id ");
-            //sql.Append("where t.UserId = @userId and t.IsPersisted = 0 and tapi.CreatedAt < @createdAt");
+            var result = new TwitterMenuResponse(new List<TwitterMenuResponse.Group>());
 
-            //var ids = (await this.connection.QueryAsync<int>(
-            //    sql.ToString(),
-            //    new { userId, createdAt },
-            //    this.transaction
-            //)).ToList();
+            var sql = @"
+                select g.Id, g.Name, u.Id, u.Name, u.IsTweetsDownloading, uapi.UserId as TwitterUserId
+                from dbo.TwitterGroups g
+                left join dbo.TwitterUsers u on g.Id = u.GroupId
+                left join dbo.TwitterUsersApi uapi on u.Id = uapi.Id
+                where g.AccountId = @accountId
+            ";
 
-            throw new NotImplementedException();
+            static void AddUser(TwitterMenuResponse.User user, TwitterMenuResponse.Group group)
+            {
+                if (user is not null)
+                {
+                    group.Users.Add(user with { GroupId = group.Id });
+                }
+            }
+
+            using var connection = new SqlConnection(this.configuration.GetValue<string>(Constants.ConnectionStringPersistenceKey));
+            await connection.OpenAsync();
+
+            await connection. QueryAsync<TwitterMenuResponse.Group, TwitterMenuResponse.User, int>(
+                sql: sql.ToString(),
+                map: (group, user) =>
+                {
+                    var groupIndex = result.Groups.FindIndex(g => g.Id == group.Id);
+                    if (groupIndex == -1)
+                    {
+                        AddUser(user, group);
+                        result.Groups.Add(group);
+                    }
+                    else
+                    {
+                        AddUser(user, result.Groups[groupIndex]);
+                    }
+
+                    return 0;
+                },
+                param: new { accountId }
+            );
+
+            return result;
         }
 
         public async Task SaveGroup(int accountId, string groupName)

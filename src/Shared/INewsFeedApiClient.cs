@@ -4,7 +4,7 @@ namespace NewsFeed.Shared
 {
     public interface INewsFeedApiClient
     {
-        Task<TwitterMenuResponse> GetTwitterMenu();
+        Task<TwitterMenuResponse> GetTwitterMenu(int accountId);
 
         Task AddTwitterGroup(int accountId, string groupName);
 

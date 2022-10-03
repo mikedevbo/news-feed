@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using NewsFeed.Server.Models.Twitter;
+using System.Text.Json;
 
 namespace NewsFeed.Server.IntegrationTests
 {
@@ -17,6 +18,21 @@ namespace NewsFeed.Server.IntegrationTests
                 .Build();
 
             this.repository = new TwitterSelfConnectionRepository(config);
+        }
+
+        [Test]
+        [Explicit]
+        public async Task GetTwitterMenu_Execute_ProperResult()
+        {
+            // Arrange
+            const int accountId = 1;
+
+            // Act
+            var result = await this.repository.GetTwitterMenu(accountId);
+
+            // Assert
+            Console.WriteLine(JsonSerializer.Serialize(result));
+            Assert.Pass();
         }
 
         [Test]
