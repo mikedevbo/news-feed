@@ -2,7 +2,10 @@
 
 namespace NewsFeed.Shared.Dto
 {
-    public record TwitterMenuResponse(List<GroupResponse> Groups) { }
+    public record TwitterMenuResponse(List<GroupResponse> Groups)
+    {
+        public TwitterMenuResponse() : this(new List<GroupResponse>()) { }
+    }
 
     public record GroupResponse(
         int Id,

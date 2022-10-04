@@ -25,9 +25,9 @@ public class TwitterController : ControllerBase
     }
 
     [HttpGet("AddGroup")]
-    public async Task AddGroup(int accountId, string groupName)
+    public async Task<GroupResponse> AddGroup(int accountId, string groupName)
     {
-        await this.twitterRepository.SaveGroup(accountId, groupName);
+        return await this.twitterRepository.SaveGroup(accountId, groupName);
     }
 
     [HttpGet("AddUser")]

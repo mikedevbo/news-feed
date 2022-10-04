@@ -60,10 +60,10 @@ namespace NewsFeed.Server.IntegrationTests
             const string groupName = "test_group_2";
 
             // Act
-            await this.twitterRepository.SaveGroup(accountId, groupName);
+            var result = await this.twitterRepository.SaveGroup(accountId, groupName);
 
             // Assert
-            Assert.Pass();
+            Assert.That(result, Is.Not.Null);
         }
     }
 }

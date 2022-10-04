@@ -6,7 +6,7 @@ namespace NewsFeed.Shared
     {
         Task<TwitterMenuResponse> GetMenu(int accountId);
 
-        Task AddGroup(int accountId, string groupName);
+        Task<GroupResponse> AddGroup(int accountId, string groupName);
 
         Task AddUser(string userName, int groupId);
     }

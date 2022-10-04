@@ -53,8 +53,7 @@
 
     private async Task AddGroup()
     {
-        await this.apiClient.AddGroup(this.StateContainer.AccountId, this.groupName);
-        // this.menuData = await apiClient.GetMenu(this.StateContainer.AccountId);
-        this.menuData.Groups.Add(new GroupResponse(100, this.groupName, new List<UserResponse>()));
+        var newGroup = await this.apiClient.AddGroup(this.StateContainer.AccountId, this.groupName);
+        this.menuData.Groups.Add(newGroup);
     }
 }

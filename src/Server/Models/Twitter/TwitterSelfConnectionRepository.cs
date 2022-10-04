@@ -61,18 +61,20 @@ namespace NewsFeed.Server.Models.Twitter
             return result;
         }
 
-        public async Task SaveGroup(int accountId, string groupName)
+        public async Task<GroupResponse> SaveGroup(int accountId, string groupName)
         {
             using var connection = new SqlConnection(this.configuration.GetValue<string>(Constants.ConnectionStringPersistenceKey));
             await connection.OpenAsync();
 
-            await connection.InsertAsync(
+            var groupId = await connection.InsertAsync(
                 new TwitterGroups
                 {
                     Name = groupName,
                     AccountId = accountId
                 }
             );
+
+            return new GroupResponse(groupId, groupName, new List<UserResponse>());
         }
 
         public async Task SaveUser(string userName, int groupId, string twitterUserId)
