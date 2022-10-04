@@ -4,56 +4,43 @@
 @inject NewsFeedTwitterApiClient apiClient
 
 <label>Group Name:</label>
-<input type="text" @bind="this.groupName" />
+<input type="text" @bind="this.inputGroupName" />
 <button @onclick="e => this.AddGroup()">Add Group</button>
+
+<input type="text" @bind="this.inputUserName" />
+<button @onclick="e => this.AddUser()">Add User</button>
 
 @foreach (var group in menuData.Groups)
 {
-    <p>@group.Name</p>
+    <p @onclick="e => this.selectedGroup = group">@group.Name</p>
     <ul>
         @foreach (var user in group.Users)
         {
-            <li><a style="@(this.SetUserSelectionColor(user.IsSelected))" @onclick="e => this.SetUserAsSelected(user)">@user.Name</a></li>
+            <li><a style="@(this.selectedUser == user ? "color: red" : string.Empty)" @onclick="e => this.selectedUser = user">@user.Name</a></li>
         }
     </ul>
 }
 
 @code {
     private TwitterMenuResponse menuData = new TwitterMenuResponse(new List<GroupResponse>());
-    private (UserResponse user, int groupIndex, int userIndex) selectedItem = default;
-    private string groupName = string.Empty;
+    private GroupResponse? selectedGroup;
+    private UserResponse? selectedUser;
+    private string inputGroupName = string.Empty;
+    private string inputUserName = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
         this.menuData = await apiClient.GetMenu(this.StateContainer.AccountId);
     }
 
-    private string SetUserSelectionColor(bool isSelected)
-    {
-        return isSelected ? "color: red" : string.Empty;
-    }
-
-    private void SetUserAsSelected(UserResponse user)
-    {
-        // unselect previus item
-        if (selectedItem.user is not null)
-        {
-            this.menuData.Groups[selectedItem.groupIndex].Users[selectedItem.userIndex] = selectedItem.user with { IsSelected = false };
-        }
-
-        // select currnt item
-        var groupIndex = this.menuData.Groups.FindIndex(g => g.Id == user.GroupId);
-        var userIndex = this.menuData.Groups[groupIndex].Users.FindIndex(u => u.Id == user.Id);
-
-        this.menuData.Groups[groupIndex].Users[userIndex] = user with { IsSelected = true };
-
-        this.selectedItem = (user, groupIndex, userIndex);
-        this.StateContainer.SelectedUserId = user.Id;
-    }
-
     private async Task AddGroup()
     {
-        var newGroup = await this.apiClient.AddGroup(this.StateContainer.AccountId, this.groupName);
+        var newGroup = await this.apiClient.AddGroup(this.StateContainer.AccountId, this.inputGroupName);
         this.menuData.Groups.Add(newGroup);
+    }
+
+    private async Task AddUser()
+    {
+        // await this.apiClient.AddUser(this.inputUserName, this.menuData.Groups[this.selectedItem.groupIndex].Id);
     }
 }

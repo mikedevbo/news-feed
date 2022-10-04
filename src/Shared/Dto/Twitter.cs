@@ -20,9 +20,8 @@ namespace NewsFeed.Shared.Dto
         string Name,
         string TwitterUserId,
         bool IsTweetsDownloading,
-        bool IsSelected,
         int GroupId)
     {
-        public UserResponse() : this(default, string.Empty, string.Empty, default, default, default) { }
+        public UserResponse() : this(default, string.Empty, string.Empty, default, default) { }
     }
 }
