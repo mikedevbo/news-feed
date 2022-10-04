@@ -16,7 +16,7 @@ namespace NewsFeed.Shared
         {
             return
                 await this.httpClient.GetFromJsonAsync<TwitterMenuResponse>($"Twitter/GetMenu?accountId={accountId}")
-                ?? new TwitterMenuResponse(new List<TwitterMenuResponse.Group>());
+                ?? new TwitterMenuResponse(new List<GroupResponse>());
         }
 
         public async Task AddGroup(int accountId, string groupName)

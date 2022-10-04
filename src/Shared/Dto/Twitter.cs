@@ -2,25 +2,24 @@
 
 namespace NewsFeed.Shared.Dto
 {
-    public record TwitterMenuResponse(List<Group> Groups)
-    {
-        public record Group(
-            int Id,
-            string Name,
-            List<User> Users)
-        {
-            public Group() : this(default, string.Empty, new List<User>()) { }
-        }
+    public record TwitterMenuResponse(List<GroupResponse> Groups) { }
 
-        public record User(
-            int Id,
-            string Name,
-            string TwitterUserId,
-            bool IsTweetsDownloading,
-            bool IsSelected,
-            int GroupId)
-        {
-            public User() : this(default, string.Empty, string.Empty, default, default, default) { }
-        }
+    public record GroupResponse(
+        int Id,
+        string Name,
+        List<UserResponse> Users)
+    {
+        public GroupResponse() : this(default, string.Empty, new List<UserResponse>()) { }
+    }
+
+    public record UserResponse(
+        int Id,
+        string Name,
+        string TwitterUserId,
+        bool IsTweetsDownloading,
+        bool IsSelected,
+        int GroupId)
+    {
+        public UserResponse() : this(default, string.Empty, string.Empty, default, default, default) { }
     }
 }

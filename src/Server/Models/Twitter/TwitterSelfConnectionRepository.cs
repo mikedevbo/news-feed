@@ -17,7 +17,7 @@ namespace NewsFeed.Server.Models.Twitter
 
         public async Task<TwitterMenuResponse> GetMenu(int accountId)
         {
-            var result = new TwitterMenuResponse(new List<TwitterMenuResponse.Group>());
+            var result = new TwitterMenuResponse(new List<GroupResponse>());
 
             var sql = @"
                 select g.Id, g.Name, u.Id, u.Name, u.IsTweetsDownloading, uapi.UserId as TwitterUserId
@@ -27,7 +27,7 @@ namespace NewsFeed.Server.Models.Twitter
                 where g.AccountId = @accountId
             ";
 
-            static void AddUser(TwitterMenuResponse.User user, TwitterMenuResponse.Group group)
+            static void AddUser(GroupResponse group, UserResponse user)
             {
                 if (user is not null)
                 {
@@ -38,19 +38,19 @@ namespace NewsFeed.Server.Models.Twitter
             using var connection = new SqlConnection(this.configuration.GetValue<string>(Constants.ConnectionStringPersistenceKey));
             await connection.OpenAsync();
 
-            await connection. QueryAsync<TwitterMenuResponse.Group, TwitterMenuResponse.User, int>(
+            await connection. QueryAsync<GroupResponse, UserResponse, int>(
                 sql: sql.ToString(),
                 map: (group, user) =>
                 {
                     var groupIndex = result.Groups.FindIndex(g => g.Id == group.Id);
                     if (groupIndex == -1)
                     {
-                        AddUser(user, group);
+                        AddUser(group, user);
                         result.Groups.Add(group);
                     }
                     else
                     {
-                        AddUser(user, result.Groups[groupIndex]);
+                        AddUser(result.Groups[groupIndex], user);
                     }
 
                     return 0;

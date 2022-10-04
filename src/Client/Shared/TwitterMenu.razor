@@ -19,8 +19,8 @@
 }
 
 @code {
-    private TwitterMenuResponse menuData = new TwitterMenuResponse(new List<Group>());
-    private (User user, int groupIndex, int userIndex) selectedItem = default;
+    private TwitterMenuResponse menuData = new TwitterMenuResponse(new List<GroupResponse>());
+    private (UserResponse user, int groupIndex, int userIndex) selectedItem = default;
     private string groupName = string.Empty;
 
     protected override async Task OnInitializedAsync()
@@ -33,7 +33,7 @@
         return isSelected ? "color: red" : string.Empty;
     }
 
-    private void SetUserAsSelected(User user)
+    private void SetUserAsSelected(UserResponse user)
     {
         // unselect previus item
         if (selectedItem.user is not null)
@@ -54,5 +54,7 @@
     private async Task AddGroup()
     {
         await this.apiClient.AddGroup(this.StateContainer.AccountId, this.groupName);
+        // this.menuData = await apiClient.GetMenu(this.StateContainer.AccountId);
+        this.menuData.Groups.Add(new GroupResponse(100, this.groupName, new List<UserResponse>()));
     }
 }
