@@ -22,9 +22,9 @@
 }
 
 @code {
-    private TwitterMenuResponse menuData = new TwitterMenuResponse(new List<GroupResponse>());
-    private GroupResponse? selectedGroup;
-    private UserResponse? selectedUser;
+    private TwitterMenuResponse menuData = new TwitterMenuResponse();
+    private GroupResponse selectedGroup = new GroupResponse();
+    private UserResponse selectedUser = new UserResponse();
     private string inputGroupName = string.Empty;
     private string inputUserName = string.Empty;
 
@@ -41,6 +41,7 @@
 
     private async Task AddUser()
     {
-        // await this.apiClient.AddUser(this.inputUserName, this.menuData.Groups[this.selectedItem.groupIndex].Id);
+        var newUser = await this.apiClient.AddUser(this.inputUserName, this.selectedGroup.Id);
+        this.selectedGroup.Users.Add(newUser);
     }
 }

@@ -77,19 +77,21 @@ namespace NewsFeed.Server.Models.Twitter
             return new GroupResponse(groupId, groupName, new List<UserResponse>());
         }
 
-        public async Task SaveUser(string userName, int groupId, string twitterUserId)
+        public async Task<UserResponse> SaveUser(string userName, int groupId, string twitterUserId)
         {
+            int userId;
+            bool isTweetsDownloading = false;
             using var connection = new SqlConnection(this.configuration.GetValue<string>(Constants.ConnectionStringPersistenceKey));
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
             try
             {
-                var userId = await connection.InsertAsync(
+                userId = await connection.InsertAsync(
                     new TwitterUsers
                     {
                         Name = userName,
                         GroupId = groupId,
-                        IsTweetsDownloading = false
+                        IsTweetsDownloading = isTweetsDownloading
                     },
                     transaction
                 );
@@ -110,6 +112,8 @@ namespace NewsFeed.Server.Models.Twitter
                 transaction.Rollback();
                 throw;
             }
+
+            return new UserResponse(userId, userName, twitterUserId, isTweetsDownloading, groupId);
         }
     }
 }

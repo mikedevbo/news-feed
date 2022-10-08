@@ -25,9 +25,10 @@ namespace NewsFeed.Shared
                 ?? new GroupResponse();
         }
 
-        public async Task AddUser(string userName, int groupId)
+        public async Task<UserResponse> AddUser(string userName, int groupId)
         {
-            await this.httpClient.GetAsync($"Twitter/AddUser?userName={userName}&groupId={groupId}");
+            return await this.httpClient.GetFromJsonAsync<UserResponse>($"Twitter/AddUser?userName={userName}&groupId={groupId}")
+                ?? new UserResponse();
         }
     }
 }

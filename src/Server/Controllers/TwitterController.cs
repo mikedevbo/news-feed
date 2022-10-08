@@ -31,9 +31,9 @@ public class TwitterController : ControllerBase
     }
 
     [HttpGet("AddUser")]
-    public async Task AddUser(string userName, int groupId)
+    public async Task<UserResponse> AddUser(string userName, int groupId)
     {
         var user = await this.twitterApiClient.GetUser(userName);
-        await this.twitterRepository.SaveUser(userName, groupId, user.Id);
+        return await this.twitterRepository.SaveUser(userName, groupId, user.Id);
     }
 }

@@ -45,10 +45,10 @@ namespace NewsFeed.Server.IntegrationTests
             const string twitterUserId = "12345";
 
             // Act
-            await this.twitterRepository.SaveUser(userName, groupId, twitterUserId);
+            var result = await this.twitterRepository.SaveUser(userName, groupId, twitterUserId);
 
             // Assert
-            Assert.Pass();
+            Assert.That(result, Is.Not.Null);
         }
 
         [Test]

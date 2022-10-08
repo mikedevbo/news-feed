@@ -8,6 +8,6 @@ namespace NewsFeed.Server.Models.Twitter
 
         Task<GroupResponse> SaveGroup(int accountId, string groupName);
 
-        Task SaveUser(string userName, int groupId, string twitterUserId);
+        Task<UserResponse> SaveUser(string userName, int groupId, string twitterUserId);
     }
 }
