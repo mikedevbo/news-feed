@@ -3,22 +3,78 @@
 @inject HttpClient Http
 @inject NewsFeedTwitterApiClient apiClient
 
-<label>Group Name:</label>
-<input type="text" @bind="this.inputGroupName" />
-<button @onclick="e => this.AddGroup()">Add Group</button>
+@*Show in large screen with selecet feaure.*@
+<MudHidden Breakpoint="Breakpoint.MdAndUp" Invert="true">
+    <MudTreeView Items="this.TreeItems" @bind-SelectedValue="@this.SelectedValue">
+        <ItemTemplate>
+            <MudTreeViewItem @bind-Expanded="@context.IsExpanded" Items="@context.TreeItems">
+                <Content>
+                    <MudTreeViewItemToggleButton @bind-Expanded="@context.IsExpanded" Visible="@context.HasChild" />
+                    <MudText >@context.Text</MudText>
+                </Content>
+            </MudTreeViewItem>
+        </ItemTemplate>
+    </MudTreeView>
+</MudHidden>
 
-<input type="text" @bind="this.inputUserName" />
-<button @onclick="e => this.AddUser()">Add User</button>
+@*Show in mobile screen without select feature. Notify parent component about click - close menu after item click.*@
+<MudHidden Breakpoint="Breakpoint.MdAndUp">
+    <MudTreeView Items="this.TreeItems">
+        <ItemTemplate>
+            <MudTreeViewItem @bind-Expanded="@context.IsExpanded" Items="@context.TreeItems" OnClick="this.OnClickCallback">
+                <Content>
+                    <MudTreeViewItemToggleButton @bind-Expanded="@context.IsExpanded" Visible="@context.HasChild" />
+                    <MudText >@context.Text (n)</MudText>
+                </Content>
+            </MudTreeViewItem>
+        </ItemTemplate>
+    </MudTreeView>
+</MudHidden>
 
-@foreach (var group in menuData.Groups)
+@code
 {
-    <p @onclick="e => this.selectedGroup = group">@group.Name</p>
-    <ul>
-        @foreach (var user in group.Users)
-        {
-            <li><a style="@(this.selectedUser == user ? "color: red" : string.Empty)" @onclick="e => this.selectedUser = user">@user.Name</a></li>
-        }
-    </ul>
+    MudListItem selectedItem;
+    object selectedValue = 1;
+    int click;
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClickCallback { get; set; }
+}
+
+@code {
+    private TreeItemData SelectedValue { get; set; } = new TreeItemData();
+
+    private HashSet<TreeItemData> TreeItems { get; set; } = new HashSet<TreeItemData>();
+
+    //private record TreeItemData(int Id, string Text, HashSet<TreeItemData> TreeItems);
+
+    public record TreeItemData(int Id, string Text, HashSet<TreeItemData> TreeItems)
+    {
+        public TreeItemData() : this(0, string.Empty, new HashSet<TreeItemData>()) { }
+
+        public bool HasChild => TreeItems?.Count > 0;
+
+        public bool IsExpanded { get; set; } = true;
+    }
+
+    //public class TreeItemData
+    //{
+    //    public int Id { get; set; }
+
+    //    public string Text { get; set; }
+
+    //    public bool IsExpanded { get; set; } = true;
+
+    //    public bool HasChild => TreeItems?.Count > 0;
+
+    //    public HashSet<TreeItemData> TreeItems { get; set; } = new HashSet<TreeItemData>();
+
+    //    public TreeItemData(int id, string text)
+    //    {
+    //        Id = id;
+    //        Text = text;
+    //    }
+    //}
 }
 
 @code {
@@ -28,9 +84,30 @@
     private string inputGroupName = string.Empty;
     private string inputUserName = string.Empty;
 
+    private HashSet<Group2> MenuData2 { get; set; } = new HashSet<Group2>();
+    private Group2 ActivatedValue { get; set; } = new Group2(0, "", new HashSet<User2>());
+
     protected override async Task OnInitializedAsync()
     {
-        this.menuData = await apiClient.GetMenu(this.StateContainer.AccountId);
+        // this.menuData = await apiClient.GetMenu(this.StateContainer.AccountId);
+
+        this.MenuData2.Add(new Group2(1, "group1", new HashSet<User2>()));
+        this.MenuData2.Add(new Group2(2, "group2", new HashSet<User2>() { new User2(1, "user1")}));
+        this.MenuData2.Add(new Group2(3, "group3", new HashSet<User2>() { new User2(2, "user2"), new User2(3, "test3") }));
+
+        var i = new TreeItemData(1, "a", new HashSet<TreeItemData>());
+        i.IsExpanded = true;
+
+        this.TreeItems.Add(new TreeItemData(1, "group1", new HashSet<TreeItemData>()));
+        this.TreeItems.Add(new TreeItemData(2, "group2", new HashSet<TreeItemData>
+        {
+            new TreeItemData(1, "user1", new HashSet<TreeItemData>())
+        }));
+        this.TreeItems.Add(new TreeItemData(3, "group3", new HashSet<TreeItemData>
+        {
+            new TreeItemData(2, "user2", new HashSet<TreeItemData>()),
+            new TreeItemData(3, "user3", new HashSet<TreeItemData>())
+        }));
     }
 
     private async Task AddGroup()
@@ -41,7 +118,11 @@
 
     private async Task AddUser()
     {
-        var newUser = await this.apiClient.AddUser(this.inputUserName, this.selectedGroup.Id);
-        this.selectedGroup.Users.Add(newUser);
+        //var newUser = await this.apiClient.AddUser(this.inputUserName, this.selectedGroup.Id);
+        //this.selectedGroup.Users.Add(newUser);
     }
+
+    public record Group2(int Id, string Name, HashSet<User2> Users);
+
+    public record User2(int Id, string Name);
 }
