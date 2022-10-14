@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using NewsFeed.Server.Models.Twitter;
+using NewsFeed.Server.Models.Twitter.Tables;
 using System.Text.Json;
 
 namespace NewsFeed.Server.IntegrationTests
@@ -37,6 +38,25 @@ namespace NewsFeed.Server.IntegrationTests
             Assert.Pass();
         }
 
+        [Test]
+        [Explicit]
+        public async Task SaveGroup_Execute_ProperResult()
+        {
+            // Arrange
+            var group = new TwitterGroup()
+            {
+                Name = "test_group_2",
+                AccountId = 1
+            };
+
+            // Act
+            var result = await this.twitterRepository.SaveGroup(group);
+
+            // Assert
+            Console.WriteLine(JsonSerializer.Serialize(result));
+            Assert.That(result, Is.Not.Null);
+        }
+
         //[Test]
         //[Explicit]
         //public async Task SaveUser_Execute_ProperResult()
@@ -48,21 +68,6 @@ namespace NewsFeed.Server.IntegrationTests
 
         //    // Act
         //    var result = await this.twitterRepository.SaveUser(userName, groupId, twitterUserId);
-
-        //    // Assert
-        //    Assert.That(result, Is.Not.Null);
-        //}
-
-        //[Test]
-        //[Explicit]
-        //public async Task SaveGroup_Execute_ProperResult()
-        //{
-        //    // Arrange
-        //    const int accountId = 2;
-        //    const string groupName = "test_group_2";
-
-        //    // Act
-        //    var result = await this.twitterRepository.SaveGroup(accountId, groupName);
 
         //    // Assert
         //    Assert.That(result, Is.Not.Null);

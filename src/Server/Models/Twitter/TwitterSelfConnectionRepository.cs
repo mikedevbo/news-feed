@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Dapper.Contrib.Extensions;
 using NewsFeed.Server.Models.Twitter.Tables;
 using NewsFeed.Shared.Twitter.Dto;
 using System.Data.SqlClient;
@@ -61,59 +62,53 @@ namespace NewsFeed.Server.Models.Twitter
             return menuItems;
         }
 
-        //public async Task<GroupResponse> SaveGroup(int accountId, string groupName)
-        //{
-        //    using var connection = new SqlConnection(this.configuration.GetValue<string>(Constants.ConnectionStringPersistenceKey));
-        //    await connection.OpenAsync();
+        public async Task<Group> SaveGroup(TwitterGroup group)
+        {
+            using var connection = new SqlConnection(this.configuration.GetValue<string>(Constants.ConnectionStringPersistenceKey));
+            await connection.OpenAsync();
 
-        //    var groupId = await connection.InsertAsync(
-        //        new TwitterGroups
-        //        {
-        //            Name = groupName,
-        //            AccountId = accountId
-        //        }
-        //    );
+            var groupId = await connection.InsertAsync(group);
 
-        //    return new GroupResponse(groupId, groupName, new List<UserResponse>());
-        //}
+            return new Group(groupId, group.Name);
+        }
 
-        //public async Task<UserResponse> SaveUser(string userName, int groupId, string twitterUserId)
-        //{
-        //    int userId;
-        //    bool isTweetsDownloading = false;
-        //    using var connection = new SqlConnection(this.configuration.GetValue<string>(Constants.ConnectionStringPersistenceKey));
-        //    await connection.OpenAsync();
-        //    using var transaction = await connection.BeginTransactionAsync();
-        //    try
-        //    {
-        //        userId = await connection.InsertAsync(
-        //            new TwitterUsers
-        //            {
-        //                Name = userName,
-        //                GroupId = groupId,
-        //                IsTweetsDownloading = isTweetsDownloading
-        //            },
-        //            transaction
-        //        );
+            //public async Task<UserResponse> SaveUser(string userName, int groupId, string twitterUserId)
+            //{
+            //    int userId;
+            //    bool isTweetsDownloading = false;
+            //    using var connection = new SqlConnection(this.configuration.GetValue<string>(Constants.ConnectionStringPersistenceKey));
+            //    await connection.OpenAsync();
+            //    using var transaction = await connection.BeginTransactionAsync();
+            //    try
+            //    {
+            //        userId = await connection.InsertAsync(
+            //            new TwitterUsers
+            //            {
+            //                Name = userName,
+            //                GroupId = groupId,
+            //                IsTweetsDownloading = isTweetsDownloading
+            //            },
+            //            transaction
+            //        );
 
-        //        await connection.InsertAsync(
-        //            new TwitterUsersApi
-        //            {
-        //                Id = userId,
-        //                UserId = twitterUserId
-        //            },
-        //            transaction
-        //        );
+            //        await connection.InsertAsync(
+            //            new TwitterUsersApi
+            //            {
+            //                Id = userId,
+            //                UserId = twitterUserId
+            //            },
+            //            transaction
+            //        );
 
-        //        transaction.Commit();
-        //    }
-        //    catch(Exception)
-        //    {
-        //        transaction.Rollback();
-        //        throw;
-        //    }
+            //        transaction.Commit();
+            //    }
+            //    catch(Exception)
+            //    {
+            //        transaction.Rollback();
+            //        throw;
+            //    }
 
-        //    return new UserResponse(userId, userName, twitterUserId, isTweetsDownloading, groupId);
-        //}
-    }
+            //    return new UserResponse(userId, userName, twitterUserId, isTweetsDownloading, groupId);
+            //}
+        }
 }

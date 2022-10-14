@@ -33,20 +33,21 @@ namespace NewsFeed.Shared.IntegrationTests
             Assert.Pass();
         }
 
-        //[Test]
-        //[Explicit]
-        //public async Task AddGroup_Execute_ProperResult()
-        //{
-        //    // Arrange
-        //    const int accountId = 1;
-        //    const string groupName = "group_from_integration_test";
+        [Test]
+        [Explicit]
+        public async Task AddGroup_Execute_ProperResult()
+        {
+            // Arrange
+            const int accountId = 1;
+            const string groupName = "group_from_integration_test";
 
-        //    // Act
-        //    await this.apiClient.AddGroup(accountId, groupName);
+            // Act
+            var result = await this.apiClient.AddGroup(accountId, groupName);
 
-        //    // Assert
-        //    Assert.Pass();
-        //}
+            // Assert
+            Console.WriteLine(JsonSerializer.Serialize(result));
+            Assert.That(result, Is.Not.Null);
+        }
 
         //[Test]
         //[Explicit]

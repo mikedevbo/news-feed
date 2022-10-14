@@ -1,4 +1,5 @@
-﻿using NewsFeed.Shared.Twitter.Dto;
+﻿using NewsFeed.Server.Models.Twitter.Tables;
+using NewsFeed.Shared.Twitter.Dto;
 
 namespace NewsFeed.Server.Models.Twitter
 {
@@ -6,7 +7,7 @@ namespace NewsFeed.Server.Models.Twitter
     {
         Task<MenuItems> GetMenu(int accountId);
 
-        //Task<GroupResponse> SaveGroup(int accountId, string groupName);
+        Task<Group> SaveGroup(TwitterGroup group);
 
         //Task<UserResponse> SaveUser(string userName, int groupId, string twitterUserId);
     }

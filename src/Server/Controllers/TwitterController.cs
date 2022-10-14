@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NewsFeed.Server.Models.Twitter;
+using NewsFeed.Server.Models.Twitter.Tables;
 using NewsFeed.Shared.Twitter.Dto;
 
 [ApiController]
@@ -23,11 +24,12 @@ public class TwitterController : ControllerBase
         return await this.twitterRepository.GetMenu(accountId);
     }
 
-    //[HttpGet("AddGroup")]
-    //public async Task<GroupResponse> AddGroup(int accountId, string groupName)
-    //{
-    //    return await this.twitterRepository.SaveGroup(accountId, groupName);
-    //}
+    [HttpGet("AddGroup")]
+    public async Task<Group> AddGroup(int accountId, string groupName)
+    {
+        //TODO: Add validation
+        return await this.twitterRepository.SaveGroup(new TwitterGroup() { AccountId = accountId, Name = groupName });
+    }
 
     //[HttpGet("AddUser")]
     //public async Task<UserResponse> AddUser(string userName, int groupId)
