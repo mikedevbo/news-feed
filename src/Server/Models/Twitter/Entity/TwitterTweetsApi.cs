@@ -2,15 +2,9 @@
 
 namespace NewsFeed.Server.Models.Twitter.Entity
 {
-    public class TwitterTweetsApi
+    [Table("TwitterUsersApi")]
+    public record TwitterTweetsApi([property: ExplicitKey] int Id, string TweetId, string Text, DateTime CreatedAt)
     {
-        [ExplicitKey]
-        public int Id { get; set; }
-
-        public string TweetId { get; set; } = string.Empty;
-
-        public string Text { get; set; } = string.Empty;
-
-        public DateTime CreatedAt { get; set; }
+        public TwitterTweetsApi() : this(default, string.Empty, string.Empty, default) { }
     }
 }

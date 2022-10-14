@@ -3,11 +3,10 @@
 namespace NewsFeed.Server.Models.Twitter.Entity
 {
     [Table("TwitterUsersApi")]
-    public class TwitterUsersApi
+    public record TwitterUsersApi([property: ExplicitKey] int Id, string UserId)
     {
-        [ExplicitKey]
-        public int Id { get; set; }
+        public TwitterUsersApi() : this(default, string.Empty) { }
 
-        public string UserId { get; set; } = string.Empty;
+        public TwitterUsersApi(string UserId) : this(default, UserId) { }
     }
 }

@@ -43,11 +43,7 @@ namespace NewsFeed.Server.IntegrationTests
         public async Task SaveGroup_Execute_ProperResult()
         {
             // Arrange
-            var group = new TwitterGroup()
-            {
-                Name = "test_group_2",
-                AccountId = 1
-            };
+            var group = new TwitterGroup("test_group_2", 1);
 
             // Act
             var result = await this.twitterRepository.SaveGroup(group);
@@ -62,17 +58,9 @@ namespace NewsFeed.Server.IntegrationTests
         public async Task SaveUser_Execute_ProperResult()
         {
             // Arrange
-            var user = new TwitterUser()
-            {
-                Name = "test_user2",
-                GroupId = 1,
-                IsTweetsDownloading = false
-            };
+            var user = new TwitterUser("test_user2", 1);
 
-            var userApi = new TwitterUsersApi()
-            {
-                UserId = "12345"
-            };
+            var userApi = new TwitterUsersApi("12345");
 
             // Act
             var result = await this.twitterRepository.SaveUser(user, userApi);

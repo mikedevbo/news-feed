@@ -74,8 +74,8 @@ namespace NewsFeed.Server.Models.Twitter
             var tweetsApi = new List<TwitterTweetsApi>();
             ids.ForEach(id =>
             {
-                tweets.Add(new TwitterTweet { Id = id });
-                tweetsApi.Add(new TwitterTweetsApi { Id = id });
+                tweets.Add(new TwitterTweet(id, 0, false));
+                tweetsApi.Add(new TwitterTweetsApi(id, string.Empty, string.Empty, default));
             });
 
 

@@ -20,9 +20,9 @@ namespace NewsFeed.Shared
                     ?? new MenuItems();
         }
 
-        public async Task<Group> AddGroup(int accountId, string groupName)
+        public async Task<Group> AddGroup(string groupName, int accountId)
         {
-            return await this.httpClient.GetFromJsonAsync<Group>($"Twitter/AddGroup?accountId={accountId}&groupName={groupName}")
+            return await this.httpClient.GetFromJsonAsync<Group>($"Twitter/AddGroup?groupName={groupName}&accountId={accountId}")
                 ?? new Group();
         }
 

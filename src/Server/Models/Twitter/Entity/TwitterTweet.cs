@@ -1,13 +1,7 @@
-﻿using Dapper.Contrib.Extensions;
-
-namespace NewsFeed.Server.Models.Twitter.Entity
+﻿namespace NewsFeed.Server.Models.Twitter.Entity
 {
-    public class TwitterTweet
+    public record TwitterTweet(int Id, int UserId, bool IsPersisted)
     {
-        public int Id { get; set; }
-
-        public int UserId { get; set; }
-
-        public bool IsPersisted { get; set; }
+        public TwitterTweet() : this(default, default, default) { }
     }
 }

@@ -1,15 +1,11 @@
-﻿using Dapper.Contrib.Extensions;
+﻿using System.Security.Policy;
 
 namespace NewsFeed.Server.Models.Twitter.Entity
 {
-    public class TwitterUser
+    public record TwitterUser(int Id, string Name, int GroupId, bool IsTweetsDownloading)
     {
-        public int Id { get; set; }
+        public TwitterUser() : this(default, string.Empty, default, default) { }
 
-        public string Name { get; set; } = string.Empty;
-
-        public int GroupId { get; set; }
-
-        public bool IsTweetsDownloading { get; set; }
+        public TwitterUser(string Name, int GroupId) : this(default, Name, GroupId, default) { }
     }
 }

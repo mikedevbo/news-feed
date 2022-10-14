@@ -1,13 +1,9 @@
-﻿using Dapper.Contrib.Extensions;
-
-namespace NewsFeed.Server.Models.Twitter.Entity
+﻿namespace NewsFeed.Server.Models.Twitter.Entity
 {
-    public class TwitterGroup
+    public record TwitterGroup(int Id, string Name, int AccountId)
     {
-        public int Id { get; set; }
+        public TwitterGroup() : this(default, string.Empty, default) { }
 
-        public string Name { get; set; } = string.Empty;
-
-        public int AccountId { get; set; }
+        public TwitterGroup(string Name, int AccountId) : this(default, Name, AccountId) { }
     }
 }

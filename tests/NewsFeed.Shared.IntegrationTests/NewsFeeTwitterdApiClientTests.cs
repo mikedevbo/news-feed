@@ -42,7 +42,7 @@ namespace NewsFeed.Shared.IntegrationTests
             const string groupName = "group_from_integration_test";
 
             // Act
-            var result = await this.apiClient.AddGroup(accountId, groupName);
+            var result = await this.apiClient.AddGroup(groupName, accountId);
 
             // Assert
             Console.WriteLine(JsonSerializer.Serialize(result));

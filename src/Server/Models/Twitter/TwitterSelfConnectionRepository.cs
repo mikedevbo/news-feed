@@ -82,9 +82,7 @@ namespace NewsFeed.Server.Models.Twitter
             try
             {
                 userId = await connection.InsertAsync(user, transaction);
-
-                userApi.Id = userId;
-                await connection.InsertAsync(userApi, transaction);
+                await connection.InsertAsync(userApi with { Id = userId }, transaction);
 
                 transaction.Commit();
             }
