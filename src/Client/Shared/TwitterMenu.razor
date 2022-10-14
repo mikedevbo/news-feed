@@ -10,7 +10,10 @@
     var userIds = gu.Value;
 
     var group = this.menuItems.Groups[groupId];
-    this.groupIsExpanded[group.Id] = true;
+    if (!this.groupIsExpanded.ContainsKey(group.Id))
+    {
+        this.groupIsExpanded.Add(group.Id, true);
+    }
 
     <MudTreeViewItem @bind-Expanded="@this.groupIsExpanded[group.Id]"
         Text="@group.Name"
