@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using NewsFeed.Server.Models.Twitter;
-using NewsFeed.Server.Models.Twitter.Tables;
+using NewsFeed.Server.Models.Twitter.Entity;
 using System.Text.Json;
 
 namespace NewsFeed.Server.IntegrationTests

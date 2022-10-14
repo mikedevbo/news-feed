@@ -1,4 +1,4 @@
-﻿using NewsFeed.Server.Models.Twitter.Tables;
+﻿using NewsFeed.Server.Models.Twitter.Entity;
 using NewsFeed.Shared.Twitter.Dto;
 
 namespace NewsFeed.Server.Models.Twitter

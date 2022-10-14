@@ -1,6 +1,6 @@
 ﻿using Dapper.Contrib.Extensions;
 
-namespace NewsFeed.Server.Models.Twitter.Tables
+namespace NewsFeed.Server.Models.Twitter.Entity
 {
     public class TwitterTweet
     {

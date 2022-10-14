@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using Dapper.Contrib.Extensions;
-using NewsFeed.Server.Models.Twitter.Tables;
+using NewsFeed.Server.Models.Twitter.Entity;
 using NewsFeed.Shared;
 using System.Data.Common;
 using System.Text;
