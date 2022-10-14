@@ -2,6 +2,7 @@
 using Dapper.Contrib.Extensions;
 using NewsFeed.Server.Models.Twitter.Entity;
 using NewsFeed.Shared.Twitter.Dto;
+using NewsFeed.Shared.Twitter.Model;
 using System.Data.SqlClient;
 
 namespace NewsFeed.Server.Models.Twitter

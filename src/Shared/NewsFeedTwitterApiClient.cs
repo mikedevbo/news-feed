@@ -1,4 +1,5 @@
 ﻿using NewsFeed.Shared.Twitter.Dto;
+using NewsFeed.Shared.Twitter.Model;
 using System.Net.Http.Json;
 
 namespace NewsFeed.Shared

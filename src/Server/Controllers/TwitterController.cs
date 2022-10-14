@@ -2,6 +2,7 @@
 using NewsFeed.Server.Models.Twitter;
 using NewsFeed.Server.Models.Twitter.Entity;
 using NewsFeed.Shared.Twitter.Dto;
+using NewsFeed.Shared.Twitter.Model;
 
 [ApiController]
 [Route("[controller]")]
