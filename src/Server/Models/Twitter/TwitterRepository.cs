@@ -24,7 +24,7 @@ namespace NewsFeed.Server.Models.Twitter
             foreach(var tweet in tweets)
             {
                 var tweetId = await this.connection.InsertAsync(
-                    new TwitterTweets
+                    new TwitterTweet
                     {
                         UserId = userId,
                         IsPersisted = false
@@ -70,11 +70,11 @@ namespace NewsFeed.Server.Models.Twitter
                 this.transaction
             )).ToList();
 
-            var tweets = new List<TwitterTweets>();
+            var tweets = new List<TwitterTweet>();
             var tweetsApi = new List<TwitterTweetsApi>();
             ids.ForEach(id =>
             {
-                tweets.Add(new TwitterTweets { Id = id });
+                tweets.Add(new TwitterTweet { Id = id });
                 tweetsApi.Add(new TwitterTweetsApi { Id = id });
             });
 

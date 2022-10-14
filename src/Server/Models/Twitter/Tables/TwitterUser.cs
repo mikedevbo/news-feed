@@ -2,8 +2,7 @@
 
 namespace NewsFeed.Server.Models.Twitter.Tables
 {
-    [Table("TwitterUsers")]
-    public class TwitterUsers
+    public class TwitterUser
     {
         public int Id { get; set; }
 

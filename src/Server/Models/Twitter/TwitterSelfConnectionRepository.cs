@@ -33,7 +33,7 @@ namespace NewsFeed.Server.Models.Twitter
             using var connection = new SqlConnection(this.configuration.GetValue<string>(Constants.ConnectionStringPersistenceKey));
             await connection.OpenAsync();
 
-            await connection.QueryAsync<TwitterGroups?, TwitterUsers?, TwitterUsersApi?, bool>(
+            await connection.QueryAsync<TwitterGroup?, TwitterUser?, TwitterUsersApi?, bool>(
                 sql: sql.ToString(),
                 map: (group, user, userApi) =>
                 {

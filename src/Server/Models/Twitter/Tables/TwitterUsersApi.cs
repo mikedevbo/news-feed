@@ -2,7 +2,6 @@
 
 namespace NewsFeed.Server.Models.Twitter.Tables
 {
-    [Table("TwitterUsersApi")]
     public class TwitterUsersApi
     {
         [ExplicitKey]
