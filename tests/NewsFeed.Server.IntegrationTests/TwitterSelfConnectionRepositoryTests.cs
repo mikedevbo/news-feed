@@ -31,39 +31,41 @@ namespace NewsFeed.Server.IntegrationTests
             var result = await this.twitterRepository.GetMenu(accountId);
 
             // Assert
-            Console.WriteLine(JsonSerializer.Serialize(result));
+            Console.WriteLine(JsonSerializer.Serialize(result.Groups));
+            Console.WriteLine(JsonSerializer.Serialize(result.Users));
+            Console.WriteLine(JsonSerializer.Serialize(result.GroupUsers));
             Assert.Pass();
         }
 
-        [Test]
-        [Explicit]
-        public async Task SaveUser_Execute_ProperResult()
-        {
-            // Arrange
-            const string userName = "test_user2";
-            const int groupId = 1;
-            const string twitterUserId = "12345";
+        //[Test]
+        //[Explicit]
+        //public async Task SaveUser_Execute_ProperResult()
+        //{
+        //    // Arrange
+        //    const string userName = "test_user2";
+        //    const int groupId = 1;
+        //    const string twitterUserId = "12345";
 
-            // Act
-            var result = await this.twitterRepository.SaveUser(userName, groupId, twitterUserId);
+        //    // Act
+        //    var result = await this.twitterRepository.SaveUser(userName, groupId, twitterUserId);
 
-            // Assert
-            Assert.That(result, Is.Not.Null);
-        }
+        //    // Assert
+        //    Assert.That(result, Is.Not.Null);
+        //}
 
-        [Test]
-        [Explicit]
-        public async Task SaveGroup_Execute_ProperResult()
-        {
-            // Arrange
-            const int accountId = 2;
-            const string groupName = "test_group_2";
+        //[Test]
+        //[Explicit]
+        //public async Task SaveGroup_Execute_ProperResult()
+        //{
+        //    // Arrange
+        //    const int accountId = 2;
+        //    const string groupName = "test_group_2";
 
-            // Act
-            var result = await this.twitterRepository.SaveGroup(accountId, groupName);
+        //    // Act
+        //    var result = await this.twitterRepository.SaveGroup(accountId, groupName);
 
-            // Assert
-            Assert.That(result, Is.Not.Null);
-        }
+        //    // Assert
+        //    Assert.That(result, Is.Not.Null);
+        //}
     }
 }

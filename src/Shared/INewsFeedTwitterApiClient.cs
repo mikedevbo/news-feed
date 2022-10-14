@@ -1,13 +1,14 @@
 ﻿using NewsFeed.Shared.Dto;
+using NewsFeed.Shared.Twitter.Dto;
 
 namespace NewsFeed.Shared
 {
     public interface INewsFeedTwitterApiClient
     {
-        Task<TwitterMenuResponse> GetMenu(int accountId);
+        Task<MenuItems> GetMenu(int accountId);
 
-        Task<GroupResponse> AddGroup(int accountId, string groupName);
+        //Task<GroupResponse> AddGroup(int accountId, string groupName);
 
-        Task<UserResponse> AddUser(string userName, int groupId);
+        //Task<UserResponse> AddUser(string userName, int groupId);
     }
 }

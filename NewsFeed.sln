@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewsFeed.Shared.Tests", "te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewsFeed.Server.IntegrationTests", "tests\NewsFeed.Server.IntegrationTests\NewsFeed.Server.IntegrationTests.csproj", "{6B65BE88-C637-4AB2-97B1-F83873FB0C59}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewsFeed.Shared.IntegrationTests", "tests\NewsFeed.Shared.IntegrationTests\NewsFeed.Shared.IntegrationTests.csproj", "{887ABA2D-D5E0-4DFE-9666-C2B81167ADF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewsFeed.Shared.IntegrationTests", "tests\NewsFeed.Shared.IntegrationTests\NewsFeed.Shared.IntegrationTests.csproj", "{887ABA2D-D5E0-4DFE-9666-C2B81167ADF0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

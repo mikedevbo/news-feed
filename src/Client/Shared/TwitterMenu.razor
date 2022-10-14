@@ -1,128 +1,92 @@
-﻿@using static NewsFeed.Shared.Dto.TwitterMenuResponse
+﻿@implements IDisposable
 @inject StateContainer StateContainer
 @inject HttpClient Http
 @inject NewsFeedTwitterApiClient apiClient
 
-@*Show in large screen with selecet feaure.*@
-<MudHidden Breakpoint="Breakpoint.MdAndUp" Invert="true">
-    <MudTreeView Items="this.TreeItems" @bind-SelectedValue="@this.SelectedValue">
-        <ItemTemplate>
-            <MudTreeViewItem @bind-Expanded="@context.IsExpanded" Items="@context.TreeItems">
-                <Content>
-                    <MudTreeViewItemToggleButton @bind-Expanded="@context.IsExpanded" Visible="@context.HasChild" />
-                    <MudText >@context.Text</MudText>
-                </Content>
-            </MudTreeViewItem>
-        </ItemTemplate>
-    </MudTreeView>
-</MudHidden>
+<MudTreeView @bind-SelectedValue="this.selectedItemId" Hover="false">
+@foreach(var gu in this.menuItems.GroupUsers)
+{
+    var groupId = gu.Key;
+    var userIds = gu.Value;
 
-@*Show in mobile screen without select feature. Notify parent component about click - close menu after item click.*@
-<MudHidden Breakpoint="Breakpoint.MdAndUp">
-    <MudTreeView Items="this.TreeItems">
-        <ItemTemplate>
-            <MudTreeViewItem @bind-Expanded="@context.IsExpanded" Items="@context.TreeItems" OnClick="this.OnClickCallback">
-                <Content>
-                    <MudTreeViewItemToggleButton @bind-Expanded="@context.IsExpanded" Visible="@context.HasChild" />
-                    <MudText >@context.Text (n)</MudText>
-                </Content>
-            </MudTreeViewItem>
-        </ItemTemplate>
-    </MudTreeView>
-</MudHidden>
+    var group = this.menuItems.Groups[groupId];
+    this.groupIsExpanded[group.Id] = true;
+
+    <MudTreeViewItem @bind-Expanded="@this.groupIsExpanded[group.Id]"
+        Text="@group.Name"
+        Value="@group.Id"
+        OnClick="this.OnClickGroup">
+            @foreach(var userId in userIds)
+            {
+                var user = this.menuItems.Users[userId];
+                <MudTreeViewItem
+                    Text="@user.Name"
+                    Value="@user.Id"
+                    OnClick="this.OnClickUser" />
+            }
+    </MudTreeViewItem>
+}
+</MudTreeView>
 
 @code
 {
-    MudListItem selectedItem;
-    object selectedValue = 1;
-    int click;
+    private MenuItems menuItems = new MenuItems();
+    private Dictionary<int, bool> groupIsExpanded = new Dictionary<int, bool>();
+    private int selectedItemId;
 
     [Parameter]
     public EventCallback<MouseEventArgs> OnClickCallback { get; set; }
 }
 
 @code {
-    private TreeItemData SelectedValue { get; set; } = new TreeItemData();
-
-    private HashSet<TreeItemData> TreeItems { get; set; } = new HashSet<TreeItemData>();
-
-    //private record TreeItemData(int Id, string Text, HashSet<TreeItemData> TreeItems);
-
-    public record TreeItemData(int Id, string Text, HashSet<TreeItemData> TreeItems)
-    {
-        public TreeItemData() : this(0, string.Empty, new HashSet<TreeItemData>()) { }
-
-        public bool HasChild => TreeItems?.Count > 0;
-
-        public bool IsExpanded { get; set; } = true;
-    }
-
-    //public class TreeItemData
-    //{
-    //    public int Id { get; set; }
-
-    //    public string Text { get; set; }
-
-    //    public bool IsExpanded { get; set; } = true;
-
-    //    public bool HasChild => TreeItems?.Count > 0;
-
-    //    public HashSet<TreeItemData> TreeItems { get; set; } = new HashSet<TreeItemData>();
-
-    //    public TreeItemData(int id, string text)
-    //    {
-    //        Id = id;
-    //        Text = text;
-    //    }
-    //}
-}
-
-@code {
-    private TwitterMenuResponse menuData = new TwitterMenuResponse();
-    private GroupResponse selectedGroup = new GroupResponse();
-    private UserResponse selectedUser = new UserResponse();
-    private string inputGroupName = string.Empty;
-    private string inputUserName = string.Empty;
-
-    private HashSet<Group2> MenuData2 { get; set; } = new HashSet<Group2>();
-    private Group2 ActivatedValue { get; set; } = new Group2(0, "", new HashSet<User2>());
 
     protected override async Task OnInitializedAsync()
     {
-        // this.menuData = await apiClient.GetMenu(this.StateContainer.AccountId);
+        StateContainer.Subscribers += this.Handle;
 
-        this.MenuData2.Add(new Group2(1, "group1", new HashSet<User2>()));
-        this.MenuData2.Add(new Group2(2, "group2", new HashSet<User2>() { new User2(1, "user1")}));
-        this.MenuData2.Add(new Group2(3, "group3", new HashSet<User2>() { new User2(2, "user2"), new User2(3, "test3") }));
-
-        var i = new TreeItemData(1, "a", new HashSet<TreeItemData>());
-        i.IsExpanded = true;
-
-        this.TreeItems.Add(new TreeItemData(1, "group1", new HashSet<TreeItemData>()));
-        this.TreeItems.Add(new TreeItemData(2, "group2", new HashSet<TreeItemData>
-        {
-            new TreeItemData(1, "user1", new HashSet<TreeItemData>())
-        }));
-        this.TreeItems.Add(new TreeItemData(3, "group3", new HashSet<TreeItemData>
-        {
-            new TreeItemData(2, "user2", new HashSet<TreeItemData>()),
-            new TreeItemData(3, "user3", new HashSet<TreeItemData>())
-        }));
+        this.menuItems = await apiClient.GetMenu(this.StateContainer.AccountId);
     }
 
-    private async Task AddGroup()
+    public void Dispose()
     {
-        var newGroup = await this.apiClient.AddGroup(this.StateContainer.AccountId, this.inputGroupName);
-        this.menuData.Groups.Add(newGroup);
+        StateContainer.Subscribers -= this.Handle;
     }
+}
 
-    private async Task AddUser()
+@code {
+    
+    private void Handle(IMessage message)
     {
-        //var newUser = await this.apiClient.AddUser(this.inputUserName, this.selectedGroup.Id);
-        //this.selectedGroup.Users.Add(newUser);
+    }
+}
+
+@code
+{
+    private async void OnClick(Action action)
+    {
+        if (this.selectedItemId > 0)
+        {
+            action();
+        }
+
+        await this.OnClickCallback.InvokeAsync();
     }
 
-    public record Group2(int Id, string Name, HashSet<User2> Users);
+    private void OnClickGroup(EventArgs args)
+    {
+        this.OnClick(() =>
+        {
+            var group = this.menuItems.Groups[this.selectedItemId];
+            this.StateContainer.Publish(new GroupSelected(group));
+        });
+    }
 
-    public record User2(int Id, string Name);
+    private void OnClickUser(EventArgs args)
+    {
+        this.OnClick(() =>
+        { 
+            var user = this.menuItems.Users[this.selectedItemId];
+            this.StateContainer.Publish(new UserSelected(user));
+        });
+    }
 }

@@ -1,34 +1,19 @@
-﻿using System.Reflection.Metadata.Ecma335;
+﻿using NewsFeed.Shared.Twitter.Dto;
 
 public class StateContainer
 {
-    private int selectedUserId;
-
-    private string selectedAccountIdDownloadNewTweets = "";
-
     public int AccountId { get; set; } = 1;
 
-    public int SelectedUserId
+    public event Action<IMessage>? Subscribers;
+
+    public void Publish(IMessage message)
     {
-        get => selectedUserId;
-        set
-        {
-            selectedUserId = value;
-            this.OnSelectedUserIdChange?.Invoke(this.selectedUserId);
-        }
+        this.Subscribers?.Invoke(message);
     }
-
-    public string SelectedAccountIdDownloadNewTweets
-    {
-        get => selectedAccountIdDownloadNewTweets;
-        set
-        {
-            selectedAccountIdDownloadNewTweets = value;
-            this.OnSelectedAccountIdDownloadNewTweetsChange?.Invoke(this.selectedAccountIdDownloadNewTweets);
-        }
-    }
-
-    public event Action<int>? OnSelectedUserIdChange;
-
-    public event Action<string>? OnSelectedAccountIdDownloadNewTweetsChange;
 }
+
+public interface IMessage {};
+
+public record GroupSelected(Group Group) : IMessage;
+
+public record UserSelected(User User) : IMessage;

@@ -1,7 +1,6 @@
 ﻿using Dapper;
-using Dapper.Contrib.Extensions;
 using NewsFeed.Server.Models.Twitter.Tables;
-using NewsFeed.Shared.Dto;
+using NewsFeed.Shared.Twitter.Dto;
 using System.Data.SqlClient;
 
 namespace NewsFeed.Server.Models.Twitter
@@ -15,105 +14,106 @@ namespace NewsFeed.Server.Models.Twitter
             this.configuration = configuration;
         }
 
-        public async Task<TwitterMenuResponse> GetMenu(int accountId)
+        public async Task<MenuItems> GetMenu(int accountId)
         {
-            var result = new TwitterMenuResponse(new List<GroupResponse>());
+            var menuItems = new MenuItems(
+                new Dictionary<int, Group>(),
+                new Dictionary<int, User>(),
+                new Dictionary<int, List<int>>()
+            );
 
             var sql = @"
-                select g.Id, g.Name, u.Id, u.Name, u.IsTweetsDownloading, uapi.UserId as TwitterUserId
+                select g.Id, g.Name, u.Id, u.Name, u.IsTweetsDownloading, u.GroupId, uapi.Id, uapi.UserId
                 from dbo.TwitterGroups g
                 left join dbo.TwitterUsers u on g.Id = u.GroupId
                 left join dbo.TwitterUsersApi uapi on u.Id = uapi.Id
                 where g.AccountId = @accountId
             ";
 
-            static void AddUser(GroupResponse group, UserResponse user)
-            {
-                if (user is not null)
-                {
-                    group.Users.Add(user with { GroupId = group.Id });
-                }
-            }
-
             using var connection = new SqlConnection(this.configuration.GetValue<string>(Constants.ConnectionStringPersistenceKey));
             await connection.OpenAsync();
 
-            await connection. QueryAsync<GroupResponse, UserResponse, int>(
+            await connection.QueryAsync<TwitterGroups?, TwitterUsers?, TwitterUsersApi?, bool>(
                 sql: sql.ToString(),
-                map: (group, user) =>
+                map: (group, user, userApi) =>
                 {
-                    var groupIndex = result.Groups.FindIndex(g => g.Id == group.Id);
-                    if (groupIndex == -1)
+                    if (group is not null && !menuItems.Groups.ContainsKey(group.Id))
                     {
-                        AddUser(group, user);
-                        result.Groups.Add(group);
-                    }
-                    else
-                    {
-                        AddUser(result.Groups[groupIndex], user);
+                        menuItems.Groups.Add(group.Id, new Group(group.Id, group.Name));
+                        menuItems.GroupUsers.Add(group.Id, new List<int>());
                     }
 
-                    return 0;
+                    if (user is not null)
+                    {
+                        menuItems.Users.Add(user.Id, new User(user.Id, user.Name, (userApi?.UserId)??string.Empty, user.IsTweetsDownloading, user.GroupId));
+
+                        if (group is not null)
+                        {
+                            menuItems.GroupUsers[group.Id].Add(user.Id);
+                        }
+                    }
+
+                    return true;
                 },
                 param: new { accountId }
             );
 
-            return result;
+            return menuItems;
         }
 
-        public async Task<GroupResponse> SaveGroup(int accountId, string groupName)
-        {
-            using var connection = new SqlConnection(this.configuration.GetValue<string>(Constants.ConnectionStringPersistenceKey));
-            await connection.OpenAsync();
+        //public async Task<GroupResponse> SaveGroup(int accountId, string groupName)
+        //{
+        //    using var connection = new SqlConnection(this.configuration.GetValue<string>(Constants.ConnectionStringPersistenceKey));
+        //    await connection.OpenAsync();
 
-            var groupId = await connection.InsertAsync(
-                new TwitterGroups
-                {
-                    Name = groupName,
-                    AccountId = accountId
-                }
-            );
+        //    var groupId = await connection.InsertAsync(
+        //        new TwitterGroups
+        //        {
+        //            Name = groupName,
+        //            AccountId = accountId
+        //        }
+        //    );
 
-            return new GroupResponse(groupId, groupName, new List<UserResponse>());
-        }
+        //    return new GroupResponse(groupId, groupName, new List<UserResponse>());
+        //}
 
-        public async Task<UserResponse> SaveUser(string userName, int groupId, string twitterUserId)
-        {
-            int userId;
-            bool isTweetsDownloading = false;
-            using var connection = new SqlConnection(this.configuration.GetValue<string>(Constants.ConnectionStringPersistenceKey));
-            await connection.OpenAsync();
-            using var transaction = await connection.BeginTransactionAsync();
-            try
-            {
-                userId = await connection.InsertAsync(
-                    new TwitterUsers
-                    {
-                        Name = userName,
-                        GroupId = groupId,
-                        IsTweetsDownloading = isTweetsDownloading
-                    },
-                    transaction
-                );
+        //public async Task<UserResponse> SaveUser(string userName, int groupId, string twitterUserId)
+        //{
+        //    int userId;
+        //    bool isTweetsDownloading = false;
+        //    using var connection = new SqlConnection(this.configuration.GetValue<string>(Constants.ConnectionStringPersistenceKey));
+        //    await connection.OpenAsync();
+        //    using var transaction = await connection.BeginTransactionAsync();
+        //    try
+        //    {
+        //        userId = await connection.InsertAsync(
+        //            new TwitterUsers
+        //            {
+        //                Name = userName,
+        //                GroupId = groupId,
+        //                IsTweetsDownloading = isTweetsDownloading
+        //            },
+        //            transaction
+        //        );
 
-                await connection.InsertAsync(
-                    new TwitterUsersApi
-                    {
-                        Id = userId,
-                        UserId = twitterUserId
-                    },
-                    transaction
-                );
+        //        await connection.InsertAsync(
+        //            new TwitterUsersApi
+        //            {
+        //                Id = userId,
+        //                UserId = twitterUserId
+        //            },
+        //            transaction
+        //        );
 
-                transaction.Commit();
-            }
-            catch(Exception)
-            {
-                transaction.Rollback();
-                throw;
-            }
+        //        transaction.Commit();
+        //    }
+        //    catch(Exception)
+        //    {
+        //        transaction.Rollback();
+        //        throw;
+        //    }
 
-            return new UserResponse(userId, userName, twitterUserId, isTweetsDownloading, groupId);
-        }
+        //    return new UserResponse(userId, userName, twitterUserId, isTweetsDownloading, groupId);
+        //}
     }
 }

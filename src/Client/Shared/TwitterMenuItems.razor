@@ -1,0 +1,38 @@
+﻿@using NewsFeed.Shared.Twitter.Dto
+@inject StateContainer StateContainer
+@implements IDisposable
+
+<MudToolBar>
+    <MudButtonGroup Color="Color.Primary" Variant="Variant.Text">
+        <MudButton>Add</MudButton>
+        <MudButton>Edit</MudButton>
+        <MudButton>Delete</MudButton>
+    </MudButtonGroup>
+</MudToolBar>
+
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        StateContainer.Subscribers += this.Handle;
+    }
+
+    private /*async*/ void Handle(IMessage message)
+    {
+        switch (message)
+        {
+            case GroupSelected:
+                Console.WriteLine("Handle Selected group " + (message as GroupSelected)?.Group);
+                break;
+            case UserSelected:
+                Console.WriteLine("Handle Selected user " + (message as UserSelected)?.User);
+                break;
+        }
+    }
+
+    public void Dispose()
+    {
+        StateContainer.Subscribers -= this.Handle;
+    }
+}

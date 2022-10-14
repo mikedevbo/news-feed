@@ -27,38 +27,40 @@ namespace NewsFeed.Shared.IntegrationTests
             var result = await this.apiClient.GetMenu(accountId);
 
             // Assert
-            Console.WriteLine(JsonSerializer.Serialize(result));
+            Console.WriteLine(JsonSerializer.Serialize(result.Groups));
+            Console.WriteLine(JsonSerializer.Serialize(result.Users));
+            Console.WriteLine(JsonSerializer.Serialize(result.GroupUsers));
             Assert.Pass();
         }
 
-        [Test]
-        [Explicit]
-        public async Task AddGroup_Execute_ProperResult()
-        {
-            // Arrange
-            const int accountId = 1;
-            const string groupName = "group_from_integration_test";
+        //[Test]
+        //[Explicit]
+        //public async Task AddGroup_Execute_ProperResult()
+        //{
+        //    // Arrange
+        //    const int accountId = 1;
+        //    const string groupName = "group_from_integration_test";
 
-            // Act
-            await this.apiClient.AddGroup(accountId, groupName);
+        //    // Act
+        //    await this.apiClient.AddGroup(accountId, groupName);
 
-            // Assert
-            Assert.Pass();
-        }
+        //    // Assert
+        //    Assert.Pass();
+        //}
 
-        [Test]
-        [Explicit]
-        public async Task AddUser_Execute_ProperResult()
-        {
-            // Arrange
-            const string userName = "user_from_integration_test";
-            const int groupId = 1;
+        //[Test]
+        //[Explicit]
+        //public async Task AddUser_Execute_ProperResult()
+        //{
+        //    // Arrange
+        //    const string userName = "user_from_integration_test";
+        //    const int groupId = 1;
 
-            // Act
-            await this.apiClient.AddUser(userName, groupId);
+        //    // Act
+        //    await this.apiClient.AddUser(userName, groupId);
 
-            // Assert
-            Assert.Pass();
-        }
+        //    // Assert
+        //    Assert.Pass();
+        //}
     }
 }

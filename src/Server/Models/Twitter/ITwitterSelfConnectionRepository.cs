@@ -1,13 +1,13 @@
-﻿using NewsFeed.Shared.Dto;
+﻿using NewsFeed.Shared.Twitter.Dto;
 
 namespace NewsFeed.Server.Models.Twitter
 {
     public interface ITwitterSelfConnectionRepository
     {
-        Task<TwitterMenuResponse> GetMenu(int accountId);
+        Task<MenuItems> GetMenu(int accountId);
 
-        Task<GroupResponse> SaveGroup(int accountId, string groupName);
+        //Task<GroupResponse> SaveGroup(int accountId, string groupName);
 
-        Task<UserResponse> SaveUser(string userName, int groupId, string twitterUserId);
+        //Task<UserResponse> SaveUser(string userName, int groupId, string twitterUserId);
     }
 }

@@ -21,8 +21,6 @@
 
     protected override void OnInitialized()
     {
-        this.StateContainer.OnSelectedUserIdChange += LoadTweets;
-        this.StateContainer.OnSelectedAccountIdDownloadNewTweetsChange += DownloadNewTweets;
     }
 
     private async void LoadTweets(int accountId)
@@ -45,7 +43,5 @@
 
     public void Dispose()
     {
-        this.StateContainer.OnSelectedUserIdChange -= LoadTweets;
-        this.StateContainer.OnSelectedAccountIdDownloadNewTweetsChange -= DownloadNewTweets;
     }
 }

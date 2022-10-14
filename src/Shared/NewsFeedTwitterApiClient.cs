@@ -1,4 +1,5 @@
 ﻿using NewsFeed.Shared.Dto;
+using NewsFeed.Shared.Twitter.Dto;
 using System.Net.Http.Json;
 
 namespace NewsFeed.Shared
@@ -12,23 +13,23 @@ namespace NewsFeed.Shared
             this.httpClient = httpClient;
         }
 
-        public async Task<TwitterMenuResponse> GetMenu(int accountId)
+        public async Task<MenuItems> GetMenu(int accountId)
         {
             return
-                await this.httpClient.GetFromJsonAsync<TwitterMenuResponse>($"Twitter/GetMenu?accountId={accountId}")
-                    ?? new TwitterMenuResponse();
+                await this.httpClient.GetFromJsonAsync<MenuItems>($"Twitter/GetMenu?accountId={accountId}")
+                    ?? new MenuItems();
         }
 
-        public async Task<GroupResponse> AddGroup(int accountId, string groupName)
-        {
-            return await this.httpClient.GetFromJsonAsync<GroupResponse>($"Twitter/AddGroup?accountId={accountId}&groupName={groupName}")
-                ?? new GroupResponse();
-        }
+        //public async Task<GroupResponse> AddGroup(int accountId, string groupName)
+        //{
+        //    return await this.httpClient.GetFromJsonAsync<GroupResponse>($"Twitter/AddGroup?accountId={accountId}&groupName={groupName}")
+        //        ?? new GroupResponse();
+        //}
 
-        public async Task<UserResponse> AddUser(string userName, int groupId)
-        {
-            return await this.httpClient.GetFromJsonAsync<UserResponse>($"Twitter/AddUser?userName={userName}&groupId={groupId}")
-                ?? new UserResponse();
-        }
+        //public async Task<UserResponse> AddUser(string userName, int groupId)
+        //{
+        //    return await this.httpClient.GetFromJsonAsync<UserResponse>($"Twitter/AddUser?userName={userName}&groupId={groupId}")
+        //        ?? new UserResponse();
+        //}
     }
 }
