@@ -57,20 +57,29 @@ namespace NewsFeed.Server.IntegrationTests
             Assert.That(result, Is.Not.Null);
         }
 
-        //[Test]
-        //[Explicit]
-        //public async Task SaveUser_Execute_ProperResult()
-        //{
-        //    // Arrange
-        //    const string userName = "test_user2";
-        //    const int groupId = 1;
-        //    const string twitterUserId = "12345";
+        [Test]
+        [Explicit]
+        public async Task SaveUser_Execute_ProperResult()
+        {
+            // Arrange
+            var user = new TwitterUser()
+            {
+                Name = "test_user2",
+                GroupId = 1,
+                IsTweetsDownloading = false
+            };
 
-        //    // Act
-        //    var result = await this.twitterRepository.SaveUser(userName, groupId, twitterUserId);
+            var userApi = new TwitterUsersApi()
+            {
+                UserId = "12345"
+            };
 
-        //    // Assert
-        //    Assert.That(result, Is.Not.Null);
-        //}
+            // Act
+            var result = await this.twitterRepository.SaveUser(user, userApi);
+
+            // Assert
+            Console.WriteLine(JsonSerializer.Serialize(result));
+            Assert.That(result, Is.Not.Null);
+        }
     }
 }

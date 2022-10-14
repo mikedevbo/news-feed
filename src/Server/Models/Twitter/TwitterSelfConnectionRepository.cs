@@ -73,43 +73,28 @@ namespace NewsFeed.Server.Models.Twitter
             return new Group(groupId, group.Name);
         }
 
-            //public async Task<UserResponse> SaveUser(string userName, int groupId, string twitterUserId)
-            //{
-            //    int userId;
-            //    bool isTweetsDownloading = false;
-            //    using var connection = new SqlConnection(this.configuration.GetValue<string>(Constants.ConnectionStringPersistenceKey));
-            //    await connection.OpenAsync();
-            //    using var transaction = await connection.BeginTransactionAsync();
-            //    try
-            //    {
-            //        userId = await connection.InsertAsync(
-            //            new TwitterUsers
-            //            {
-            //                Name = userName,
-            //                GroupId = groupId,
-            //                IsTweetsDownloading = isTweetsDownloading
-            //            },
-            //            transaction
-            //        );
+        public async Task<User> SaveUser(TwitterUser user, TwitterUsersApi userApi)
+        {
+            int userId;
+            using var connection = new SqlConnection(this.configuration.GetValue<string>(Constants.ConnectionStringPersistenceKey));
+            await connection.OpenAsync();
+            using var transaction = await connection.BeginTransactionAsync();
+            try
+            {
+                userId = await connection.InsertAsync(user, transaction);
 
-            //        await connection.InsertAsync(
-            //            new TwitterUsersApi
-            //            {
-            //                Id = userId,
-            //                UserId = twitterUserId
-            //            },
-            //            transaction
-            //        );
+                userApi.Id = userId;
+                await connection.InsertAsync(userApi, transaction);
 
-            //        transaction.Commit();
-            //    }
-            //    catch(Exception)
-            //    {
-            //        transaction.Rollback();
-            //        throw;
-            //    }
+                transaction.Commit();
+            }
+            catch (Exception)
+            {
+                transaction.Rollback();
+                throw;
+            }
 
-            //    return new UserResponse(userId, userName, twitterUserId, isTweetsDownloading, groupId);
-            //}
+            return new User(userId, user.Name, userApi.UserId, false, user.GroupId);
         }
+    }
 }

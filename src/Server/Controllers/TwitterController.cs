@@ -28,14 +28,18 @@ public class TwitterController : ControllerBase
     [HttpGet("AddGroup")]
     public async Task<Group> AddGroup(int accountId, string groupName)
     {
-        //TODO: Add validation
+        //TODO: add validation
         return await this.twitterRepository.SaveGroup(new TwitterGroup() { AccountId = accountId, Name = groupName });
     }
 
-    //[HttpGet("AddUser")]
-    //public async Task<UserResponse> AddUser(string userName, int groupId)
-    //{
-    //    var user = await this.twitterApiClient.GetUser(userName);
-    //    return await this.twitterRepository.SaveUser(userName, groupId, user.Id);
-    //}
+    [HttpGet("AddUser")]
+    public async Task<User> AddUser(string userName, int groupId)
+    {
+        //TODO: add validation
+        var userApi = await this.twitterApiClient.GetUser(userName);
+
+        return await this.twitterRepository.SaveUser(
+            new TwitterUser {  Name = userName, GroupId = groupId },
+            new TwitterUsersApi {  UserId = userApi.Id });
+    }
 }

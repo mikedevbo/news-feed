@@ -9,6 +9,6 @@ namespace NewsFeed.Shared
 
         Task<Group> AddGroup(int accountId, string groupName);
 
-        //Task<UserResponse> AddUser(string userName, int groupId);
+        Task<User> AddUser(string userName, int groupId);
     }
 }

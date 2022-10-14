@@ -10,6 +10,6 @@ namespace NewsFeed.Server.Models.Twitter
 
         Task<Group> SaveGroup(TwitterGroup group);
 
-        //Task<UserResponse> SaveUser(string userName, int groupId, string twitterUserId);
+        Task<User> SaveUser(TwitterUser user, TwitterUsersApi userApi);
     }
 }
