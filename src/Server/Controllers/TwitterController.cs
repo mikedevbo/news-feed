@@ -9,11 +9,11 @@ using NewsFeed.Shared.Twitter.Model;
 public class TwitterController : ControllerBase
 {
     private readonly ITwitterApiClient twitterApiClient;
-    private readonly ITwitterSelfConnectionRepository twitterRepository;
+    private readonly ITwitterRepositorySelfConnection twitterRepository;
 
     public TwitterController(
         ITwitterApiClient twitterApiClient,
-        ITwitterSelfConnectionRepository twitterRepository)
+        ITwitterRepositorySelfConnection twitterRepository)
     {
         this.twitterApiClient = twitterApiClient;
         this.twitterRepository = twitterRepository;

@@ -7,11 +7,11 @@ using System.Data.SqlClient;
 
 namespace NewsFeed.Server.Models.Twitter
 {
-    public class TwitterSelfConnectionRepository : ITwitterSelfConnectionRepository
+    public class TwitterRepositorySelfConnection : ITwitterRepositorySelfConnection
     {
         private readonly IConfiguration configuration;
 
-        public TwitterSelfConnectionRepository(IConfiguration configuration)
+        public TwitterRepositorySelfConnection(IConfiguration configuration)
         {
             this.configuration = configuration;
         }

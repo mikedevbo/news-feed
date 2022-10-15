@@ -4,7 +4,7 @@ using NewsFeed.Shared.Twitter.Model;
 
 namespace NewsFeed.Server.Models.Twitter
 {
-    public interface ITwitterSelfConnectionRepository
+    public interface ITwitterRepositorySelfConnection
     {
         Task<MenuItems> GetMenu(int accountId);
 

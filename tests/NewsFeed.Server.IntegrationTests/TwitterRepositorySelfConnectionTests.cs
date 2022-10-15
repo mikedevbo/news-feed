@@ -7,9 +7,9 @@ namespace NewsFeed.Server.IntegrationTests
 {
     [TestFixture]
     [Explicit]
-    public class TwitterSelfConnectionRepositoryTests
+    public class TwitterRepositorySelfConnectionTests
     {
-        private TwitterSelfConnectionRepository twitterRepository;
+        private TwitterRepositorySelfConnection twitterRepository;
 
         [SetUp]
         public void SetUp()
@@ -18,7 +18,7 @@ namespace NewsFeed.Server.IntegrationTests
                 .AddJsonFile("appsettings.development.json", false, true)
                 .Build();
 
-            this.twitterRepository = new TwitterSelfConnectionRepository(config);
+            this.twitterRepository = new TwitterRepositorySelfConnection(config);
         }
 
         [Test]
