@@ -4,11 +4,11 @@ using System.Net.Http.Json;
 
 namespace NewsFeed.Shared
 {
-    public class NewsFeedTwitterApiClient : INewsFeedTwitterApiClient
+    public class TwitterNewsFeedApiClient : ITwitterNewsFeedApiClient
     {
         private readonly HttpClient httpClient;
 
-        public NewsFeedTwitterApiClient(HttpClient httpClient)
+        public TwitterNewsFeedApiClient(HttpClient httpClient)
         {
             this.httpClient = httpClient;
         }

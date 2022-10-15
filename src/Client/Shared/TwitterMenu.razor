@@ -1,7 +1,7 @@
 ﻿@implements IDisposable
 @inject StateContainer StateContainer
 @inject HttpClient Http
-@inject NewsFeedTwitterApiClient apiClient
+@inject TwitterNewsFeedApiClient apiClient
 
 <MudTreeView @bind-SelectedValue="this.selectedItemId" Hover="false">
 @foreach(var gu in this.menuItems.GroupUsers)

@@ -4,16 +4,16 @@ namespace NewsFeed.Shared.IntegrationTests
 {
     [TestFixture]
     [Explicit]
-    public class NewsFeeTwitterdApiClientTests
+    public class TwitterNewsFeedApiClientTests
     {
         private static readonly HttpClient httpClient = new HttpClient();
-        private NewsFeedTwitterApiClient apiClient;
+        private TwitterNewsFeedApiClient apiClient;
 
         [SetUp]
         public void Setup()
         {
             httpClient.BaseAddress = new Uri(@"https://localhost:7057/");
-            this.apiClient = new NewsFeedTwitterApiClient(httpClient);
+            this.apiClient = new TwitterNewsFeedApiClient(httpClient);
         }
 
         [Test]

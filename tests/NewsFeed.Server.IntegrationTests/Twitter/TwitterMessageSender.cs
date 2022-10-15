@@ -7,7 +7,7 @@ namespace NewsFeed.Server.IntegrationTests.Twitter
 {
     [TestFixture]
     [Explicit]
-    public class MessageSender
+    public class TwitterMessageSender
     {
         IEndpointInstance endpointInstance;
 

@@ -3,7 +3,7 @@ using NewsFeed.Shared.Twitter.Model;
 
 namespace NewsFeed.Shared
 {
-    public interface INewsFeedTwitterApiClient
+    public interface ITwitterNewsFeedApiClient
     {
         Task<MenuItems> GetMenu(int accountId);
 
