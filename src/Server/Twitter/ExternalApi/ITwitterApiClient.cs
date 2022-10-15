@@ -1,7 +1,7 @@
 ﻿using TwitterSharp.Response.RTweet;
 using TwitterSharp.Response.RUser;
 
-namespace NewsFeed.Server.Models.Twitter
+namespace NewsFeed.Server.Twitter.ExternalApi
 {
     public interface ITwitterApiClient
     {

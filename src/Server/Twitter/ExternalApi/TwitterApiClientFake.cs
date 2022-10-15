@@ -4,7 +4,7 @@ using TwitterSharp.Request.Option;
 using TwitterSharp.Response.RTweet;
 using TwitterSharp.Response.RUser;
 
-namespace NewsFeed.Server.Models.Twitter
+namespace NewsFeed.Server.Twitter.ExternalApi
 {
     public class TwitterApiClientFake : ITwitterApiClient
     {

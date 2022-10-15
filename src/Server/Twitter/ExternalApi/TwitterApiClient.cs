@@ -4,7 +4,7 @@ using TwitterSharp.Request.Option;
 using TwitterSharp.Response.RTweet;
 using TwitterSharp.Response.RUser;
 
-namespace NewsFeed.Server.Models.Twitter
+namespace NewsFeed.Server.Twitter.ExternalApi
 {
     public class TwitterApiClient : ITwitterApiClient
     {
@@ -12,7 +12,7 @@ namespace NewsFeed.Server.Models.Twitter
 
         public TwitterApiClient(string token)
         {
-            this.client = new TwitterClient(token);
+            client = new TwitterClient(token);
         }
 
         public async Task<User> GetUser(string userName)

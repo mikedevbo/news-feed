@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Configuration;
-using NewsFeed.Server.Models.Twitter;
+using NewsFeed.Server.Twitter.ExternalApi;
 using System.Text.Json;
 
 namespace NewsFeed.Server.IntegrationTests
