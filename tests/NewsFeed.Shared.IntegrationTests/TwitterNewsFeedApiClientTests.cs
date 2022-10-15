@@ -1,4 +1,5 @@
 using System.Text.Json;
+using NewsFeed.Shared.Twitter;
 
 namespace NewsFeed.Shared.IntegrationTests
 {
