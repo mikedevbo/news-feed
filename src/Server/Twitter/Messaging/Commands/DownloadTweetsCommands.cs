@@ -1,7 +1,7 @@
 ﻿using NServiceBus;
 using TwitterSharp.Response.RTweet;
 
-namespace NewsFeed.Server.Models.Messaging.Commands
+namespace NewsFeed.Server.Twitter.Messaging.Commands
 {
     public record DownloadTweets(int UserId, string TwitterUserId) : ICommand;
 

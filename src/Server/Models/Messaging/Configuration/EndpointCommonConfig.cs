@@ -1,9 +1,7 @@
 ﻿using NServiceBus.Logging;
 using NServiceBus;
-using NewsFeed.Server.Models.Messaging.Commands;
 using System.Reflection;
 using System.Data.SqlClient;
-using NServiceBus.Outbox;
 
 namespace NewsFeed.Server.Models.Messaging.Configuration
 {

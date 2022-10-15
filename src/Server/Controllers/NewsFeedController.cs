@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using NewsFeed.Server.Models.Messaging.Commands;
 using NewsFeed.Shared;
 using NServiceBus;
 

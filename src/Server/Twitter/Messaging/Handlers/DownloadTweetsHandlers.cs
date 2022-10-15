@@ -1,9 +1,9 @@
-﻿using NewsFeed.Server.Models.Messaging.Commands;
-using NewsFeed.Server.Twitter.Database;
+﻿using NewsFeed.Server.Twitter.Database;
 using NewsFeed.Server.Twitter.ExternalApi;
+using NewsFeed.Server.Twitter.Messaging.Commands;
 using NServiceBus;
 
-namespace NewsFeed.Server.Models.Messaging.Handlers
+namespace NewsFeed.Server.Twitter.Messaging.Handlers
 {
     public class DownloadTweetsHandlers :
         IHandleMessages<DownloadTweets>,
@@ -26,9 +26,9 @@ namespace NewsFeed.Server.Models.Messaging.Handlers
 
         public async Task Handle(DownloadTweets message, IMessageHandlerContext context)
         {
-            this.Log(message, context);
+            Log(message, context);
 
-            var tweets = await this.twitterApiClient.GetTweets(message.TwitterUserId);
+            var tweets = await twitterApiClient.GetTweets(message.TwitterUserId);
 
             var command = new SaveTweets(message.UserId, tweets);
             await context.Send(command);
@@ -36,10 +36,10 @@ namespace NewsFeed.Server.Models.Messaging.Handlers
 
         public async Task Handle(SaveTweets message, IMessageHandlerContext context)
         {
-            this.Log(message, context);
+            Log(message, context);
 
-            await this.twitterRepository.SaveTweets(message.UserId, message.Tweets);
-            await this.twitterRepository.SetTweetsDownloadingState(message.UserId, false);
+            await twitterRepository.SaveTweets(message.UserId, message.Tweets);
+            await twitterRepository.SetTweetsDownloadingState(message.UserId, false);
 
             var command = new ClearOldTweets(message.UserId);
             await context.Send(command);
@@ -47,9 +47,9 @@ namespace NewsFeed.Server.Models.Messaging.Handlers
 
         public async Task Handle(ClearOldTweets message, IMessageHandlerContext context)
         {
-            this.Log(message, context);
+            Log(message, context);
 
-            await this.twitterRepository.ClearOldTweets(message.UserId, DateTime.Now.AddMonths(-1));
+            await twitterRepository.ClearOldTweets(message.UserId, DateTime.Now.AddMonths(-1));
         }
 
         private void Log<TMessage>(
@@ -58,7 +58,7 @@ namespace NewsFeed.Server.Models.Messaging.Handlers
         {
             // var info = System.Text.Json.JsonSerializer.Serialize(message);
             var info = context.MessageId;
-            this.logger.LogInformation($"{typeof(TMessage).Name} - {info} ");
+            logger.LogInformation($"{typeof(TMessage).Name} - {info} ");
         }
     }
 }
