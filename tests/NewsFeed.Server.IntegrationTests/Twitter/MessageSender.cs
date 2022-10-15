@@ -3,14 +3,14 @@ using NewsFeed.Server.Twitter.Messaging.Commands;
 using NServiceBus;
 using System.Reflection;
 
-namespace NewsFeed.Server.IntegrationTests
+namespace NewsFeed.Server.IntegrationTests.Twitter
 {
     [TestFixture]
     [Explicit]
     public class MessageSender
     {
         IEndpointInstance endpointInstance;
-        
+
         [SetUp]
         public async Task SetUp()
         {
@@ -25,13 +25,13 @@ namespace NewsFeed.Server.IntegrationTests
              {
                  (typeof(DownloadTweets).Assembly, typeof(NewsFeedController).Assembly.GetName().Name!)
              });
-            this.endpointInstance = await Endpoint.Start(endpointConfig);
+            endpointInstance = await Endpoint.Start(endpointConfig);
         }
 
         [TearDown]
         public async Task TearDown()
         {
-            await this.endpointInstance.Stop();
+            await endpointInstance.Stop();
         }
 
         [Test]
@@ -41,11 +41,11 @@ namespace NewsFeed.Server.IntegrationTests
             // Arrange
             const int userId = 1;
             const string twitterUserId = "200";
-            
+
             var message = new DownloadTweets(userId, twitterUserId);
 
             // Act
-            await this.endpointInstance.Send(message);
+            await endpointInstance.Send(message);
 
             // Assert
             Assert.Pass();

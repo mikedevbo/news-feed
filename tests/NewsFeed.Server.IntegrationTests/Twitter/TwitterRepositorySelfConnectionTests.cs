@@ -3,7 +3,7 @@ using NewsFeed.Server.Models.Twitter.Entity;
 using NewsFeed.Server.Twitter.Database;
 using System.Text.Json;
 
-namespace NewsFeed.Server.IntegrationTests
+namespace NewsFeed.Server.IntegrationTests.Twitter
 {
     [TestFixture]
     [Explicit]
@@ -18,7 +18,7 @@ namespace NewsFeed.Server.IntegrationTests
                 .AddJsonFile("appsettings.development.json", false, true)
                 .Build();
 
-            this.twitterRepository = new TwitterRepositorySelfConnection(config);
+            twitterRepository = new TwitterRepositorySelfConnection(config);
         }
 
         [Test]
@@ -29,7 +29,7 @@ namespace NewsFeed.Server.IntegrationTests
             const int accountId = 1;
 
             // Act
-            var result = await this.twitterRepository.GetMenu(accountId);
+            var result = await twitterRepository.GetMenu(accountId);
 
             // Assert
             Console.WriteLine(JsonSerializer.Serialize(result.Groups));
@@ -46,7 +46,7 @@ namespace NewsFeed.Server.IntegrationTests
             var group = new TwitterGroup("test_group_2", 1);
 
             // Act
-            var result = await this.twitterRepository.SaveGroup(group);
+            var result = await twitterRepository.SaveGroup(group);
 
             // Assert
             Console.WriteLine(JsonSerializer.Serialize(result));
@@ -63,7 +63,7 @@ namespace NewsFeed.Server.IntegrationTests
             var userApi = new TwitterUsersApi("12345");
 
             // Act
-            var result = await this.twitterRepository.SaveUser(user, userApi);
+            var result = await twitterRepository.SaveUser(user, userApi);
 
             // Assert
             Console.WriteLine(JsonSerializer.Serialize(result));

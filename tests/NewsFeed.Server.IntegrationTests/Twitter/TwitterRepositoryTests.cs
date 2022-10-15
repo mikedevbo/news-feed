@@ -3,7 +3,7 @@ using NewsFeed.Server.Twitter.Database;
 using System.Data.Common;
 using System.Data.SqlClient;
 
-namespace NewsFeed.Server.IntegrationTests
+namespace NewsFeed.Server.IntegrationTests.Twitter
 {
     [TestFixture]
     [Explicit]
@@ -20,19 +20,19 @@ namespace NewsFeed.Server.IntegrationTests
                 .AddJsonFile("appsettings.development.json", false, true)
                 .Build();
 
-            this.connection = new SqlConnection(config.GetValue<string>(Constants.ConnectionStringPersistenceKey));
-            await this.connection.OpenAsync();
-            this.transaction = await this.connection.BeginTransactionAsync();
-            this.twitterRepository = new TwitterRepository(this.connection, this.transaction);
+            connection = new SqlConnection(config.GetValue<string>(Constants.ConnectionStringPersistenceKey));
+            await connection.OpenAsync();
+            transaction = await connection.BeginTransactionAsync();
+            twitterRepository = new TwitterRepository(connection, transaction);
         }
 
         [TearDown]
         public void TearDown()
         {
-            this.transaction.Commit();
-            this.transaction.Dispose();
-            this.connection.Close();
-            this.connection.Dispose();
+            transaction.Commit();
+            transaction.Dispose();
+            connection.Close();
+            connection.Dispose();
         }
 
         [Test]
@@ -44,7 +44,7 @@ namespace NewsFeed.Server.IntegrationTests
             const bool isTweetsDownloading = false;
 
             // Act
-            await this.twitterRepository.SetTweetsDownloadingState(userId, isTweetsDownloading);
+            await twitterRepository.SetTweetsDownloadingState(userId, isTweetsDownloading);
 
             // Assert
             Assert.Pass();
@@ -59,7 +59,7 @@ namespace NewsFeed.Server.IntegrationTests
             var createdAt = Convert.ToDateTime("2022-10-02 08:00:00.000");
 
             // Act
-            await this.twitterRepository.ClearOldTweets(userId, createdAt);
+            await twitterRepository.ClearOldTweets(userId, createdAt);
 
             // Assert
             Assert.Pass();

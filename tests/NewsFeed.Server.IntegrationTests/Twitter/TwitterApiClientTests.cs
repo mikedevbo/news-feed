@@ -2,7 +2,7 @@ using Microsoft.Extensions.Configuration;
 using NewsFeed.Server.Twitter.ExternalApi;
 using System.Text.Json;
 
-namespace NewsFeed.Server.IntegrationTests
+namespace NewsFeed.Server.IntegrationTests.Twitter
 {
     [TestFixture]
     [Explicit]
@@ -17,7 +17,7 @@ namespace NewsFeed.Server.IntegrationTests
                 .AddJsonFile("appsettings.development.json", false, true)
                 .Build();
 
-            this.twitterApiClient = new TwitterApiClient(config.GetValue<string>("TwitterToken"));
+            twitterApiClient = new TwitterApiClient(config.GetValue<string>("TwitterToken"));
         }
 
         [Test]
@@ -28,7 +28,7 @@ namespace NewsFeed.Server.IntegrationTests
             const string userName = "particularsw";
 
             // Act
-            var result = await this.twitterApiClient.GetUser(userName);
+            var result = await twitterApiClient.GetUser(userName);
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -43,7 +43,7 @@ namespace NewsFeed.Server.IntegrationTests
             const string userId = "some_Id";
 
             // Act
-            var result = await this.twitterApiClient.GetTweets(userId);
+            var result = await twitterApiClient.GetTweets(userId);
 
             // Assert
             Assert.That(result, Is.Not.Null);
