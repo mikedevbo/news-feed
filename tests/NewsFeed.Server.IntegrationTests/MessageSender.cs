@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Configuration;
-using NewsFeed.Server.Models.Messaging.Configuration;
 using NewsFeed.Server.Twitter.Messaging.Commands;
 using NServiceBus;
 using System.Reflection;

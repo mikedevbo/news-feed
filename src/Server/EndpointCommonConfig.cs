@@ -3,7 +3,7 @@ using NServiceBus;
 using System.Reflection;
 using System.Data.SqlClient;
 
-namespace NewsFeed.Server.Models.Messaging.Configuration
+namespace NewsFeed.Server
 {
     public static class EndpointCommonConfig
     {
@@ -41,7 +41,7 @@ namespace NewsFeed.Server.Models.Messaging.Configuration
 
             var outbox = endpointConfiguration.EnableOutbox();
             outbox.KeepDeduplicationDataFor(TimeSpan.FromDays(14));
-            
+
             endpointConfiguration.EnableInstallers();
 
             return endpointConfiguration;

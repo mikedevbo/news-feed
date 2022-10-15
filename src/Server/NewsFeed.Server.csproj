@@ -35,6 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Models\Messaging\Configuration\" />
     <Folder Include="Models\Messaging\Messages\" />
     <Folder Include="Models\Messaging\Sagas\" />
     <Folder Include="Models\Twitter\" />

@@ -1,5 +1,5 @@
+using NewsFeed.Server;
 using NewsFeed.Server.Models;
-using NewsFeed.Server.Models.Messaging.Configuration;
 using NewsFeed.Server.Twitter.Database;
 using NewsFeed.Server.Twitter.ExternalApi;
 using NewsFeed.Server.Twitter.Messaging.Commands;
