@@ -37,7 +37,7 @@
   <ItemGroup>
     <Folder Include="Models\Messaging\Messages\" />
     <Folder Include="Models\Messaging\Sagas\" />
-    <Folder Include="Twitter\Database\" />
+    <Folder Include="Models\Twitter\" />
     <Folder Include="Twitter\Messaging\" />
     <Folder Include="Twitter\Logic\" />
     <Folder Include="Twitter\WebApi\" />

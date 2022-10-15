@@ -6,7 +6,7 @@ using System.Data.Common;
 using System.Text;
 using TwitterSharp.Response.RTweet;
 
-namespace NewsFeed.Server.Models.Twitter
+namespace NewsFeed.Server.Twitter.Database
 {
     public class TwitterRepository : ITwitterRepository
     {
@@ -21,18 +21,18 @@ namespace NewsFeed.Server.Models.Twitter
 
         public async Task SaveTweets(int userId, List<Tweet> tweets)
         {
-            foreach(var tweet in tweets)
+            foreach (var tweet in tweets)
             {
-                var tweetId = await this.connection.InsertAsync(
+                var tweetId = await connection.InsertAsync(
                     new TwitterTweet
                     {
                         UserId = userId,
                         IsPersisted = false
                     },
-                    this.transaction
+                    transaction
                 );
 
-                await this.connection.InsertAsync(
+                await connection.InsertAsync(
                     new TwitterTweetsApi
                     {
                         Id = tweetId,
@@ -40,7 +40,7 @@ namespace NewsFeed.Server.Models.Twitter
                         Text = tweet.Text,
                         CreatedAt = Convert.ToDateTime(tweet.CreatedAt)
                     },
-                    this.transaction
+                    transaction
                 );
             }
         }
@@ -49,10 +49,10 @@ namespace NewsFeed.Server.Models.Twitter
         {
             const string sql = $"update dbo.TwitterUsers set IsTweetsDownloading = @value where Id = @userId";
 
-            await this.connection.ExecuteAsync(
+            await connection.ExecuteAsync(
                 sql,
-                new { value = isTweetsDownloading, userId},
-                this.transaction
+                new { value = isTweetsDownloading, userId },
+                transaction
             );
         }
 
@@ -64,10 +64,10 @@ namespace NewsFeed.Server.Models.Twitter
             sql.Append("inner join dbo.TwitterTweetsApi tapi on t.Id = tapi.Id ");
             sql.Append("where t.UserId = @userId and t.IsPersisted = 0 and tapi.CreatedAt < @createdAt");
 
-            var ids = (await this.connection.QueryAsync<int>(
+            var ids = (await connection.QueryAsync<int>(
                 sql.ToString(),
                 new { userId, createdAt },
-                this.transaction
+                transaction
             )).ToList();
 
             var tweets = new List<TwitterTweet>();
@@ -79,8 +79,8 @@ namespace NewsFeed.Server.Models.Twitter
             });
 
 
-            await this.connection.DeleteAsync(tweets, this.transaction);
-            await this.connection.DeleteAsync(tweetsApi, this.transaction);
+            await connection.DeleteAsync(tweets, transaction);
+            await connection.DeleteAsync(tweetsApi, transaction);
         }
 
         public IList<TweetDto> GetDownloadedTweets(string accountId)

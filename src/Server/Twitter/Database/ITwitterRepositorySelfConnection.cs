@@ -2,7 +2,7 @@
 using NewsFeed.Shared.Twitter.Dto;
 using NewsFeed.Shared.Twitter.Model;
 
-namespace NewsFeed.Server.Models.Twitter
+namespace NewsFeed.Server.Twitter.Database
 {
     public interface ITwitterRepositorySelfConnection
     {

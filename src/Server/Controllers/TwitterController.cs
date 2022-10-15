@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using NewsFeed.Server.Models.Twitter;
 using NewsFeed.Server.Models.Twitter.Entity;
+using NewsFeed.Server.Twitter.Database;
 using NewsFeed.Server.Twitter.ExternalApi;
 using NewsFeed.Shared.Twitter.Dto;
 using NewsFeed.Shared.Twitter.Model;

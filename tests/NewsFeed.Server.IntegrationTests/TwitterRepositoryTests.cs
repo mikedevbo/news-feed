@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
-using NewsFeed.Server.Models.Twitter;
+using NewsFeed.Server.Twitter.Database;
 using System.Data.Common;
 using System.Data.SqlClient;
 

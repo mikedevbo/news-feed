@@ -5,7 +5,7 @@ using NewsFeed.Shared.Twitter.Dto;
 using NewsFeed.Shared.Twitter.Model;
 using System.Data.SqlClient;
 
-namespace NewsFeed.Server.Models.Twitter
+namespace NewsFeed.Server.Twitter.Database
 {
     public class TwitterRepositorySelfConnection : ITwitterRepositorySelfConnection
     {
@@ -32,7 +32,7 @@ namespace NewsFeed.Server.Models.Twitter
                 where g.AccountId = @accountId
             ";
 
-            using var connection = new SqlConnection(this.configuration.GetValue<string>(Constants.ConnectionStringPersistenceKey));
+            using var connection = new SqlConnection(configuration.GetValue<string>(Constants.ConnectionStringPersistenceKey));
             await connection.OpenAsync();
 
             await connection.QueryAsync<TwitterGroup?, TwitterUser?, TwitterUsersApi?, bool>(
@@ -47,7 +47,7 @@ namespace NewsFeed.Server.Models.Twitter
 
                     if (user is not null)
                     {
-                        menuItems.Users.Add(user.Id, new User(user.Id, user.Name, (userApi?.UserId)??string.Empty, user.IsTweetsDownloading, user.GroupId));
+                        menuItems.Users.Add(user.Id, new User(user.Id, user.Name, (userApi?.UserId) ?? string.Empty, user.IsTweetsDownloading, user.GroupId));
 
                         if (group is not null)
                         {
@@ -65,7 +65,7 @@ namespace NewsFeed.Server.Models.Twitter
 
         public async Task<Group> SaveGroup(TwitterGroup group)
         {
-            using var connection = new SqlConnection(this.configuration.GetValue<string>(Constants.ConnectionStringPersistenceKey));
+            using var connection = new SqlConnection(configuration.GetValue<string>(Constants.ConnectionStringPersistenceKey));
             await connection.OpenAsync();
 
             var groupId = await connection.InsertAsync(group);
@@ -76,7 +76,7 @@ namespace NewsFeed.Server.Models.Twitter
         public async Task<User> SaveUser(TwitterUser user, TwitterUsersApi userApi)
         {
             int userId;
-            using var connection = new SqlConnection(this.configuration.GetValue<string>(Constants.ConnectionStringPersistenceKey));
+            using var connection = new SqlConnection(configuration.GetValue<string>(Constants.ConnectionStringPersistenceKey));
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
             try

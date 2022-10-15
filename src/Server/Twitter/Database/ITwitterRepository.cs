@@ -1,7 +1,7 @@
 ﻿using NewsFeed.Shared;
 using TwitterSharp.Response.RTweet;
 
-namespace NewsFeed.Server.Models.Twitter
+namespace NewsFeed.Server.Twitter.Database
 {
     public interface ITwitterRepository
     {
