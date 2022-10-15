@@ -37,7 +37,6 @@
   <ItemGroup>
     <Folder Include="Models\" />
     <Folder Include="Twitter\Logic\" />
-    <Folder Include="Twitter\WebApi\" />
   </ItemGroup>
 
 
