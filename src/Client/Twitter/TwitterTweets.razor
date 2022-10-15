@@ -1,0 +1,52 @@
+﻿@implements IDisposable
+@inject StateContainer StateContainer
+@inject HttpClient Http
+
+<MudPaper MaxWidth="600px" Class="d-flex ma-5 pa-4">
+    I'm a flexbox container. I'm a flexbox container. I'm a flexbox container. I'm a flexbox container. I'm a flexbox container.
+    I'm a flexbox container. I'm a flexbox container.
+</MudPaper>
+<MudPaper MaxWidth="600px" Class="d-flex ma-5 pa-4">
+    I'm a flexbox container. I'm a flexbox container. I'm a flexbox container. I'm a flexbox container. I'm a flexbox container.
+    I'm a flexbox container. I'm a flexbox container.
+</MudPaper>
+<MudPaper MaxWidth="600px" Class="d-flex ma-5 pa-4">
+    I'm a flexbox container. I'm a flexbox container. I'm a flexbox container. I'm a flexbox container. I'm a flexbox container.
+    I'm a flexbox container. I'm a flexbox container.
+</MudPaper>
+<MudPaper MaxWidth="600px" Class="d-flex ma-5 pa-4">
+    I'm a flexbox container. I'm a flexbox container. I'm a flexbox container. I'm a flexbox container. I'm a flexbox container.
+    I'm a flexbox container. I'm a flexbox container.
+</MudPaper>
+
+@code
+{
+    public string AccountId = "";
+    public List<TweetDto> tweets = new List<TweetDto>();
+
+    protected override void OnInitialized()
+    {
+    }
+
+    private async void LoadTweets(int accountId)
+    {
+        //this.AccountId = accountId;
+        //var tweets = await Http.GetFromJsonAsync<List<TweetDto>>($"NewsFeed/GetDownloadedTweets?userId={accountId}");
+
+        //if (tweets is not null)
+        //{
+        //    this.tweets = tweets;
+        //    base.StateHasChanged();
+        //}
+    }
+
+    private async void DownloadNewTweets(string accountId)
+    {
+        await Http.GetAsync($"NewsFeed/DownloadNewTweets?userId={accountId}");
+        base.StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+    }
+}
