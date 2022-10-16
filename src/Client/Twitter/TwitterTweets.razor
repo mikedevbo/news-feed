@@ -2,30 +2,51 @@
 @inject StateContainer StateContainer
 @inject HttpClient Http
 
-<MudPaper MaxWidth="600px" Class="d-flex ma-5 pa-4">
-    I'm a flexbox container. I'm a flexbox container. I'm a flexbox container. I'm a flexbox container. I'm a flexbox container.
-    I'm a flexbox container. I'm a flexbox container.
-</MudPaper>
-<MudPaper MaxWidth="600px" Class="d-flex ma-5 pa-4">
-    I'm a flexbox container. I'm a flexbox container. I'm a flexbox container. I'm a flexbox container. I'm a flexbox container.
-    I'm a flexbox container. I'm a flexbox container.
-</MudPaper>
-<MudPaper MaxWidth="600px" Class="d-flex ma-5 pa-4">
-    I'm a flexbox container. I'm a flexbox container. I'm a flexbox container. I'm a flexbox container. I'm a flexbox container.
-    I'm a flexbox container. I'm a flexbox container.
-</MudPaper>
-<MudPaper MaxWidth="600px" Class="d-flex ma-5 pa-4">
-    I'm a flexbox container. I'm a flexbox container. I'm a flexbox container. I'm a flexbox container. I'm a flexbox container.
-    I'm a flexbox container. I'm a flexbox container.
-</MudPaper>
+@foreach(var item in this.items)
+{
+    <MudPaper MaxWidth="600px" Class="ma-5 pa-4" @onclick=@(e => item.IsRead = !item.IsRead)>
+        <MudText Style=@item.StyleFontWeight>@item.Text</MudText>
+        <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" OnClick="@(() => Console.WriteLine("aaa"))">Save</MudButton>
+    </MudPaper>
+}
 
 @code
 {
+    bool isBoldText;
+    string textStyleFontWeight = "";
     public string AccountId = "";
     public List<TweetDto> tweets = new List<TweetDto>();
+    private string tag = "aaa";
+    private List<Tw> items = new List<Tw>();
+    private int lastUnreadTweetId;
 
     protected override void OnInitialized()
     {
+        this.items.Add(new Tw(1, "text 1 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee"));
+        this.items.Add(new Tw(2, "text 2 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee"));
+        this.items.Add(new Tw(3, "text 3 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee"));
+
+        this.items.Add(new Tw(4, "text 1 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee"));
+        this.items.Add(new Tw(5, "text 2 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee"));
+        this.items.Add(new Tw(6, "text 3 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee"));
+
+        this.items.Add(new Tw(7, "text 1 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee"));
+        this.items.Add(new Tw(8, "text 2 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee"));
+        this.items.Add(new Tw(9, "text 3 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee"));
+
+        this.items.Add(new Tw(10, "text 1 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee"));
+        this.items.Add(new Tw(11, "text 2 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee"));
+        this.items.Add(new Tw(12, "text 3 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee"));
+
+        this.items.Add(new Tw(13, "text 1 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee"));
+        this.items.Add(new Tw(14, "text 2 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee"));
+        this.items.Add(new Tw(15, "text 3 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee") { IsRead = true });
+
+        this.items.Add(new Tw(16, "text 1 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee") { IsRead = true });
+        this.items.Add(new Tw(17, "text 2 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee") { IsRead = true });
+        this.items.Add(new Tw(18, "text 3 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee") { IsRead = true });
+
+        this.lastUnreadTweetId = this.items.Max(i => i.Id);
     }
 
     private async void LoadTweets(int accountId)
@@ -48,5 +69,12 @@
 
     public void Dispose()
     {
+    }
+
+    private record Tw(int Id, string Text)
+    {
+        public bool IsRead { get; set; }
+
+        public string StyleFontWeight { get { return IsRead ? "font-weight: normal" : "font-weight: bold"; } }
     }
 }
