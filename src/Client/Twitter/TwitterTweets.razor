@@ -37,6 +37,11 @@
     {
         switch (message)
         {
+            case GroupSelected:
+                this.tweets = new List<Tweet>();
+                this.StateHasChanged();
+                break;
+
             case UserSelected:
                 var user = (message as UserSelected)!.User;
                 this.tweets = (await this.apiClient.GetTweets(user.Id)).OrderByDescending(t => t.CreatedAt).ToList();
