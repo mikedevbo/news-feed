@@ -1,80 +1,55 @@
 ﻿@implements IDisposable
 @inject StateContainer StateContainer
 @inject HttpClient Http
+@inject TwitterNewsFeedApiClient apiClient
+@inject StateContainer StateContainer
 
-@foreach(var item in this.items)
+@foreach(var item in this.tweets)
 {
     <MudPaper MaxWidth="600px" Class="ma-5 pa-4" @onclick=@(e => item.IsRead = !item.IsRead)>
-        <MudText Style=@item.StyleFontWeight>@item.Text</MudText>
+        <MudText Style=@this.StyleFontWeight(item)>@item.Text + " " + @item.Id</MudText>
         <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" OnClick="@(() => Console.WriteLine("aaa"))">Save</MudButton>
     </MudPaper>
 }
 
 @code
 {
-    bool isBoldText;
-    string textStyleFontWeight = "";
-    public string AccountId = "";
-    public List<TweetDto> tweets = new List<TweetDto>();
-    private string tag = "aaa";
-    private List<Tw> items = new List<Tw>();
-    private int lastUnreadTweetId;
+    private List<Tweet> tweets = new List<Tweet>();
+}
 
-    protected override void OnInitialized()
+@code
+{
+
+    protected override async Task OnInitializedAsync()
     {
-        this.items.Add(new Tw(1, "text 1 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee"));
-        this.items.Add(new Tw(2, "text 2 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee"));
-        this.items.Add(new Tw(3, "text 3 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee"));
-
-        this.items.Add(new Tw(4, "text 1 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee"));
-        this.items.Add(new Tw(5, "text 2 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee"));
-        this.items.Add(new Tw(6, "text 3 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee"));
-
-        this.items.Add(new Tw(7, "text 1 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee"));
-        this.items.Add(new Tw(8, "text 2 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee"));
-        this.items.Add(new Tw(9, "text 3 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee"));
-
-        this.items.Add(new Tw(10, "text 1 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee"));
-        this.items.Add(new Tw(11, "text 2 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee"));
-        this.items.Add(new Tw(12, "text 3 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee"));
-
-        this.items.Add(new Tw(13, "text 1 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee"));
-        this.items.Add(new Tw(14, "text 2 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee"));
-        this.items.Add(new Tw(15, "text 3 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee") { IsRead = true });
-
-        this.items.Add(new Tw(16, "text 1 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee") { IsRead = true });
-        this.items.Add(new Tw(17, "text 2 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee") { IsRead = true });
-        this.items.Add(new Tw(18, "text 3 aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee aaaaa bbbbbb cccccc dddddd eeeeeeeeeeeee") { IsRead = true });
-
-        this.lastUnreadTweetId = this.items.Max(i => i.Id);
-    }
-
-    private async void LoadTweets(int accountId)
-    {
-        //this.AccountId = accountId;
-        //var tweets = await Http.GetFromJsonAsync<List<TweetDto>>($"NewsFeed/GetDownloadedTweets?userId={accountId}");
-
-        //if (tweets is not null)
-        //{
-        //    this.tweets = tweets;
-        //    base.StateHasChanged();
-        //}
-    }
-
-    private async void DownloadNewTweets(string accountId)
-    {
-        await Http.GetAsync($"NewsFeed/DownloadNewTweets?userId={accountId}");
-        base.StateHasChanged();
+        StateContainer.Subscribers += this.Handle;
     }
 
     public void Dispose()
     {
+        StateContainer.Subscribers -= this.Handle;
     }
+}
 
-    private record Tw(int Id, string Text)
+@code {
+
+    private async void Handle(IMessage message)
     {
-        public bool IsRead { get; set; }
+        switch (message)
+        {
+            case UserSelected:
+                var user = (message as UserSelected)!.User;
+                this.tweets = (await this.apiClient.GetTweets(user.Id)).OrderByDescending(t => t.CreatedAt).ToList();
+                this.StateHasChanged();
+                break;
+        }
+    }
+}
 
-        public string StyleFontWeight { get { return IsRead ? "font-weight: normal" : "font-weight: bold"; } }
+@code
+{
+    private string StyleFontWeight(Tweet tweet)
+    {
+        return tweet.IsRead ? "font-weight: normal" : "font-weight: bold";
     }
 }

@@ -67,11 +67,7 @@
 {
     private async void OnClick(Action action)
     {
-        if (this.selectedItemId > 0)
-        {
-            action();
-        }
-
+        action();
         await this.OnClickCallback.InvokeAsync();
     }
 
@@ -79,7 +75,12 @@
     {
         this.OnClick(() =>
         {
-            var group = this.menuItems.Groups[this.selectedItemId];
+            var group = new Group();
+            if (this.menuItems.Groups.ContainsKey(this.selectedItemId))
+            {
+                group = this.menuItems.Groups[this.selectedItemId];
+            }
+
             this.StateContainer.Publish(new GroupSelected(group));
         });
     }
@@ -88,7 +89,12 @@
     {
         this.OnClick(() =>
         { 
-            var user = this.menuItems.Users[this.selectedItemId];
+            var user = new User();
+            if (this.menuItems.Users.ContainsKey(this.selectedItemId))
+            {
+                user = this.menuItems.Users[this.selectedItemId];
+            }
+
             this.StateContainer.Publish(new UserSelected(user));
         });
     }

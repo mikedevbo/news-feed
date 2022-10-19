@@ -31,5 +31,11 @@ namespace NewsFeed.Shared.Twitter
             return await httpClient.GetFromJsonAsync<User>($"Twitter/AddUser?userName={userName}&groupId={groupId}")
                 ?? new User();
         }
+
+        public async Task<List<Tweet>> GetTweets(int userId)
+        {
+            return await httpClient.GetFromJsonAsync<List<Tweet>>($"Twitter/GetTweets?userId={userId}")
+            ?? new List<Tweet>();
+        }
     }
 }

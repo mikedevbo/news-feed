@@ -43,4 +43,10 @@ public class TwitterController : ControllerBase
             new TwitterUser(userName, groupId),
             new TwitterUsersApi(userApi.Id));
     }
+
+    [HttpGet("GetTweets")]
+    public async Task<List<Tweet>> GetTweets(int userId)
+    {
+        return await this.twitterRepository.GetTweets(userId);
+    }
 }

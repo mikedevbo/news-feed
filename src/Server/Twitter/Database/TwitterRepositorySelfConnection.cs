@@ -94,5 +94,21 @@ namespace NewsFeed.Server.Twitter.Database
 
             return new User(userId, user.Name, userApi.UserId, false, user.GroupId);
         }
+
+        public Task<List<Tweet>> GetTweets(int userId)
+        {
+            if (userId <= 0)
+            {
+                return Task.FromResult(new List<Tweet>());
+            }
+
+            return Task.FromResult(new List<Tweet>
+            {
+                new Tweet(1, userId, false, "1234", "test tweet " + Guid.NewGuid() + " " + userId, DateTime.Now) { IsRead = true },
+                new Tweet(2, userId, false, "12345", "test tweet " + Guid.NewGuid() + " " + userId, DateTime.Now) { IsRead = true },
+                new Tweet(3, userId, false, "12346", "test tweet " + Guid.NewGuid() + " " + userId, DateTime.Now) { IsRead = false },
+                new Tweet(4, userId, false, "12347", "test tweet " + Guid.NewGuid() + " " + userId, DateTime.Now) { IsRead = false }
+            });
+        }
     }
 }

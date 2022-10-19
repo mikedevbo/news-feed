@@ -10,5 +10,7 @@ namespace NewsFeed.Shared.Twitter
         Task<Group> AddGroup(string groupName, int accountId);
 
         Task<User> AddUser(string userName, int groupId);
+
+        Task<List<Tweet>> GetTweets(int userId);
     }
 }

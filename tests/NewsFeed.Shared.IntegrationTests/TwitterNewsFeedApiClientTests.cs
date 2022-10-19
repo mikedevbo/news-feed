@@ -55,11 +55,26 @@ namespace NewsFeed.Shared.IntegrationTests
         public async Task AddUser_Execute_ProperResult()
         {
             // Arrange
-            const string userName = "user_from_integration_test";
+            const string userName = "test2";
             const int groupId = 1;
 
             // Act
             var result = await this.apiClient.AddUser(userName, groupId);
+
+            // Assert
+            Console.WriteLine(JsonSerializer.Serialize(result));
+            Assert.That(result, Is.Not.Null);
+        }
+
+        [Test]
+        [Explicit]
+        public async Task GetTweets_Execute_ProperResult()
+        {
+            // Arrange
+            int userId = 1;
+
+            // Act
+            var result = await this.apiClient.GetTweets(userId);
 
             // Assert
             Console.WriteLine(JsonSerializer.Serialize(result));

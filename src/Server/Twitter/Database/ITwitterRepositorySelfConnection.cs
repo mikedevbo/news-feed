@@ -11,5 +11,7 @@ namespace NewsFeed.Server.Twitter.Database
         Task<Group> SaveGroup(TwitterGroup group);
 
         Task<User> SaveUser(TwitterUser user, TwitterUsersApi userApi);
+
+        Task<List<Tweet>> GetTweets(int userId);
     }
 }
