@@ -23,7 +23,7 @@ namespace NewsFeed.Server.IntegrationTests.Twitter
                 config,
                 new List<(Assembly, string)>
              {
-                 (typeof(DownloadTweets).Assembly, typeof(NewsFeedController).Assembly.GetName().Name!)
+                 (typeof(DownloadTweetsRequests).Assembly, typeof(NewsFeedController).Assembly.GetName().Name!)
              });
             endpointInstance = await Endpoint.Start(endpointConfig);
         }

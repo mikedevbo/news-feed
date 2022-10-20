@@ -18,3 +18,5 @@ public interface IMessage {};
 public record GroupSelected(Group Group) : IMessage;
 
 public record UserSelected(User User) : IMessage;
+
+public record DownloadTweetsRequested(List<string> twitterUserIds) : IMessage;

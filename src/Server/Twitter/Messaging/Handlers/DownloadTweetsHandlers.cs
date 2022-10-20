@@ -6,7 +6,7 @@ using NServiceBus;
 namespace NewsFeed.Server.Twitter.Messaging.Handlers
 {
     public class DownloadTweetsHandlers :
-        IHandleMessages<DownloadTweets>,
+        IHandleMessages<DownloadTweetsRequests>,
         IHandleMessages<SaveTweets>,
         IHandleMessages<ClearOldTweets>
     {
@@ -24,7 +24,7 @@ namespace NewsFeed.Server.Twitter.Messaging.Handlers
             this.twitterRepository = twitterRepository;
         }
 
-        public async Task Handle(DownloadTweets message, IMessageHandlerContext context)
+        public async Task Handle(DownloadTweetsRequests message, IMessageHandlerContext context)
         {
             Log(message, context);
 

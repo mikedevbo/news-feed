@@ -47,6 +47,10 @@
                 this.tweets = (await this.apiClient.GetTweets(user.Id)).OrderByDescending(t => t.CreatedAt).ToList();
                 this.StateHasChanged();
                 break;
+            case DownloadTweetsRequested:
+                var userTwitterIds = (message as DownloadTweetsRequested)!.twitterUserIds;
+                Console.WriteLine(userTwitterIds.Count());
+                break;
         }
     }
 }

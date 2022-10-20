@@ -21,7 +21,7 @@ builder.Host.UseNServiceBus(context =>
          config,
          new List<(Assembly, string)>
          {
-             (typeof(DownloadTweets).Assembly, endpointName)
+             (typeof(DownloadTweetsRequests).Assembly, endpointName)
          });
 
      endpointConfig.RegisterComponents(c =>
