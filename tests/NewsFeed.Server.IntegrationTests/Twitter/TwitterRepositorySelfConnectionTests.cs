@@ -32,9 +32,7 @@ namespace NewsFeed.Server.IntegrationTests.Twitter
             var result = await twitterRepository.GetMenu(accountId);
 
             // Assert
-            Console.WriteLine(JsonSerializer.Serialize(result.Groups));
-            Console.WriteLine(JsonSerializer.Serialize(result.Users));
-            Console.WriteLine(JsonSerializer.Serialize(result.GroupUsers));
+            Console.WriteLine(result);
             Assert.Pass();
         }
 

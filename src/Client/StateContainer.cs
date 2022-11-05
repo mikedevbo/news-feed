@@ -1,7 +1,4 @@
-﻿using NewsFeed.Shared.Twitter.Dto;
-using NewsFeed.Shared.Twitter.Model;
-
-public class StateContainer
+﻿public class StateContainer
 {
     public int AccountId { get; set; } = 1;
 
@@ -15,8 +12,8 @@ public class StateContainer
 
 public interface IMessage {};
 
-public record GroupSelected(Group Group) : IMessage;
+public record GroupSelected(int Id, string Name) : IMessage;
 
-public record UserSelected(User User) : IMessage;
+public record UserSelected(int Id, string Name, string TwitterUserId) : IMessage;
 
 public record DownloadTweetsRequested(List<string> twitterUserIds) : IMessage;

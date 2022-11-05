@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using Dapper.Contrib.Extensions;
 using NewsFeed.Server.Models.Twitter.Entity;
-using NewsFeed.Shared.Twitter.Dto;
 using NewsFeed.Shared.Twitter.Model;
 using System.Data.SqlClient;
 
@@ -16,51 +15,26 @@ namespace NewsFeed.Server.Twitter.Database
             this.configuration = configuration;
         }
 
-        public async Task<MenuItems> GetMenu(int accountId)
+        public async Task<string> GetMenu(int accountId)
         {
-            var menuItems = new MenuItems(
-                new Dictionary<int, Group>(),
-                new Dictionary<int, User>(),
-                new Dictionary<int, List<int>>()
-            );
-
-            var sql = @"
-                select g.Id, g.Name, u.Id, u.Name, u.IsTweetsDownloading, u.GroupId, uapi.Id, uapi.UserId
-                from dbo.TwitterGroups g
-                left join dbo.TwitterUsers u on g.Id = u.GroupId
-                left join dbo.TwitterUsersApi uapi on u.Id = uapi.Id
-                where g.AccountId = @accountId
-            ";
+            var sql = @"select [Group].Id, [Group].Name
+, (
+	select u.Id, u.Name, u.IsTweetsDownloading, u.GroupId, uapi.UserId as [TwitterUserId]
+	from dbo.TwitterUsers as [u]
+	left join dbo.TwitterUsersApi as uapi on u.Id = uapi.Id
+	where [u].GroupId = [Group].Id
+	for xml path ('User'), type
+) [Users]
+from dbo.TwitterGroups as [Group]
+where [Group].AccountId = @accountId
+for xml auto, elements, root('Root')";
 
             using var connection = new SqlConnection(configuration.GetValue<string>(Constants.ConnectionStringPersistenceKey));
             await connection.OpenAsync();
-
-            await connection.QueryAsync<TwitterGroup?, TwitterUser?, TwitterUsersApi?, bool>(
-                sql: sql.ToString(),
-                map: (group, user, userApi) =>
-                {
-                    if (group is not null && !menuItems.Groups.ContainsKey(group.Id))
-                    {
-                        menuItems.Groups.Add(group.Id, new Group(group.Id, group.Name));
-                        menuItems.GroupUsers.Add(group.Id, new List<int>());
-                    }
-
-                    if (user is not null)
-                    {
-                        menuItems.Users.Add(user.Id, new User(user.Id, user.Name, (userApi?.UserId) ?? string.Empty, user.IsTweetsDownloading, user.GroupId));
-
-                        if (group is not null)
-                        {
-                            menuItems.GroupUsers[group.Id].Add(user.Id);
-                        }
-                    }
-
-                    return true;
-                },
-                param: new { accountId }
-            );
-
-            return menuItems;
+            var data = await connection.QueryAsync<string>(sql, new { accountId });
+            return data.Any()
+                ? string.Join("", data)
+                : "<Root />";
         }
 
         public async Task<Group> SaveGroup(TwitterGroup group)

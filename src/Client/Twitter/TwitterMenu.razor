@@ -3,42 +3,58 @@
 @inject HttpClient Http
 @inject TwitterNewsFeedApiClient apiClient
 
-<MudTreeView @bind-SelectedValue="this.selectedItemId" Hover="false">
-@foreach(var gu in this.menuItems.GroupUsers)
-{
-    var groupId = gu.Key;
-    var userIds = gu.Value;
-
-    var group = this.menuItems.Groups[groupId];
-    if (!this.groupIsExpanded.ContainsKey(group.Id))
+<MudTreeView
+    @bind-SelectedValue="this.selectedItemId"
+    Hover="false">
+    @foreach(var group in this.groups)
     {
-        this.groupIsExpanded.Add(group.Id, true);
-    }
-
-    <MudTreeViewItem @bind-Expanded="@this.groupIsExpanded[group.Id]"
-        Text="@group.Name"
-        Value="@group.Id"
-        OnClick="this.OnClickGroup">
-            @foreach(var userId in userIds)
+        <MudTreeViewItem
+            @bind-Expanded="@group.IsExpanded"
+            Text="@group.Name"
+            Value="@group.Id"
+            OnClick="e => this.OnClickGroup(group)">
+            @foreach(var user in group.Users)
             {
-                var user = this.menuItems.Users[userId];
                 <MudTreeViewItem
                     Text="@user.Name"
                     Value="@user.Id"
-                    OnClick="this.OnClickUser" />
+                    OnClick="e => this.OnClickUser(user)" />
             }
-    </MudTreeViewItem>
-}
+        </MudTreeViewItem>
+    }
 </MudTreeView>
 
 @code
 {
-    private MenuItems menuItems = new MenuItems();
-    private Dictionary<int, bool> groupIsExpanded = new Dictionary<int, bool>();
+    private List<Group> groups = new List<Group>();
     private int selectedItemId;
 
     [Parameter]
     public EventCallback<MouseEventArgs> OnClickCallback { get; set; }
+}
+
+@*ViewModel*@
+@code
+{
+    public class Group
+    {
+        public int Id { get; set; }
+
+        public string Name { get; set; } = string.Empty;
+
+        public bool IsExpanded { get; set; }
+
+        public List<User> Users { get; set; } = new List<User>();
+    }
+
+    public class User
+    {
+        public int Id { get; set; }
+
+        public string Name { get; set; } = string.Empty;
+
+        public string TwitterUserId { get; set; } = string.Empty;
+    }
 }
 
 @code {
@@ -47,7 +63,8 @@
     {
         StateContainer.Subscribers += this.Handle;
 
-        this.menuItems = await apiClient.GetMenu(this.StateContainer.AccountId);
+        var result = await this.Http.GetStringAsync($"/twitter/accounts/{this.StateContainer.AccountId}/menu");
+        this.groups = result.DeserializeXml<List<Group>>();
     }
 
     public void Dispose()
@@ -71,31 +88,19 @@
         await this.OnClickCallback.InvokeAsync();
     }
 
-    private void OnClickGroup(EventArgs args)
+    private void OnClickGroup(Group group)
     {
         this.OnClick(() =>
         {
-            var group = new Group();
-            if (this.menuItems.Groups.ContainsKey(this.selectedItemId))
-            {
-                group = this.menuItems.Groups[this.selectedItemId];
-            }
-
-            this.StateContainer.Publish(new GroupSelected(group));
+            this.StateContainer.Publish(new GroupSelected(group.Id, group.Name));
         });
     }
 
-    private void OnClickUser(EventArgs args)
+    private void OnClickUser(User user)
     {
         this.OnClick(() =>
         { 
-            var user = new User();
-            if (this.menuItems.Users.ContainsKey(this.selectedItemId))
-            {
-                user = this.menuItems.Users[this.selectedItemId];
-            }
-
-            this.StateContainer.Publish(new UserSelected(user));
+            this.StateContainer.Publish(new UserSelected(user.Id, user.Name, user.TwitterUserId));
         });
     }
 }

@@ -1,12 +1,11 @@
 ﻿using NewsFeed.Server.Models.Twitter.Entity;
-using NewsFeed.Shared.Twitter.Dto;
 using NewsFeed.Shared.Twitter.Model;
 
 namespace NewsFeed.Server.Twitter.Database
 {
     public interface ITwitterRepositorySelfConnection
     {
-        Task<MenuItems> GetMenu(int accountId);
+        Task<string> GetMenu(int accountId);
 
         Task<Group> SaveGroup(TwitterGroup group);
 

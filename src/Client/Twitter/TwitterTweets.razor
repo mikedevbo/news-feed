@@ -43,9 +43,9 @@
                 break;
 
             case UserSelected:
-                var user = (message as UserSelected)!.User;
-                this.tweets = (await this.apiClient.GetTweets(user.Id)).OrderByDescending(t => t.CreatedAt).ToList();
-                this.StateHasChanged();
+                //var user = (message as UserSelected)!.User;
+                //this.tweets = (await this.apiClient.GetTweets(user.Id)).OrderByDescending(t => t.CreatedAt).ToList();
+                //this.StateHasChanged();
                 break;
             case DownloadTweetsRequested:
                 var userTwitterIds = (message as DownloadTweetsRequested)!.twitterUserIds;

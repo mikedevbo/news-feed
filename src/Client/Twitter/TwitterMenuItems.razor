@@ -12,8 +12,8 @@
 
 @code {
     private SelectionContext selectionContext = SelectionContext.None;
-    private Group group = new Group();
-    private User user = new User();
+    private (int groupId, string groupName) group;
+    private (int userId, string userName, string twitterUserId) user;
 }
 
 @code {
@@ -35,11 +35,11 @@
     {
         switch (message)
         {
-            case GroupSelected:
-                this.group = (message as GroupSelected)?.Group!;
+            case GroupSelected group:
+                this.group = (group.Id, group.Name);
                 break;
-            case UserSelected:
-                this.user = (message as UserSelected)?.User!;
+            case UserSelected user:
+                this.user = (user.Id, user.Name, user.TwitterUserId);
                 break;
         }
     }
@@ -56,7 +56,7 @@
 
     private void DownloadTweets()
     {
-        this.StateContainer.Publish(new DownloadTweetsRequested(new List<string> { this.user.TwitterUserId }));
+        this.StateContainer.Publish(new DownloadTweetsRequested(new List<string> { this.user.twitterUserId }));
     }
 
 }

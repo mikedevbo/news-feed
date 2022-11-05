@@ -1,8 +1,7 @@
 using NewsFeed.Server;
-using NewsFeed.Server.Models;
 using NewsFeed.Server.Twitter.Database;
 using NewsFeed.Server.Twitter.ExternalApi;
-using NewsFeed.Server.Twitter.Messaging.Commands;
+using NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.Commands;
 using NServiceBus;
 using NServiceBus.Persistence.Sql;
 using System.Reflection;
@@ -10,6 +9,7 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 var config = builder.Configuration;
+Constants.Initialize(config);
 
 builder.Logging.AddLog4Net();
 
@@ -21,7 +21,7 @@ builder.Host.UseNServiceBus(context =>
          config,
          new List<(Assembly, string)>
          {
-             (typeof(DownloadTweetsRequests).Assembly, endpointName)
+             (typeof(StartDownloadingTweets).Assembly, endpointName)
          });
 
      endpointConfig.RegisterComponents(c =>
@@ -57,7 +57,6 @@ else
         new TwitterApiClient(config.GetValue<string>("TwitterToken")));
 }
 
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -83,5 +82,8 @@ app.UseRouting();
 app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
+
+app.MapGet("/twitter/accounts/{accountId}/menu", async (ITwitterRepositorySelfConnection db, int accountId) =>
+    await db.GetMenu(accountId));
 
 app.Run();
