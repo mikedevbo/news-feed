@@ -27,7 +27,8 @@ namespace NewsFeed.Server.Twitter.Database
                     new TwitterTweet
                     {
                         UserId = userId,
-                        IsPersisted = false
+                        IsPersisted = false,
+                        IsRed = false
                     },
                     transaction
                 );
@@ -74,7 +75,7 @@ namespace NewsFeed.Server.Twitter.Database
             var tweetsApi = new List<TwitterTweetsApi>();
             ids.ForEach(id =>
             {
-                tweets.Add(new TwitterTweet(id, 0, false));
+                tweets.Add(new TwitterTweet(id, 0, false, false));
                 tweetsApi.Add(new TwitterTweetsApi(id, string.Empty, string.Empty, default));
             });
 

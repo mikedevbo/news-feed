@@ -1,4 +1,6 @@
-﻿@implements IDisposable
+﻿@using NewsFeed.Shared.Twitter.Commands
+@using static NewsFeed.Shared.Twitter.Commands.StartDownloadingTweets
+@implements IDisposable
 @inject StateContainer StateContainer
 @inject HttpClient Http
 @inject TwitterNewsFeedApiClient apiClient
@@ -60,5 +62,18 @@
     private string StyleFontWeight(Tweet tweet)
     {
         return tweet.IsRead ? "font-weight: normal" : "font-weight: bold";
+    }
+}
+
+@code
+{
+    private async Task StartDownloadingTweets(List<UserData> users)
+    {
+        var result = await this.Http.PostAsJsonAsync<StartDownloadingTweets>(
+            $"/twitter/tweets/startdownoading",
+            new StartDownloadingTweets(users)
+        );
+
+        result.EnsureSuccessStatusCode();
     }
 }

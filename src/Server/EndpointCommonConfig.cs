@@ -21,6 +21,8 @@ namespace NewsFeed.Server
 
             LogManager.Use<DefaultFactory>();
 
+            endpointConfiguration.Conventions().Add(new NewsFeedMessageConvention());
+
             var transport = endpointConfiguration.UseTransport<SqlServerTransport>();
             transport.DefaultSchema(schemaTransport);
             transport.ConnectionString(connectionStringTransport);
@@ -46,5 +48,16 @@ namespace NewsFeed.Server
 
             return endpointConfiguration;
         }
+    }
+
+    public class NewsFeedMessageConvention : IMessageConvention
+    {
+        public bool IsMessageType(Type type) => type.Namespace is not null && type.Namespace.EndsWith("Messages");
+
+        public bool IsCommandType(Type type) => type.Namespace is not null && type.Namespace.EndsWith("Commands");
+
+        public bool IsEventType(Type type) => type.Namespace is not null && type.Namespace.EndsWith("Events");
+
+        public string Name { get; } = "NewsFeed message convention";
     }
 }

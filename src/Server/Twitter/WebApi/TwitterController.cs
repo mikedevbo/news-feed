@@ -4,6 +4,7 @@ using NewsFeed.Server.Twitter.Database;
 using NewsFeed.Server.Twitter.ExternalApi;
 using NewsFeed.Shared.Twitter.Dto;
 using NewsFeed.Shared.Twitter.Model;
+using System.Text.Json;
 
 [ApiController]
 [Route("[controller]")]
@@ -18,12 +19,6 @@ public class TwitterController : ControllerBase
     {
         this.twitterApiClient = twitterApiClient;
         this.twitterRepository = twitterRepository;
-    }
-
-    [HttpGet("GetMenu")]
-    public async Task<MenuItems> GetMenu(int accountId)
-    {
-        return await this.twitterRepository.GetMenu(accountId);
     }
 
     [HttpGet("AddGroup")]
@@ -44,8 +39,8 @@ public class TwitterController : ControllerBase
             new TwitterUsersApi(userApi.Id));
     }
 
-    [HttpGet("GetTweets")]
-    public async Task<List<Tweet>> GetTweets(int userId)
+    [HttpGet("Handle")]
+    public async Task<List<Tweet>> Handle(int userId)
     {
         return await this.twitterRepository.GetTweets(userId);
     }

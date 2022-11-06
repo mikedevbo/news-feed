@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
-using NewsFeed.Server.Twitter.Messaging.Commands;
+using NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.Commands;
+using NewsFeed.Shared.Twitter.Commands;
 using NServiceBus;
 using System.Reflection;
 
@@ -23,8 +24,9 @@ namespace NewsFeed.Server.IntegrationTests.Twitter
                 config,
                 new List<(Assembly, string)>
              {
-                 (typeof(DownloadTweetsRequests).Assembly, typeof(NewsFeedController).Assembly.GetName().Name!)
+                 (typeof(StartDownloadingTweets).Assembly, typeof(StartDownloadingTweets).Assembly.GetName().Name!)
              });
+
             endpointInstance = await Endpoint.Start(endpointConfig);
         }
 
@@ -32,23 +34,6 @@ namespace NewsFeed.Server.IntegrationTests.Twitter
         public async Task TearDown()
         {
             await endpointInstance.Stop();
-        }
-
-        [Test]
-        [Explicit]
-        public async Task DownloadTweets_Send_Success()
-        {
-            // Arrange
-            const int userId = 1;
-            const string twitterUserId = "200";
-
-            var message = new DownloadTweets(userId, twitterUserId);
-
-            // Act
-            await endpointInstance.Send(message);
-
-            // Assert
-            Assert.Pass();
         }
     }
 }
