@@ -10,18 +10,18 @@ using TwitterSharp.Response.RTweet;
 namespace NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.Commands
 {
 
-    public record StartDownloadingTweetsForUser(int UserId, string TwitterUserId) : ICommand;
+    public record StartDownloadingTweetsForUser(int UserId, string TwitterUserId);
 
-    public record DownloadTweets(int UserId, string TwitterUserId) : ICommand;
+    public record DownloadTweets(int UserId, string TwitterUserId);
 
-    public record SaveTweets(int UserId, List<Tweet> Tweets) : ICommand;
+    public record SaveTweets(int UserId, List<Tweet> Tweets);
 
-    public record ClearOldTweets(int UserId) : ICommand;
+    public record ClearOldTweets(int UserId);
 }
 
 namespace NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.Messages
 {
-    public record ClearOldTweetsTimeout() : IMessage;
+    public record ClearOldTweetsTimeout();
 }
 
 namespace NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.SagaData
