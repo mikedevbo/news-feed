@@ -53,7 +53,6 @@ namespace NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga
         IAmStartedByMessages<StartDownloadingTweetsForUser>,
         IHandleTimeouts<ClearOldTweetsTimeout>
     {
-
         public async Task Handle(StartDownloadingTweetsForUser message, IMessageHandlerContext context)
         {
             if (!this.Data.IsInProgress)
