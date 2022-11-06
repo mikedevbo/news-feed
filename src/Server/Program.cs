@@ -88,7 +88,7 @@ app.MapFallbackToFile("index.html");
 app.MapGet("/twitter/accounts/{accountId}/menu", async (ITwitterRepositorySelfConnection db, int accountId) =>
     await db.GetMenu(accountId));
 
-app.MapPost("/twitter/tweets/startdownoading", async (StartDownloadingTweets command) =>
+app.MapPost("/twitter/tweets/startdownloading", async (StartDownloadingTweets command) =>
 {
     Console.WriteLine("execute StartDownloadingTweets " + System.Text.Json.JsonSerializer.Serialize(command));
 

@@ -70,7 +70,7 @@
     private async Task StartDownloadingTweets(List<UserData> users)
     {
         var result = await this.Http.PostAsJsonAsync<StartDownloadingTweets>(
-            $"/twitter/tweets/startdownoading",
+            $"/twitter/tweets/startdownloading",
             new StartDownloadingTweets(users)
         );
 
