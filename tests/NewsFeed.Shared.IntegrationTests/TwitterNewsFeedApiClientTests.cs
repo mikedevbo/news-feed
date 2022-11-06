@@ -20,23 +20,6 @@ namespace NewsFeed.Shared.IntegrationTests
 
         [Test]
         [Explicit]
-        public async Task GetMenu_Execute_ProperResult()
-        {
-            // Arrange
-            const int accountId = 1;
-
-            // Act
-            var result = await this.apiClient.GetMenu(accountId);
-
-            // Assert
-            Console.WriteLine(JsonSerializer.Serialize(result.Groups));
-            Console.WriteLine(JsonSerializer.Serialize(result.Users));
-            Console.WriteLine(JsonSerializer.Serialize(result.GroupUsers));
-            Assert.Pass();
-        }
-
-        [Test]
-        [Explicit]
         public async Task AddGroup_Execute_ProperResult()
         {
             // Arrange

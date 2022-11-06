@@ -13,13 +13,6 @@ namespace NewsFeed.Shared.Twitter
             this.httpClient = httpClient;
         }
 
-        public async Task<MenuItems> GetMenu(int accountId)
-        {
-            return
-                await httpClient.GetFromJsonAsync<MenuItems>($"Twitter/GetMenu?accountId={accountId}")
-                    ?? new MenuItems();
-        }
-
         public async Task<Group> AddGroup(string groupName, int accountId)
         {
             return await httpClient.GetFromJsonAsync<Group>($"Twitter/AddGroup?groupName={groupName}&accountId={accountId}")
