@@ -2,6 +2,7 @@
 using NServiceBus;
 using System.Reflection;
 using System.Data.SqlClient;
+using NServiceBus.TransactionalSession;
 
 namespace NewsFeed.Server
 {
@@ -21,29 +22,39 @@ namespace NewsFeed.Server
 
             LogManager.Use<DefaultFactory>();
 
+            ////Conventions
             endpointConfiguration.Conventions().Add(new NewsFeedMessageConvention());
 
+            ////Transport
             var transport = endpointConfiguration.UseTransport<SqlServerTransport>();
             transport.DefaultSchema(schemaTransport);
             transport.ConnectionString(connectionStringTransport);
 
+            ////Persistence
             var persistence = endpointConfiguration.UsePersistence<SqlPersistence>();
             var subscriptions = persistence.SubscriptionSettings();
             subscriptions.DisableCache();
+
             var dialect = persistence.SqlDialect<SqlDialect.MsSqlServer>();
             dialect.Schema(schemaPersistence);
+
             persistence.ConnectionBuilder(
                 connectionBuilder: () =>
                 {
                     return new SqlConnection(connectionStringPersistence);
                 });
 
+            persistence.EnableTransactionalSession();
+
+            ////Routing
             var routing = transport.Routing();
             routingDefinitions.ForEach(def => routing.RouteToEndpoint(def.assembly, def.endpointName));
 
+            ////Outbox
             var outbox = endpointConfiguration.EnableOutbox();
             outbox.KeepDeduplicationDataFor(TimeSpan.FromDays(14));
 
+            ////Installers
             endpointConfiguration.EnableInstallers();
 
             return endpointConfiguration;

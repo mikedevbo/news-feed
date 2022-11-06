@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.VisualStudio.TestPlatform.TestHost;
 using NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.Commands;
 using NewsFeed.Shared.Twitter.Commands;
 using NServiceBus;
@@ -10,7 +11,8 @@ namespace NewsFeed.Server.IntegrationTests.Twitter
     [Explicit]
     public class TwitterMessageSender
     {
-        IEndpointInstance endpointInstance;
+        private readonly string endpointName = typeof(EndpointCommonConfig).Assembly.GetName().Name!;
+        private IEndpointInstance endpointInstance;
 
         [SetUp]
         public async Task SetUp()
@@ -24,10 +26,39 @@ namespace NewsFeed.Server.IntegrationTests.Twitter
                 config,
                 new List<(Assembly, string)>
              {
-                 (typeof(StartDownloadingTweets).Assembly, typeof(StartDownloadingTweets).Assembly.GetName().Name!)
+                 (typeof(StartDownloadingTweets).Assembly, endpointName),
+                 (typeof(StartDownloadingTweetsForUser).Assembly, endpointName)
              });
 
             endpointInstance = await Endpoint.Start(endpointConfig);
+        }
+
+        [Test]
+        [Explicit]
+        public async Task StartDownloadingTweetsForUser_Send_Success()
+        {
+            // Arrange
+            var message = new StartDownloadingTweetsForUser(1, "1");
+
+            // Act
+            await this.endpointInstance.Send(message);
+
+            // Assert
+            Assert.Pass();
+        }
+
+        [Test]
+        [Explicit]
+        public async Task DownloadTweets_Send_Success()
+        {
+            // Arrange
+            var message = new DownloadTweets(1, "1");
+
+            // Act
+            await this.endpointInstance.Send(message);
+
+            // Assert
+            Assert.Pass();
         }
 
         [TearDown]

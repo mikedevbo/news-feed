@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using NewsFeed.Server;
 using NewsFeed.Server.Twitter.Database;
 using NewsFeed.Server.Twitter.ExternalApi;
@@ -5,6 +6,7 @@ using NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.Commands;
 using NewsFeed.Shared.Twitter.Commands;
 using NServiceBus;
 using NServiceBus.Persistence.Sql;
+using NServiceBus.TransactionalSession;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,18 +28,18 @@ builder.Host.UseNServiceBus(context =>
              (typeof(StartDownloadingTweetsForUser).Assembly, endpointName)
          });
 
-     endpointConfig.RegisterComponents(c =>
-     {
-         c.ConfigureComponent(b =>
-         {
-             var session = b.Build<ISqlStorageSession>();
-             var repository = new TwitterRepository(
-                 session.Connection,
-                 session.Transaction);
+     //endpointConfig.RegisterComponents(c =>
+     //{
+     //    c.ConfigureComponent(b =>
+     //    {
+     //        var session = b.Build<ISqlStorageSession>();
+     //        var repository = new TwitterRepository(
+     //            session.Connection,
+     //            session.Transaction);
 
-             return repository;
-         }, DependencyLifecycle.InstancePerUnitOfWork);
-     });
+     //        return repository;
+     //    }, DependencyLifecycle.InstancePerUnitOfWork);
+     //});
 
      return endpointConfig;
  });
@@ -46,6 +48,16 @@ builder.Host.UseNServiceBus(context =>
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
+builder.Services.AddScoped<ITwitterRepository, TwitterRepository>(b =>
+{
+    var session = b.GetRequiredService<ISqlStorageSession>();
+    var repository = new TwitterRepository(
+        session.Connection,
+        session.Transaction);
+
+    return repository;
+});
 
 builder.Services.AddScoped<ITwitterRepositorySelfConnection, TwitterRepositorySelfConnection>();
 
@@ -88,9 +100,20 @@ app.MapFallbackToFile("index.html");
 app.MapGet("/twitter/accounts/{accountId}/menu", async (ITwitterRepositorySelfConnection db, int accountId) =>
     await db.GetMenu(accountId));
 
-app.MapPost("/twitter/tweets/startdownloading", async (StartDownloadingTweets command) =>
+app.MapPost("/twitter/tweets/startdownloading", async (
+    ITransactionalSession messageSession,
+    ITwitterRepository twitterRepository,
+    StartDownloadingTweets command) =>
 {
     Console.WriteLine("execute StartDownloadingTweets " + System.Text.Json.JsonSerializer.Serialize(command));
+
+    await messageSession.Open(new SqlPersistenceOpenSessionOptions());
+
+    ////TODO: add logic
+    await twitterRepository.SetTweetsDownloadingState(command.Users[0].UserId, true);
+    await messageSession.Send(command);
+
+    await messageSession.Commit();
 
     return Results.Ok();
 });
