@@ -57,6 +57,22 @@ namespace NewsFeed.Server.Twitter.Database
             );
         }
 
+        public async Task<List<int>> SetUserIsDownloadingTweetsState(List<int> userIds, bool state)
+        {
+            var sql = @"update dbo.TwitterUsers
+set IsTweetsDownloading = @newState
+output inserted.Id
+where Id in @Ids and IsTweetsDownloading = @currentState";
+
+            var result = await connection.QueryAsync<int>(
+                sql,
+                new { Ids = userIds, newState = state, currentState = !state },
+                transaction
+            );
+
+            return result.ToList();
+        }
+
         public async Task ClearOldTweets(int userId, DateTime createdAt)
         {
             var sql = new StringBuilder();

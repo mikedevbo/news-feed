@@ -52,6 +52,22 @@ namespace NewsFeed.Server.IntegrationTests.Twitter
 
         [Test]
         [Explicit]
+        public async Task SetUsersIsDownloadingTweetsState_Execute_ProperResult()
+        {
+            // Arrange
+            var userIds = new List<int> { 1,4 };
+            const bool isTweetsDownloading = false;
+
+            // Act
+            var result = await twitterRepository.SetUserIsDownloadingTweetsState(userIds, isTweetsDownloading);
+
+            // Assert
+            Console.WriteLine(result.Count());
+            Assert.Pass();
+        }
+
+        [Test]
+        [Explicit]
         public async Task ClearOldTweets_Execute_ProperResult()
         {
             // Arrange
