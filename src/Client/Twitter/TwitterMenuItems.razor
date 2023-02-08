@@ -1,15 +1,6 @@
 ﻿@implements IDisposable
 @inject StateContainer StateContainer
 
-<MudToolBar>
-    <MudButtonGroup Color="Color.Primary" Variant="Variant.Text">
-        <MudButton OnClick="@DownloadTweets">Download Tweets</MudButton>
-@*        <MudButton>Add</MudButton>
-        <MudButton>Edit</MudButton>
-        <MudButton>Delete</MudButton>*@
-    </MudButtonGroup>
-</MudToolBar>
-
 @code {
     private SelectionContext selectionContext = SelectionContext.None;
     private (int groupId, string groupName) group;

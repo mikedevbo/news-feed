@@ -8,10 +8,6 @@
 
 @foreach(var item in this.tweets)
 {
-    <MudPaper MaxWidth="600px" Class="ma-5 pa-4" @onclick=@(e => item.IsRead = !item.IsRead)>
-        <MudText Style=@this.StyleFontWeight(item)>@item.Text + " " + @item.Id</MudText>
-        <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" OnClick="@(() => Console.WriteLine("aaa"))">Save</MudButton>
-    </MudPaper>
 }
 
 @code

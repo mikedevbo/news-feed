@@ -3,27 +3,6 @@
 @inject HttpClient Http
 @inject TwitterNewsFeedApiClient apiClient
 
-<MudTreeView
-    @bind-SelectedValue="this.selectedItemId"
-    Hover="false">
-    @foreach(var group in this.groups)
-    {
-        <MudTreeViewItem
-            @bind-Expanded="@group.IsExpanded"
-            Text="@group.Name"
-            Value="@group.Id"
-            OnClick="e => this.OnClickGroup(group)">
-            @foreach(var user in group.Users)
-            {
-                <MudTreeViewItem
-                    Text="@user.Name"
-                    Value="@user.Id"
-                    OnClick="e => this.OnClickUser(user)" />
-            }
-        </MudTreeViewItem>
-    }
-</MudTreeView>
-
 @code
 {
     private List<Group> groups = new List<Group>();
