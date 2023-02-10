@@ -16,10 +16,18 @@
             <div class="w3-bar-item w3-button" @onclick="e => OnClickGroup(group)">
                 @group.Name <i class="fa fa-caret-down"></i>
             </div>
+
             <div class="w3-hide w3-card-4 @group.IsExpandedCss">
+
+            @if (group.Users.Any())
+            {
                 <a href="#" class="w3-bar-item w3-button">GetAll</a>
-                <a href="#" class="w3-bar-item w3-button">@@udidahan</a>
-                <a href="#" class="w3-bar-item w3-button">@@danielmarbach</a>
+            }
+
+            @foreach(var user in group.Users)
+            {
+                <a href="#" class="w3-bar-item w3-button" @onclick="e => OnClickUser(user)">@user.Name</a>
+            }
             </div>
         }
 
@@ -28,24 +36,6 @@
 
 <div class="w3-main" style="margin-left:200px" />
 <button class="w3-button w3-xlarge w3-hide-large" @onclick="e => DisplaySidebar(true)">&#9776;</button>
-
-@*
--    @foreach(var group in this.groups)
--    {
--        <MudTreeViewItem
--            @bind-Expanded="@group.IsExpanded"
--            Text="@group.Name"
--            Value="@group.Id"
--            OnClick="e => this.OnClickGroup(group)">
--            @foreach(var user in group.Users)
--            {
--                <MudTreeViewItem
--                    Text="@user.Name"
--                    Value="@user.Id"
--                    OnClick="e => this.OnClickUser(user)" />
--            }
--        </MudTreeViewItem>
--    }*@
 
 @code
 {
