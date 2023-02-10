@@ -10,42 +10,42 @@
         <hr />
         <a href="#" class="w3-bar-item w3-button">GetAll</a>
         <hr />
-        <div class="w3-bar-item w3-button" onclick="myAccFunc('particularAcc')">
-            Particular <i class="fa fa-caret-down"></i>
-        </div>
-        <div id="particularAcc" class="w3-hide w3-card-4 w3-show">
-            <a href="#" class="w3-bar-item w3-button">GetAll</a>
-            <a href="#" class="w3-bar-item w3-button">@@udidahan</a>
-            <a href="#" class="w3-bar-item w3-button">@@danielmarbach</a>
-        </div>
 
-        <div class="w3-bar-item w3-button" onclick="myAccFunc('tennisAcc')">
-            Tennis <i class="fa fa-caret-down"></i>
-        </div>
-        <div id="tennisAcc" class="w3-hide w3-card-4 w3-show">
-            <a href="#" class="w3-bar-item w3-button">GetAll</a>
-            <a href="#" class="w3-bar-item w3-button">@@rafanadal</a>
-            <a href="#" class="w3-bar-item w3-button">@@iga_swiatek</a>
-        </div>
+        @foreach (var group in this.groups)
+        {
+            <div class="w3-bar-item w3-button" @onclick="e => OnClickGroup(group)">
+                @group.Name <i class="fa fa-caret-down"></i>
+            </div>
+            <div class="w3-hide w3-card-4 @group.IsExpandedCss">
+                <a href="#" class="w3-bar-item w3-button">GetAll</a>
+                <a href="#" class="w3-bar-item w3-button">@@udidahan</a>
+                <a href="#" class="w3-bar-item w3-button">@@danielmarbach</a>
+            </div>
+        }
+
     </div>
 </div>
 
 <div class="w3-main" style="margin-left:200px" />
 <button class="w3-button w3-xlarge w3-hide-large" @onclick="e => DisplaySidebar(true)">&#9776;</button>
 
-@*    <script>
-        function myAccFunc(id) {
-            var x = document.getElementById(id);
-            if (x.className.indexOf("w3-show") == -1) {
-                x.className += " w3-show";
-                //x.previousElementSibling.className += " w3-green";
-            } else {
-                x.className = x.className.replace(" w3-show", "");
-                //x.previousElementSibling.className =
-                //x.previousElementSibling.className.replace(" w3-green", "");
-            }
-        }
-    </script>*@
+@*
+-    @foreach(var group in this.groups)
+-    {
+-        <MudTreeViewItem
+-            @bind-Expanded="@group.IsExpanded"
+-            Text="@group.Name"
+-            Value="@group.Id"
+-            OnClick="e => this.OnClickGroup(group)">
+-            @foreach(var user in group.Users)
+-            {
+-                <MudTreeViewItem
+-                    Text="@user.Name"
+-                    Value="@user.Id"
+-                    OnClick="e => this.OnClickUser(user)" />
+-            }
+-        </MudTreeViewItem>
+-    }*@
 
 @code
 {
@@ -78,6 +78,8 @@
         public bool IsExpanded { get; set; }
 
         public List<User> Users { get; set; } = new List<User>();
+
+        public string IsExpandedCss => IsExpanded ? "w3-show" : string.Empty;
     }
 
     public class User
@@ -125,6 +127,7 @@
     {
         this.OnClick(() =>
         {
+            group.IsExpanded = !group.IsExpanded;
             this.StateContainer.Publish(new GroupSelected(group.Id, group.Name));
         });
     }
