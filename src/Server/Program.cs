@@ -100,6 +100,11 @@ app.MapFallbackToFile("index.html");
 app.MapGet("/twitter/accounts/{accountId}/menu", async (ITwitterRepositorySelfConnection db, int accountId) =>
     await db.GetMenu(accountId));
 
+app.MapGet(
+    "/twitter/accounts/{accountId}/tweets/{userId}",
+    async (ITwitterRepositorySelfConnection db, int accountId, int userId) =>
+    await db.GetTweets(userId));
+
 app.MapPost("/twitter/tweets/startdownloading", async (
     ITransactionalSession messageSession,
     ITwitterRepository twitterRepository,

@@ -6,12 +6,31 @@
 @inject TwitterNewsFeedApiClient apiClient
 @inject StateContainer StateContainer
 
-@foreach(var item in this.tweets)
+<div class="w3-container">
+    <h3>@user.Name</h3>
+</div>
+
+<button class="w3-button w3-border w3-margin">Get</button>
+
+@foreach(var tweet in this.tweets)
 {
+<div class="w3-container w3-panel">
+    <div class="w3-card-4 w3-mobile" style="width:50%;">
+        <div class="w3-container">
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
+                et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                aliquip ex ea commodo consequat.</p>
+                <p>@tweet.Text</p>
+        </div>
+        <button class="w3-button w3-border w3-margin">Read</button>
+        <button class="w3-button w3-border w3-margin w3-right">Favorite</button>
+    </div>
+</div>
 }
 
 @code
 {
+    private (int Id, string Name, string twitterId) user;
     private List<Tweet> tweets = new List<Tweet>();
 }
 
@@ -36,14 +55,14 @@
         switch (message)
         {
             case GroupSelected:
-                this.tweets = new List<Tweet>();
-                this.StateHasChanged();
+                //this.tweets = new List<Tweet>();
+                //this.StateHasChanged();
                 break;
 
-            case UserSelected:
-                //var user = (message as UserSelected)!.User;
-                //this.tweets = (await this.apiClient.GetTweets(user.Id)).OrderByDescending(t => t.CreatedAt).ToList();
-                //this.StateHasChanged();
+            case UserSelected user:
+                this.user = (user.Id, user.Name, user.TwitterUserId);
+                this.tweets = await this.Http.GetFromJsonAsync<List<Tweet>>($"/twitter/accounts/{this.StateContainer.AccountId}/tweets/{this.user.Id}") ?? new List<Tweet>();
+                this.StateHasChanged();
                 break;
             case DownloadTweetsRequested:
                 var userTwitterIds = (message as DownloadTweetsRequested)!.twitterUserIds;
