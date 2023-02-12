@@ -67,5 +67,20 @@ namespace NewsFeed.Server.IntegrationTests.Twitter
             Console.WriteLine(JsonSerializer.Serialize(result));
             Assert.That(result, Is.Not.Null);
         }
+
+        [Test]
+        [Explicit]
+        public async Task SetTweetReadState_Execute_ProperResult()
+        {
+            // Arrange
+            const int tweetId = 36;
+            const bool isRead = false;
+
+            // Act
+            await twitterRepository.SetTweetReadState(tweetId, isRead);
+
+            // Assert
+            Assert.Pass();
+        }
     }
 }

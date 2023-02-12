@@ -123,5 +123,12 @@ app.MapPost("/twitter/tweets/startdownloading", async (
     return Results.Ok();
 });
 
+app.MapPost("/twitter/tweets/setReadState", async (
+    ITwitterRepositorySelfConnection db,
+    SetReadState command) =>
+{
+    await db.SetTweetReadState(command.TweetId, command.IsRead);
+});
+
 
 app.Run();

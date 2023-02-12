@@ -6,4 +6,6 @@ namespace NewsFeed.Shared.Twitter.Commands
     {
         public record UserData(int UserId, string TwitterUserId);
     }
+
+    public record SetReadState(int TweetId, bool IsRead);
 }

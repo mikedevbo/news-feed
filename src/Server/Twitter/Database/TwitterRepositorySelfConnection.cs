@@ -3,7 +3,6 @@ using Dapper.Contrib.Extensions;
 using NewsFeed.Server.Models.Twitter.Entity;
 using NewsFeed.Shared.Twitter.Model;
 using System.Data.SqlClient;
-using System.Linq;
 
 namespace NewsFeed.Server.Twitter.Database
 {
@@ -77,8 +76,8 @@ for xml auto, elements, root('Root')";
                 return new List<Tweet>();
             }
 
-            var sql = @"SELECT tweet.[Id], tweet.[UserId], tweet.[IsPersisted], tweet.[IsRed] , tweetApi.[TweetId], tweetApi.[Text] ,tweetApi.[CreatedAt]
-FROM [NewsFeed].[dbo].[TwitterTweets] tweet
+            var sql = @"SELECT tweet.[Id], tweet.[UserId], tweet.[IsPersisted], tweet.[IsRead] , tweetApi.[TweetId], tweetApi.[Text] ,tweetApi.[CreatedAt]
+FROM [dbo].[TwitterTweets] tweet
 INNER JOIN [dbo].[TwitterTweetsApi] tweetApi ON tweet.Id = tweetApi.Id
 WHERE tweet.[UserId] = @userId";
 
@@ -86,6 +85,18 @@ WHERE tweet.[UserId] = @userId";
             await connection.OpenAsync();
             var data = await connection.QueryAsync<Tweet>(sql, new { userId});
             return data.OrderByDescending(t => t.CreatedAt).ToList();
+        }
+
+        public async Task SetTweetReadState(int tweetId, bool isRead)
+        {
+            var sql = @"UPDATE [dbo].[TwitterTweets]
+SET IsRead = @isRead
+WHERE Id = @tweetId";
+
+            using var connection = new SqlConnection(configuration.GetValue<string>(Constants.ConnectionStringPersistenceKey));
+            await connection.OpenAsync();
+
+            var groupId = await connection.ExecuteAsync(sql, new { tweetId, isRead });
         }
     }
 }

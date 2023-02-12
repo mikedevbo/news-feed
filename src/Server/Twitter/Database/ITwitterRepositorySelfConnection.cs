@@ -12,5 +12,7 @@ namespace NewsFeed.Server.Twitter.Database
         Task<User> SaveUser(TwitterUser user, TwitterUsersApi userApi);
 
         Task<List<Tweet>> GetTweets(int userId);
+
+        Task SetTweetReadState(int tweetId, bool isRead);
     }
 }

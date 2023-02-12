@@ -19,7 +19,7 @@
         <div class="w3-container" style="@IsReadCss(tweet)">
             <p>@tweet.Text</p>
         </div>
-        <button class="w3-button w3-border w3-margin" @onclick="e => tweet.IsRead = !tweet.IsRead">Read</button>
+        <button class="w3-button w3-border w3-margin" @onclick="e => SetReadState(tweet)">Read</button>
         <button class="w3-button w3-border w3-margin w3-right">Favorite</button>
     </div>
 </div>
@@ -79,6 +79,17 @@
 
 @code
 {
+    private async Task SetReadState(Tweet tweet)
+    {
+        tweet.IsRead = !tweet.IsRead;
+
+        var result = await this.Http.PostAsJsonAsync<SetReadState>(
+            $"/twitter/tweets/setReadState",
+            new SetReadState(tweet.Id, tweet.IsRead));
+
+        result.EnsureSuccessStatusCode();
+    }
+
     private async Task StartDownloadingTweets(List<UserData> users)
     {
         var result = await this.Http.PostAsJsonAsync<StartDownloadingTweets>(
