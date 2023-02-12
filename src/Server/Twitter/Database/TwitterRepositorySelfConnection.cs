@@ -3,6 +3,7 @@ using Dapper.Contrib.Extensions;
 using NewsFeed.Server.Models.Twitter.Entity;
 using NewsFeed.Shared.Twitter.Model;
 using System.Data.SqlClient;
+using System.Linq;
 
 namespace NewsFeed.Server.Twitter.Database
 {
@@ -69,20 +70,22 @@ for xml auto, elements, root('Root')";
             return new User(userId, user.Name, userApi.UserId, false, user.GroupId);
         }
 
-        public Task<List<Tweet>> GetTweets(int userId)
+        public async Task<List<Tweet>> GetTweets(int userId)
         {
             if (userId <= 0)
             {
-                return Task.FromResult(new List<Tweet>());
+                return new List<Tweet>();
             }
 
-            return Task.FromResult(new List<Tweet>
-            {
-                new Tweet(1, userId, false, "1234", "test tweet " + Guid.NewGuid() + " " + userId, DateTime.Now) { IsRead = true },
-                new Tweet(2, userId, false, "12345", "test tweet " + Guid.NewGuid() + " " + userId, DateTime.Now) { IsRead = true },
-                new Tweet(3, userId, false, "12346", "test tweet " + Guid.NewGuid() + " " + userId, DateTime.Now) { IsRead = false },
-                new Tweet(4, userId, false, "12347", "test tweet " + Guid.NewGuid() + " " + userId, DateTime.Now) { IsRead = false }
-            });
+            var sql = @"SELECT tweet.[Id], tweet.[UserId], tweet.[IsPersisted], tweet.[IsRed] , tweetApi.[TweetId], tweetApi.[Text] ,tweetApi.[CreatedAt]
+FROM [NewsFeed].[dbo].[TwitterTweets] tweet
+INNER JOIN [dbo].[TwitterTweetsApi] tweetApi ON tweet.Id = tweetApi.Id
+WHERE tweet.[UserId] = @userId";
+
+            using var connection = new SqlConnection(configuration.GetValue<string>(Constants.ConnectionStringPersistenceKey));
+            await connection.OpenAsync();
+            var data = await connection.QueryAsync<Tweet>(sql, new { userId});
+            return data.OrderByDescending(t => t.CreatedAt).ToList();
         }
     }
 }
