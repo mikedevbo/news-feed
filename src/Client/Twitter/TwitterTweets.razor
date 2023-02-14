@@ -20,7 +20,7 @@
             <p>@tweet.Text</p>
         </div>
         <button class="w3-button w3-border w3-margin" @onclick="e => SetReadState(tweet)">Read</button>
-        <button class="w3-button w3-border w3-margin w3-right">Favorite</button>
+            <button class="w3-button w3-border w3-margin w3-right" style="@IsPersistedCss(tweet)" @onclick="e => SetPersistedState(tweet)">Favorite</button>
     </div>
 </div>
 }
@@ -75,6 +75,11 @@
     {
         return tweet.IsRead ? "font-weight: normal" : "font-weight: bold";
     }
+
+    private string IsPersistedCss(Tweet tweet)
+    {
+        return tweet.IsPersisted ? "font-weight: bold" : "font-weight: normal";
+    }
 }
 
 @code
@@ -86,6 +91,17 @@
         var result = await this.Http.PostAsJsonAsync<SetReadState>(
             $"/twitter/tweets/setReadState",
             new SetReadState(tweet.Id, tweet.IsRead));
+
+        result.EnsureSuccessStatusCode();
+    }
+
+    private async Task SetPersistedState(Tweet tweet)
+    {
+        tweet.IsPersisted = !tweet.IsPersisted;
+
+        var result = await this.Http.PostAsJsonAsync<SetFavoriteState>(
+            $"/twitter/tweets/setPersistedState",
+            new SetFavoriteState(tweet.Id, tweet.IsPersisted));
 
         result.EnsureSuccessStatusCode();
     }

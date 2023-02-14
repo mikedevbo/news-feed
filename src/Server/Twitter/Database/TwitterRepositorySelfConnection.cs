@@ -3,6 +3,7 @@ using Dapper.Contrib.Extensions;
 using NewsFeed.Server.Models.Twitter.Entity;
 using NewsFeed.Shared.Twitter.Model;
 using System.Data.SqlClient;
+using System.Threading;
 
 namespace NewsFeed.Server.Twitter.Database
 {
@@ -97,6 +98,18 @@ WHERE Id = @tweetId";
             await connection.OpenAsync();
 
             var groupId = await connection.ExecuteAsync(sql, new { tweetId, isRead });
+        }
+
+        public async Task SetTweetPersistedState(int tweetId, bool isPersisted)
+        {
+            var sql = @"UPDATE [dbo].[TwitterTweets]
+SET IsPersisted = @isPersisted
+WHERE Id = @tweetId";
+
+            using var connection = new SqlConnection(configuration.GetValue<string>(Constants.ConnectionStringPersistenceKey));
+            await connection.OpenAsync();
+
+            var groupId = await connection.ExecuteAsync(sql, new { tweetId, isPersisted });
         }
     }
 }

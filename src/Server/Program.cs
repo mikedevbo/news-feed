@@ -130,5 +130,12 @@ app.MapPost("/twitter/tweets/setReadState", async (
     await db.SetTweetReadState(command.TweetId, command.IsRead);
 });
 
+app.MapPost("/twitter/tweets/setPersistedState", async (
+    ITwitterRepositorySelfConnection db,
+    SetFavoriteState command) =>
+{
+    await db.SetTweetPersistedState(command.TweetId, command.IsPersisted);
+});
+
 
 app.Run();

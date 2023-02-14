@@ -14,5 +14,7 @@ namespace NewsFeed.Server.Twitter.Database
         Task<List<Tweet>> GetTweets(int userId);
 
         Task SetTweetReadState(int tweetId, bool isRead);
+
+        Task SetTweetPersistedState(int tweetId, bool isFavorite);
     }
 }

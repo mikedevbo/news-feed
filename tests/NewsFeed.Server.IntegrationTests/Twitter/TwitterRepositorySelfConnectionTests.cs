@@ -82,5 +82,20 @@ namespace NewsFeed.Server.IntegrationTests.Twitter
             // Assert
             Assert.Pass();
         }
+
+        [Test]
+        [Explicit]
+        public async Task SetTweetPersistedState_Execute_ProperResult()
+        {
+            // Arrange
+            const int tweetId = 36;
+            const bool isPersisted = false;
+
+            // Act
+            await twitterRepository.SetTweetPersistedState(tweetId, isPersisted);
+
+            // Assert
+            Assert.Pass();
+        }
     }
 }

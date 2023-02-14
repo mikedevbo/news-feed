@@ -8,4 +8,6 @@ namespace NewsFeed.Shared.Twitter.Commands
     }
 
     public record SetReadState(int TweetId, bool IsRead);
+
+    public record SetFavoriteState(int TweetId, bool IsPersisted);
 }
