@@ -20,14 +20,21 @@ namespace NewsFeed.Server.Twitter.Database
         {
             var sql = @"select [Group].Id, [Group].Name
 , (
-	select u.Id, u.Name, u.IsTweetsDownloading, u.GroupId, uapi.UserId as [TwitterUserId]
+	select u.Id, u.Name, u.IsTweetsDownloading, u.GroupId, uapi.UserId as [TwitterUserId], tweet.UnreadTweetsCount
 	from dbo.TwitterUsers as [u]
 	left join dbo.TwitterUsersApi as uapi on u.Id = uapi.Id
+	left join
+	(
+		select t.UserId, count(*) as UnreadTweetsCount
+		from dbo.TwitterTweets t
+		where t.IsRead = 0
+		group by t.UserId
+	) as tweet on tweet.UserId = u.Id
 	where [u].GroupId = [Group].Id
 	for xml path ('User'), type
 ) [Users]
 from dbo.TwitterGroups as [Group]
-where [Group].AccountId = @accountId
+where [Group].AccountId = 1
 for xml auto, elements, root('Root')";
 
             using var connection = new SqlConnection(configuration.GetValue<string>(Constants.ConnectionStringPersistenceKey));
