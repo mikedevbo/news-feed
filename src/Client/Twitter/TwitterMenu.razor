@@ -26,7 +26,7 @@
 
             @foreach(var user in group.Users)
             {
-                <a href="#" class="w3-bar-item w3-button" @onclick="e => OnClickUser(user)">@user.Name</a>
+                    <a href="#" class="w3-bar-item w3-button" style="@user.UnreadTweetsCss" @onclick="e => OnClickUser(user)">@ShowUser(user)</a>
             }
             </div>
         }
@@ -56,6 +56,11 @@
     {
         this.isDisplaySidebar = isVisible ? "block" : "none";
     }
+
+    private string ShowUser(User user)
+    {
+        return user.UnreadTweetsCount > 0 ? $"{user.Name} ({user.UnreadTweetsCount})" : user.Name;
+    }
 }
 
 @*ViewModel*@
@@ -81,6 +86,10 @@
         public string Name { get; set; } = string.Empty;
 
         public string TwitterUserId { get; set; } = string.Empty;
+
+        public int UnreadTweetsCount { get; set; }
+
+        public string UnreadTweetsCss => UnreadTweetsCount > 0 ? "font-weight: bold" : "font-weight: normal";
     }
 }
 
@@ -101,9 +110,17 @@
 }
 
 @code {
-    
-    private void Handle(IMessage message)
-    {
+
+        private void Handle(IMessage message)
+        {
+            switch (message)
+            {
+                case TweetsLoaded tweets:
+                    var user = this.groups.SelectMany(g => g.Users).FirstOrDefault(u => u.Id == tweets.UserId)!;
+                    user.UnreadTweetsCount = tweets.TweetsCount;
+                    StateHasChanged();
+                    break;
+            }
     }
 }
 
