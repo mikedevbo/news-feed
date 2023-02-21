@@ -2,8 +2,5 @@
 
 namespace NewsFeed.Shared.Twitter.Contracts
 {
-    public class GetMenuRequest : IRequest<string>
-    {
-        public int AccountId { get; set; }
-    }
+    public record GetMenuRequest(int AccountId) : IRequest<string>;
 }

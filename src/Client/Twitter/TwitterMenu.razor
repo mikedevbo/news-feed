@@ -106,7 +106,7 @@
     {
         StateContainer.Subscribers += this.Handle;
 
-        this.groups = await this.Query(new GetMenuRequest { AccountId = StateContainer.AccountId });
+        this.groups = await this.Query(new GetMenuRequest(StateContainer.AccountId));
     }
 
     public void Dispose()
