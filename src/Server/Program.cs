@@ -1,9 +1,11 @@
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using NewsFeed.Server;
 using NewsFeed.Server.Twitter.Database;
 using NewsFeed.Server.Twitter.ExternalApi;
 using NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.Commands;
 using NewsFeed.Shared.Twitter.Commands;
+using NewsFeed.Shared.Twitter.Contracts;
 using NServiceBus;
 using NServiceBus.Persistence.Sql;
 using NServiceBus.TransactionalSession;
@@ -71,6 +73,8 @@ else
         new TwitterApiClient(config.GetValue<string>("TwitterToken")));
 }
 
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -96,6 +100,8 @@ app.UseRouting();
 app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
+
+app.MapPost($"/{typeof(GetMenuRequest).Name}", async (GetMenuRequest request, IMediator mediator) => await mediator.Send(request));
 
 app.MapGet("/twitter/accounts/{accountId}/menu", async (ITwitterRepositorySelfConnection db, int accountId) =>
     await db.GetMenu(accountId));

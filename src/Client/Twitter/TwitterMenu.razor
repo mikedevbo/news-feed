@@ -39,6 +39,7 @@
     <TwitterTweets />
 </div>
 
+@*Params*@
 @code
 {
     private List<Group> groups = new List<Group>();
@@ -91,6 +92,15 @@
 
         public string UnreadTweetsCss => UnreadTweetsCount > 0 ? "font-weight: bold" : "font-weight: normal";
     }
+
+    public async Task<List<Group>> Query(GetMenuRequest request)
+    {
+        var response = await Http.PostAsJsonAsync(request.GetType().Name, request);
+        response.EnsureSuccessStatusCode();
+
+        var result = await response.Content.ReadAsStringAsync();
+        return result.DeserializeXml<List<Group>>();
+    }
 }
 
 @code {
@@ -99,8 +109,9 @@
     {
         StateContainer.Subscribers += this.Handle;
 
-        var result = await this.Http.GetStringAsync($"/twitter/accounts/{this.StateContainer.AccountId}/menu");
-        this.groups = result.DeserializeXml<List<Group>>();
+        //var result = await this.Http.GetStringAsync($"/twitter/accounts/{this.StateContainer.AccountId}/menu");
+        //this.groups = result.DeserializeXml<List<Group>>();
+        this.groups = await this.Query(new GetMenuRequest { AccountId = StateContainer.AccountId });
     }
 
     public void Dispose()
@@ -109,21 +120,23 @@
     }
 }
 
+@*StateContainer*@
 @code {
 
-        private void Handle(IMessage message)
+    private void Handle(IMessage message)
+    {
+        switch (message)
         {
-            switch (message)
-            {
-                case TweetsLoaded tweets:
-                    var user = this.groups.SelectMany(g => g.Users).FirstOrDefault(u => u.Id == tweets.UserId)!;
-                    user.UnreadTweetsCount = tweets.TweetsCount;
-                    StateHasChanged();
-                    break;
-            }
+            case TweetsLoaded tweets:
+                var user = this.groups.SelectMany(g => g.Users).FirstOrDefault(u => u.Id == tweets.UserId)!;
+                user.UnreadTweetsCount = tweets.TweetsCount;
+                StateHasChanged();
+                break;
+        }
     }
 }
 
+@*Actions*@
 @code
 {   
     private async void OnClick(Action action)
