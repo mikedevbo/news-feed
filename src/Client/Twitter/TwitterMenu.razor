@@ -95,10 +95,7 @@
 
     public async Task<List<Group>> Query(GetMenuRequest request)
     {
-        var response = await Http.PostAsJsonAsync(request.GetType().Name, request);
-        response.EnsureSuccessStatusCode();
-
-        var result = await response.Content.ReadAsStringAsync();
+        var result = await Extensions.CallApi<GetMenuRequest>(Http, request);
         return result.DeserializeXml<List<Group>>();
     }
 }
@@ -109,8 +106,6 @@
     {
         StateContainer.Subscribers += this.Handle;
 
-        //var result = await this.Http.GetStringAsync($"/twitter/accounts/{this.StateContainer.AccountId}/menu");
-        //this.groups = result.DeserializeXml<List<Group>>();
         this.groups = await this.Query(new GetMenuRequest { AccountId = StateContainer.AccountId });
     }
 

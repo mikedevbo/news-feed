@@ -103,9 +103,6 @@ app.MapFallbackToFile("index.html");
 
 app.MapPost($"/{typeof(GetMenuRequest).Name}", async (GetMenuRequest request, IMediator mediator) => await mediator.Send(request));
 
-app.MapGet("/twitter/accounts/{accountId}/menu", async (ITwitterRepositorySelfConnection db, int accountId) =>
-    await db.GetMenu(accountId));
-
 app.MapGet(
     "/twitter/accounts/{accountId}/tweets/{userId}",
     async (ITwitterRepositorySelfConnection db, int accountId, int userId) =>
