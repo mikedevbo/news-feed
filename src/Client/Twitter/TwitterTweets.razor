@@ -65,6 +65,12 @@
 
         public bool IsPersisted { get; set; }
     }
+
+    public async Task<List<Tweet>> Query(GetTweetsRequest request)
+    {
+        var result = await Extensions.CallApi(Http, request);
+        return result.DeserializeXml<List<Tweet>>();
+    }
 }
 
 @code
@@ -87,14 +93,9 @@
     {
         switch (message)
         {
-            case GroupSelected:
-                //this.tweets = new List<Tweet>();
-                //this.StateHasChanged();
-                break;
-
             case UserSelected user:
                 this.user = (user.Id, user.Name, user.TwitterUserId);
-                this.tweets = await this.Http.GetFromJsonAsync<List<Tweet>>($"/twitter/accounts/{this.StateContainer.AccountId}/tweets/{this.user.Id}") ?? new List<Tweet>();
+                this.tweets = await this.Query(new GetTweetsRequest(this.user.Id));
                 this.NotifyTweetsLoaded();
                 this.StateHasChanged();
                 break;

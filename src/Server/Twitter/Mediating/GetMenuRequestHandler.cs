@@ -37,7 +37,7 @@ namespace NewsFeed.Server.Twitter.Mediating
 	for xml path ('User'), type
 ) [Users]
 from dbo.TwitterGroups as [Group]
-where [Group].AccountId = @accountId
+where [Group].AccountId = @AccountId
 for xml auto, elements, root('Root')";
 
             using var connection = new SqlConnection(configuration.GetValue<string>(Constants.ConnectionStringPersistenceKey));
