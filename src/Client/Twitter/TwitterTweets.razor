@@ -25,15 +25,35 @@
 </div>
 }
 
+@*Params*@
 @code
 {
     private (int Id, string Name, string twitterId) user;
     private List<Tweet> tweets = new List<Tweet>();
 }
 
+@*Css*@
+@code
+{
+    private string IsReadCss(Tweet tweet)
+    {
+        return tweet.IsRead ? "font-weight: normal" : "font-weight: bold";
+    }
+
+    private string IsPersistedCss(Tweet tweet)
+    {
+        return tweet.IsPersisted ? "font-weight: bold" : "font-weight: normal";
+    }
+}
+
+@*ViewModel*@
 @code
 {
 
+}
+
+@code
+{
     protected override async Task OnInitializedAsync()
     {
         StateContainer.Subscribers += this.Handle;
@@ -45,6 +65,7 @@
     }
 }
 
+@*StateContainer*@
 @code {
 
     private async void Handle(IMessage message)
@@ -70,19 +91,7 @@
     }
 }
 
-@code
-{
-    private string IsReadCss(Tweet tweet)
-    {
-        return tweet.IsRead ? "font-weight: normal" : "font-weight: bold";
-    }
-
-    private string IsPersistedCss(Tweet tweet)
-    {
-        return tweet.IsPersisted ? "font-weight: bold" : "font-weight: normal";
-    }
-}
-
+@*Actions*@
 @code
 {
     private async Task SetReadState(Tweet tweet)
