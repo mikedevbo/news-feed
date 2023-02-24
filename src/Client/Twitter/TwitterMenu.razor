@@ -95,7 +95,7 @@
 
     public async Task<List<Group>> Query(GetMenuRequest request)
     {
-        var result = await Extensions.CallApi<GetMenuRequest>(Http, request);
+        var result = await Extensions.CallApi(Http, request);
         return result.DeserializeXml<List<Group>>();
     }
 }
