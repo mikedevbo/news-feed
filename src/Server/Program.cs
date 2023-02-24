@@ -103,6 +103,7 @@ app.MapFallbackToFile("index.html");
 
 app.MapPost($"/{typeof(GetMenuRequest).Name}", async (GetMenuRequest request, IMediator mediator) => await mediator.Send(request));
 app.MapPost($"/{typeof(GetTweetsRequest).Name}", async (GetTweetsRequest request, IMediator mediator) => await mediator.Send(request));
+app.MapPost($"/{typeof(SetReadStateRequest).Name}", async (SetReadStateRequest request, IMediator mediator) => await mediator.Send(request));
 
 app.MapPost("/twitter/tweets/startdownloading", async (
     ITransactionalSession messageSession,
@@ -120,13 +121,6 @@ app.MapPost("/twitter/tweets/startdownloading", async (
     await messageSession.Commit();
 
     return Results.Ok();
-});
-
-app.MapPost("/twitter/tweets/setReadState", async (
-    ITwitterRepositorySelfConnection db,
-    SetReadState command) =>
-{
-    await db.SetTweetReadState(command.TweetId, command.IsRead);
 });
 
 app.MapPost("/twitter/tweets/setPersistedState", async (

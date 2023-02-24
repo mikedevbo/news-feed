@@ -114,11 +114,7 @@
     {
         tweet.IsRead = !tweet.IsRead;
 
-        var result = await this.Http.PostAsJsonAsync<SetReadState>(
-            $"/twitter/tweets/setReadState",
-            new SetReadState(tweet.Id, tweet.IsRead));
-
-        result.EnsureSuccessStatusCode();
+        await Extensions.CallApi(Http, new SetReadStateRequest(tweet.Id, tweet.IsRead));
 
         this.NotifyTweetsLoaded();
     }
