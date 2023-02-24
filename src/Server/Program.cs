@@ -61,8 +61,6 @@ builder.Services.AddScoped<ITwitterRepository, TwitterRepository>(b =>
     return repository;
 });
 
-builder.Services.AddScoped<ITwitterRepositorySelfConnection, TwitterRepositorySelfConnection>();
-
 if (config.GetValue<bool>("IsUseFake"))
 {
     builder.Services.AddScoped<ITwitterApiClient, TwitterApiClientFake>();
