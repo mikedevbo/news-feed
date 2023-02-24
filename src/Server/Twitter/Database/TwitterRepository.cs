@@ -99,10 +99,5 @@ where Id in @Ids and IsTweetsDownloading = @currentState";
             await connection.DeleteAsync(tweets, transaction);
             await connection.DeleteAsync(tweetsApi, transaction);
         }
-
-        public IList<TweetDto> GetDownloadedTweets(string accountId)
-        {
-            return new List<TweetDto>();
-        }
     }
 }
