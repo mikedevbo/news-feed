@@ -15,9 +15,9 @@ namespace NewsFeed.Server.Twitter.Mediating
             this.configuration = configuration;
         }
 
-        public async Task Handle(SetReadStateRequest request, CancellationToken cancellationToken)
+        public Task Handle(SetReadStateRequest request, CancellationToken cancellationToken)
         {
-            await this.Command(request);
+            return this.Command(request);
         }
 
         public async Task Command(SetReadStateRequest request)
