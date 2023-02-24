@@ -1,7 +1,7 @@
 ﻿using Dapper;
 using MediatR;
 using Microsoft.Data.SqlClient;
-using NewsFeed.Shared.Twitter.Contracts;
+using NewsFeed.Shared.Twitter;
 
 namespace NewsFeed.Server.Twitter.Mediating
 {

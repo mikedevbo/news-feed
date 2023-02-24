@@ -13,4 +13,8 @@
   <ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Twitter\Contracts\" />
+  </ItemGroup>
 </Project>

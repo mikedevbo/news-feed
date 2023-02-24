@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace NewsFeed.Shared.Twitter.Contracts
+namespace NewsFeed.Shared.Twitter
 {
     public record GetMenuRequest(int AccountId) : IRequest<string>;
 
