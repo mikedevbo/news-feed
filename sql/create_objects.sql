@@ -79,7 +79,7 @@ GO
 CREATE TABLE [dbo].[TwitterTweets](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[UserId] [int] NOT NULL,
-	[IsPersisted] [bit] NOT NULL,
+	[IsFavorite] [bit] NOT NULL,
 	[IsRead] [bit] NOT NULL
  CONSTRAINT [PK_TwitterTweets] PRIMARY KEY CLUSTERED 
 (

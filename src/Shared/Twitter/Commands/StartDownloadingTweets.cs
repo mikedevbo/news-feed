@@ -6,6 +6,4 @@ namespace NewsFeed.Shared.Twitter.Commands
     {
         public record UserData(int UserId, string TwitterUserId);
     }
-
-    public record SetFavoriteState(int TweetId, bool IsPersisted);
 }

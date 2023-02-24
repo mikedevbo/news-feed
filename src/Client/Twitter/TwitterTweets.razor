@@ -20,7 +20,7 @@
             <p>@tweet.Text</p>
         </div>
         <button class="w3-button w3-border w3-margin" @onclick="e => SetReadState(tweet)">Read</button>
-            <button class="w3-button w3-border w3-margin w3-right" style="@IsPersistedCss(tweet)" @onclick="e => SetPersistedState(tweet)">Favorite</button>
+            <button class="w3-button w3-border w3-margin w3-right" style="@IsFavoriteCss(tweet)" @onclick="e => SetPersistedState(tweet)">Favorite</button>
     </div>
 </div>
 }
@@ -40,9 +40,9 @@
         return tweet.IsRead ? "font-weight: normal" : "font-weight: bold";
     }
 
-    private string IsPersistedCss(Tweet tweet)
+    private string IsFavoriteCss(Tweet tweet)
     {
-        return tweet.IsPersisted ? "font-weight: bold" : "font-weight: normal";
+        return tweet.IsFavorite ? "font-weight: bold" : "font-weight: normal";
     }
 }
 
@@ -63,7 +63,7 @@
 
         public bool IsRead { get; set; }
 
-        public bool IsPersisted { get; set; }
+        public bool IsFavorite { get; set; }
     }
 
     public async Task<List<Tweet>> Query(GetTweetsRequest request)
@@ -121,13 +121,9 @@
 
     private async Task SetPersistedState(Tweet tweet)
     {
-        tweet.IsPersisted = !tweet.IsPersisted;
+        tweet.IsFavorite = !tweet.IsFavorite;
 
-        var result = await this.Http.PostAsJsonAsync<SetFavoriteState>(
-            $"/twitter/tweets/setPersistedState",
-            new SetFavoriteState(tweet.Id, tweet.IsPersisted));
-
-        result.EnsureSuccessStatusCode();
+        await Extensions.CallApi(Http, new SetFavoriteStateRequest(tweet.Id, tweet.IsFavorite));
     }
 
     private async Task StartDownloadingTweets(List<UserData> users)

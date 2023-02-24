@@ -104,6 +104,7 @@ app.MapFallbackToFile("index.html");
 app.MapPost($"/{typeof(GetMenuRequest).Name}", async (GetMenuRequest request, IMediator mediator) => await mediator.Send(request));
 app.MapPost($"/{typeof(GetTweetsRequest).Name}", async (GetTweetsRequest request, IMediator mediator) => await mediator.Send(request));
 app.MapPost($"/{typeof(SetReadStateRequest).Name}", async (SetReadStateRequest request, IMediator mediator) => await mediator.Send(request));
+app.MapPost($"/{typeof(SetFavoriteStateRequest).Name}", async (SetFavoriteStateRequest request, IMediator mediator) => await mediator.Send(request));
 
 app.MapPost("/twitter/tweets/startdownloading", async (
     ITransactionalSession messageSession,
@@ -122,13 +123,5 @@ app.MapPost("/twitter/tweets/startdownloading", async (
 
     return Results.Ok();
 });
-
-app.MapPost("/twitter/tweets/setPersistedState", async (
-    ITwitterRepositorySelfConnection db,
-    SetFavoriteState command) =>
-{
-    await db.SetTweetPersistedState(command.TweetId, command.IsPersisted);
-});
-
 
 app.Run();
