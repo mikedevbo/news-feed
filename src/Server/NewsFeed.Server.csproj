@@ -10,17 +10,17 @@
     <PackageReference Include="Dapper" Version="2.0.123" />
     <PackageReference Include="Dapper.Contrib" Version="2.0.78" />
     <PackageReference Include="log4net" Version="2.0.15" />
-    <PackageReference Include="MediatR" Version="12.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.6" />
+    <PackageReference Include="MediatR" Version="12.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.14" />
     <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="6.1.0" />
-    <PackageReference Include="NServiceBus" Version="7.8.0" />
+    <PackageReference Include="NServiceBus" Version="7.8.2" />
     <PackageReference Include="NServiceBus.Extensions.Hosting" Version="1.1.0" />
     <PackageReference Include="NServiceBus.Newtonsoft.Json" Version="2.4.0" />
-    <PackageReference Include="NServiceBus.Persistence.Sql" Version="6.6.0" />
-    <PackageReference Include="NServiceBus.Persistence.Sql.TransactionalSession" Version="6.6.0" />
+    <PackageReference Include="NServiceBus.Persistence.Sql" Version="6.6.2" />
+    <PackageReference Include="NServiceBus.Persistence.Sql.TransactionalSession" Version="6.6.2" />
     <PackageReference Include="NServiceBus.Transport.SqlServer" Version="6.3.4" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
-    <PackageReference Include="TwitterSharp" Version="2.3.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
+    <PackageReference Include="TwitterSharp" Version="2.4.0" />
   </ItemGroup>
 
   <ItemGroup>
