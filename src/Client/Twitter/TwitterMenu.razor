@@ -7,7 +7,7 @@
         <h3 class="w3-container">NewsFeed</h3>
         <button class="w3-bar-item w3-button w3-large w3-hide-large" @onclick="e => DisplaySidebar(false)">Close &times;</button>
         <hr />
-        <a href="#" class="w3-bar-item w3-button" @onclick="e => OnClickDownloadTweets()">GetAll</a>
+        <a href="#" class="w3-bar-item w3-button" @onclick="e => OnClickGetAll()">GetAll</a>
         <hr />
 
         @foreach (var group in this.groups)
@@ -20,7 +20,7 @@
 
             @if (group.Users.Any())
             {
-                <a href="#" class="w3-bar-item w3-button">GetAll</a>
+                <a href="#" class="w3-bar-item w3-button" @onclick="e => OnClickGetAll(group)">GetAll</a>
             }
 
             @foreach(var user in group.Users)
@@ -75,7 +75,7 @@
 
         public string Name { get; set; } = string.Empty;
 
-        public bool IsExpanded { get; set; }
+        public bool IsExpanded { get; set; } = true;
 
         public List<User> Users { get; set; } = new List<User>();
 
@@ -178,10 +178,21 @@
         });
     }
 
-    private async Task OnClickDownloadTweets()
+    private async Task OnClickGetAll()
     {
         var users = this.groups.SelectMany(g => g.Users).ToList();
         foreach(var user in users)
+        {
+            user.IsDownloadingTweets = true;
+        }
+
+        await this.StartDownloadingTweets(users.Select(u => (u.Id, u.TwitterUserId)).ToList());
+    }
+
+    private async Task OnClickGetAll(Group group)
+    {
+        var users = this.groups.Where(g => g.Id == group.Id).SelectMany(g => g.Users).ToList();
+        foreach (var user in users)
         {
             user.IsDownloadingTweets = true;
         }
