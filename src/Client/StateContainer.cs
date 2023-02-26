@@ -16,6 +16,6 @@ public record GroupSelected(int Id, string Name) : IMessage;
 
 public record UserSelected(int Id, string Name, string TwitterUserId) : IMessage;
 
-public record DownloadTweetsRequested(List<string> TwitterUserIds) : IMessage;
-
 public record TweetsLoaded(int UserId, int TweetsCount) : IMessage;
+
+public record DownloadTweetsRequested(int UserId, string TwitterUserId) : IMessage;

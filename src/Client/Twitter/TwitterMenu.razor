@@ -7,7 +7,7 @@
         <h3 class="w3-container">NewsFeed</h3>
         <button class="w3-bar-item w3-button w3-large w3-hide-large" @onclick="e => DisplaySidebar(false)">Close &times;</button>
         <hr />
-        <a href="#" class="w3-bar-item w3-button">GetAll</a>
+        <a href="#" class="w3-bar-item w3-button" @onclick="e => OnClickDownloadTweets()">GetAll</a>
         <hr />
 
         @foreach (var group in this.groups)
@@ -59,7 +59,10 @@
 
     private string ShowUser(User user)
     {
-        return user.UnreadTweetsCount > 0 ? $"{user.Name} ({user.UnreadTweetsCount})" : user.Name;
+        var unreadView = user.UnreadTweetsCount > 0 ? $"{user.Name} ({user.UnreadTweetsCount})" : user.Name;
+        var donwloadView = user.IsDownloadingTweets ? $"~{unreadView}" : unreadView;
+
+        return donwloadView;
     }
 }
 
@@ -90,12 +93,24 @@
         public int UnreadTweetsCount { get; set; }
 
         public string UnreadTweetsCss => UnreadTweetsCount > 0 ? "font-weight: bold" : "font-weight: normal";
+
+        public bool IsDownloadingTweets { get; set; }
     }
 
     public async Task<List<Group>> Query(GetMenuRequest request)
     {
         var result = await Extensions.CallApi(Http, request);
         return result.DeserializeXml<List<Group>>();
+    }
+
+
+    private void SetUserDownloadingState(int userId, bool state)
+    {
+        var user = this.groups.SelectMany(g => g.Users).FirstOrDefault(u => u.Id == userId);
+        if(user is not null)
+        {
+            user.IsDownloadingTweets = state;
+        }
     }
 }
 
@@ -117,7 +132,7 @@
 @*StateContainer*@
 @code {
 
-    private void Handle(IMessage message)
+    private async void Handle(IMessage message)
     {
         switch (message)
         {
@@ -126,13 +141,20 @@
                 user.UnreadTweetsCount = tweets.TweetsCount;
                 StateHasChanged();
                 break;
+
+            case DownloadTweetsRequested data:
+                this.SetUserDownloadingState(data.UserId, true);
+                StateHasChanged();
+                await this.StartDownloadingTweets(new List<(int, string)> { (data.UserId, data.TwitterUserId)});
+                StateHasChanged();
+                break;
         }
     }
 }
 
 @*Actions*@
 @code
-{   
+{
     private async void OnClick(Action action)
     {
         action();
@@ -154,5 +176,27 @@
         { 
             this.StateContainer.Publish(new UserSelected(user.Id, user.Name, user.TwitterUserId));
         });
+    }
+
+    private async Task OnClickDownloadTweets()
+    {
+        var users = this.groups.SelectMany(g => g.Users).ToList();
+        foreach(var user in users)
+        {
+            user.IsDownloadingTweets = true;
+        }
+
+        await this.StartDownloadingTweets(users.Select(u => (u.Id, u.TwitterUserId)).ToList());
+    }
+}
+
+@*Other*@
+@code
+{
+    private async Task StartDownloadingTweets(List<(int userId, string twitterUserId)> u)
+    {
+        await Task.Delay(3000);
+
+        u.ForEach(us => this.SetUserDownloadingState(us.userId, false));
     }
 }

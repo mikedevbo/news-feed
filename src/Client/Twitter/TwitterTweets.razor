@@ -9,7 +9,7 @@
     <h3>@user.Name</h3>
 </div>
 
-<button class="w3-button w3-border w3-margin">Get</button>
+<button class="w3-button w3-border w3-margin" @onclick="e => DownloadTweets()">Get</button>
 
 @foreach(var tweet in this.tweets)
 {
@@ -27,7 +27,7 @@
 @*Params*@
 @code
 {
-    private (int Id, string Name, string twitterId) user;
+    private (int Id, string Name, string TwitterId) user;
     private List<Tweet> tweets = new List<Tweet>();
 }
 
@@ -98,10 +98,6 @@
                 this.NotifyTweetsLoaded();
                 this.StateHasChanged();
                 break;
-            case DownloadTweetsRequested:
-                var userTwitterIds = (message as DownloadTweetsRequested)!.TwitterUserIds;
-                Console.WriteLine(userTwitterIds.Count());
-                break;
         }
     }
 }
@@ -125,14 +121,9 @@
         await Extensions.CallApi(Http, new SetFavoriteStateRequest(tweet.Id, tweet.IsFavorite));
     }
 
-    private async Task StartDownloadingTweets(List<UserData> users)
+    private void DownloadTweets()
     {
-        var result = await this.Http.PostAsJsonAsync<StartDownloadingTweets>(
-            $"/twitter/tweets/startdownloading",
-            new StartDownloadingTweets(users)
-        );
-
-        result.EnsureSuccessStatusCode();
+        this.StateContainer.Publish(new DownloadTweetsRequested(this.user.Id, this.user.TwitterId));
     }
 
     private void NotifyTweetsLoaded()
