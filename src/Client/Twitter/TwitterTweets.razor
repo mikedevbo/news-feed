@@ -3,12 +3,12 @@
 @inject HttpClient Http
 @inject StateContainer StateContainer
 
-<div class="w3-container">
-    <h3>@user.Name</h3>
-</div>
-
 @if(this.user.Id > 0)
 {
+    <div class="w3-container">
+        <h3>@user.Name</h3>
+    </div>
+
     <button class="w3-button w3-border w3-margin" @onclick="e => DownloadTweets()">Get</button>
 }
 
