@@ -7,7 +7,10 @@
     <h3>@user.Name</h3>
 </div>
 
-<button class="w3-button w3-border w3-margin" @onclick="e => DownloadTweets()">Get</button>
+@if(this.user.Id > 0)
+{
+    <button class="w3-button w3-border w3-margin" @onclick="e => DownloadTweets()">Get</button>
+}
 
 @foreach(var tweet in this.tweets)
 {

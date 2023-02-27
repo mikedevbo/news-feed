@@ -238,7 +238,7 @@
             inProgress = result.Any(r => r.IsDownloadingTweets);
             tryCount += 1;
 
-            Console.WriteLine("go tryCount -> " + tryCount);
+            // Console.WriteLine("go tryCount -> " + tryCount);
         }
         while (inProgress && tryCount < 3);
     }
