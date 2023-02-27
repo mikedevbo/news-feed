@@ -204,10 +204,48 @@
 @*Other*@
 @code
 {
-    private async Task StartDownloadingTweets(List<(int userId, string twitterUserId)> u)
+    private async Task StartDownloadingTweets(List<(int userId, string twitterUserId)> users)
     {
-        await Task.Delay(3000);
+        // start downloading tweets
+        var request = new StartDownloadingTweetsRequest(users.Select(u => new StartDownloadingTweetsRequest.UserData(u.userId, u.twitterUserId)).ToList());
+        await Extensions.CallApi(Http, request);
 
-        u.ForEach(us => this.SetUserDownloadingState(us.userId, false));
+        // check results
+        bool isAllFinished = false;
+        int tryCount = 0;
+
+        do
+        {
+            await Task.Delay(3000);
+
+            // call api -> getResults(useres)
+
+            users.ForEach(us => this.SetUserDownloadingState(us.userId, false));
+            StateHasChanged();
+
+            tryCount += 1;
+        }
+        while (isAllFinished || tryCount < 3);
+
+        //while(true)
+        //{
+        //    Console.WriteLine("go i -> " + i);
+
+        //    await Task.Delay(3000);
+
+        //    // call api -> getResults(useres)
+
+        //    u.ForEach(us => this.SetUserDownloadingState(us.userId, false));
+        //    StateHasChanged();
+
+        //    // if all state == 0
+        //    // break
+        //    if (i == 2)
+        //    {
+        //        break;
+        //    }
+
+        //    i += 1;
+        //}
     }
 }

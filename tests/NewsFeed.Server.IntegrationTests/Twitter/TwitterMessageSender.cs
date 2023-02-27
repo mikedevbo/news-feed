@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
 using NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.Commands;
-using NewsFeed.Shared.Twitter.Commands;
 using NServiceBus;
 using System.Reflection;
 

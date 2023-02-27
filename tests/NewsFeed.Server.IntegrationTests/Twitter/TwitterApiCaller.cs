@@ -1,7 +1,6 @@
 ﻿using NewsFeed.Shared.Twitter;
-using NewsFeed.Shared.Twitter.Commands;
 using System.Net.Http.Json;
-using static NewsFeed.Shared.Twitter.Commands.StartDownloadingTweets;
+using static NewsFeed.Shared.Twitter.StartDownloadingTweetsRequest;
 
 namespace NewsFeed.Server.IntegrationTests.Twitter
 {
@@ -23,10 +22,11 @@ namespace NewsFeed.Server.IntegrationTests.Twitter
         {
             // Arrange
             var users = new List<UserData> {  new UserData(1, "1"), new UserData(2, "2") };
-            var command = new StartDownloadingTweets(users);
+            var command = new StartDownloadingTweetsRequest(users);
 
             // Act
-            await httpClient.PostAsJsonAsync($"/twitter/tweets/startdownoading", command);
+            var result = await httpClient.PostAsJsonAsync(typeof(StartDownloadingTweetsRequest).Name, command);
+            result.EnsureSuccessStatusCode();
 
             // Assert
             Assert.Pass();

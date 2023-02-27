@@ -1,14 +1,11 @@
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using NewsFeed.Server;
 using NewsFeed.Server.Twitter.Database;
 using NewsFeed.Server.Twitter.ExternalApi;
 using NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.Commands;
 using NewsFeed.Shared.Twitter;
-using NewsFeed.Shared.Twitter.Commands;
 using NServiceBus;
 using NServiceBus.Persistence.Sql;
-using NServiceBus.TransactionalSession;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,7 +23,6 @@ builder.Host.UseNServiceBus(context =>
          config,
          new List<(Assembly, string)>
          {
-             (typeof(StartDownloadingTweets).Assembly, endpointName),
              (typeof(StartDownloadingTweetsForUser).Assembly, endpointName)
          });
 
@@ -103,23 +99,6 @@ app.MapPost($"/{typeof(GetMenuRequest).Name}", async (GetMenuRequest request, IM
 app.MapPost($"/{typeof(GetTweetsRequest).Name}", async (GetTweetsRequest request, IMediator mediator) => await mediator.Send(request));
 app.MapPost($"/{typeof(SetReadStateRequest).Name}", async (SetReadStateRequest request, IMediator mediator) => await mediator.Send(request));
 app.MapPost($"/{typeof(SetFavoriteStateRequest).Name}", async (SetFavoriteStateRequest request, IMediator mediator) => await mediator.Send(request));
-
-app.MapPost("/twitter/tweets/startdownloading", async (
-    ITransactionalSession messageSession,
-    ITwitterRepository twitterRepository,
-    StartDownloadingTweets command) =>
-{
-    Console.WriteLine("execute StartDownloadingTweets " + System.Text.Json.JsonSerializer.Serialize(command));
-
-    await messageSession.Open(new SqlPersistenceOpenSessionOptions());
-
-    ////TODO: add logic
-    await twitterRepository.SetTweetsDownloadingState(command.Users[0].UserId, true);
-    await messageSession.Send(command);
-
-    await messageSession.Commit();
-
-    return Results.Ok();
-});
+app.MapPost($"/{typeof(StartDownloadingTweetsRequest).Name}", async (StartDownloadingTweetsRequest request, IMediator mediator) => await mediator.Send(request));
 
 app.Run();

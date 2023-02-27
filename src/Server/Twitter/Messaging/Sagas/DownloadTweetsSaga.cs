@@ -3,11 +3,14 @@ using NewsFeed.Server.Twitter.ExternalApi;
 using NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.Commands;
 using NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.Messages;
 using NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.SagaData;
-using NewsFeed.Shared.Twitter.Commands;
 using NServiceBus;
 
 namespace NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.Commands
 {
+    public record StartDownloadingTweets(List<StartDownloadingTweets.UserData> Users)
+    {
+        public record UserData(int UserId, string TwitterUserId);
+    }
 
     public record StartDownloadingTweetsForUser(int UserId, string TwitterUserId);
 
