@@ -97,12 +97,24 @@
         public bool IsDownloadingTweets { get; set; }
     }
 
+    public class UserDownladTweetsState
+    {
+        public int UserId { get; set; }
+
+        public bool IsDownloadingTweets { get; set; }
+    }
+
     public async Task<List<Group>> Query(GetMenuRequest request)
     {
         var result = await Extensions.CallApi(Http, request);
         return result.DeserializeXml<List<Group>>();
     }
 
+    public async Task<List<UserDownladTweetsState>> Query(GetDownloadingTweetsState request)
+    {
+        var result = await Extensions.CallApi(Http, request);
+        return result.DeserializeXml<List<UserDownladTweetsState>>();
+    }
 
     private void SetUserDownloadingState(int userId, bool state)
     {
@@ -211,41 +223,23 @@
         await Extensions.CallApi(Http, request);
 
         // check results
-        bool isAllFinished = false;
+        bool inProgress = false;
         int tryCount = 0;
+        var usersIds = users.Select(u => u.userId).ToList();
 
         do
         {
             await Task.Delay(3000);
 
-            // call api -> getResults(useres)
-
-            users.ForEach(us => this.SetUserDownloadingState(us.userId, false));
+            var result = await this.Query(new GetDownloadingTweetsState(usersIds));
+            result.ForEach(r => this.SetUserDownloadingState(r.UserId, r.IsDownloadingTweets));
             StateHasChanged();
 
+            inProgress = result.Any(r => r.IsDownloadingTweets);
             tryCount += 1;
+
+            Console.WriteLine("go tryCount -> " + tryCount);
         }
-        while (isAllFinished || tryCount < 3);
-
-        //while(true)
-        //{
-        //    Console.WriteLine("go i -> " + i);
-
-        //    await Task.Delay(3000);
-
-        //    // call api -> getResults(useres)
-
-        //    u.ForEach(us => this.SetUserDownloadingState(us.userId, false));
-        //    StateHasChanged();
-
-        //    // if all state == 0
-        //    // break
-        //    if (i == 2)
-        //    {
-        //        break;
-        //    }
-
-        //    i += 1;
-        //}
+        while (inProgress && tryCount < 3);
     }
 }

@@ -14,4 +14,6 @@ namespace NewsFeed.Shared.Twitter
     {
         public record UserData(int UserId, string TwitterUserId);
     }
+
+    public record GetDownloadingTweetsState(List<int> UsersIds) : IRequest<string>;
 }

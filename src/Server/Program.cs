@@ -100,5 +100,6 @@ app.MapPost($"/{typeof(GetTweetsRequest).Name}", async (GetTweetsRequest request
 app.MapPost($"/{typeof(SetReadStateRequest).Name}", async (SetReadStateRequest request, IMediator mediator) => await mediator.Send(request));
 app.MapPost($"/{typeof(SetFavoriteStateRequest).Name}", async (SetFavoriteStateRequest request, IMediator mediator) => await mediator.Send(request));
 app.MapPost($"/{typeof(StartDownloadingTweetsRequest).Name}", async (StartDownloadingTweetsRequest request, IMediator mediator) => await mediator.Send(request));
+app.MapPost($"/{typeof(GetDownloadingTweetsState).Name}", async (GetDownloadingTweetsState request, IMediator mediator) => await mediator.Send(request));
 
 app.Run();
