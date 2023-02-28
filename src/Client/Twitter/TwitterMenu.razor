@@ -104,13 +104,13 @@
         public bool IsDownloadingTweets { get; set; }
     }
 
-    public async Task<List<Group>> Query(GetMenuRequest request)
+    private async Task<List<Group>> Query(GetMenuRequest request)
     {
         var result = await Extensions.CallApi(Http, request);
         return result.DeserializeXml<List<Group>>();
     }
 
-    public async Task<List<UserDownladTweetsState>> Query(GetDownloadingTweetsState request)
+    private async Task<List<UserDownladTweetsState>> Query(GetDownloadingTweetsState request)
     {
         var result = await Extensions.CallApi(Http, request);
         return result.DeserializeXml<List<UserDownladTweetsState>>();
@@ -238,7 +238,7 @@
             inProgress = result.Any(r => r.IsDownloadingTweets);
             tryCount += 1;
 
-            // Console.WriteLine("go tryCount -> " + tryCount);
+            Console.WriteLine("go tryCount -> " + tryCount);
         }
         while (inProgress && tryCount < 3);
     }
