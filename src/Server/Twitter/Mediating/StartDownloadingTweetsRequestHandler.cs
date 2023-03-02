@@ -1,18 +1,26 @@
 ﻿using Dapper;
 using MediatR;
 using Microsoft.Data.SqlClient;
+using NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.Commands;
 using NewsFeed.Shared.Twitter;
+using NServiceBus;
+using NServiceBus.TransactionalSession;
 using System.Threading;
+using System.Transactions;
 
 namespace NewsFeed.Server.Twitter.Mediating
 {
     public class StartDownloadingTweetsRequestHandler : IRequestHandler<StartDownloadingTweetsRequest>
     {
         private readonly IConfiguration configuration;
+        private readonly ITransactionalSession session;
 
-        public StartDownloadingTweetsRequestHandler(IConfiguration configuration)
+        public StartDownloadingTweetsRequestHandler(
+            IConfiguration configuration,
+            ITransactionalSession session)
         {
             this.configuration = configuration;
+            this.session = session;
         }
 
         public Task Handle(StartDownloadingTweetsRequest request, CancellationToken cancellationToken)
@@ -22,15 +30,21 @@ namespace NewsFeed.Server.Twitter.Mediating
 
         public async Task Command(StartDownloadingTweetsRequest request)
         {
-            await Console.Out.WriteLineAsync("users count " + request.Users.Count);
+            var data = request.Users.Select(u => new StartDownloadingTweets.UserData(u.UserId, u.TwitterUserId)).ToList();
+            var command = new StartDownloadingTweets(data);
 
-            //    await messageSession.Open(new SqlPersistenceOpenSessionOptions());
+            await this.session.Open(new SqlPersistenceOpenSessionOptions());
 
-            //    ////TODO: add logic
-            //    await twitterRepository.SetTweetsDownloadingState(command.Users[0].UserId, true);
-            //    await messageSession.Send(command);
+            var storageSession = this.session.SynchronizedStorageSession.SqlPersistenceSession();
+            await TwitterCommon.SetUserIsDownloadingTweetsState(
+                storageSession.Connection,
+                storageSession.Transaction,
+                request.Users.Select(u => u.UserId).ToList(),
+                true);
 
-            //    await messageSession.Commit();
+            await this.session.Send(command);
+
+            await this.session.Commit();
         }
     }
 }

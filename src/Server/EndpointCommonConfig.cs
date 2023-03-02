@@ -44,6 +44,7 @@ namespace NewsFeed.Server
                     return new SqlConnection(connectionStringPersistence);
                 });
 
+            // transactional session
             persistence.EnableTransactionalSession();
 
             ////Routing

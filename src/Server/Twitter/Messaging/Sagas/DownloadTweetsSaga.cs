@@ -41,10 +41,11 @@ namespace NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.EntryPointH
     {
         public async Task Handle(StartDownloadingTweets message, IMessageHandlerContext context)
         {
-            foreach (var (UserId, TwitterUserId) in message.Users)
-            {
-                await context.Send(new StartDownloadingTweetsForUser(UserId, TwitterUserId));
-            }
+            await Console.Out.WriteLineAsync("users " + message.Users.Count);
+            //foreach (var (UserId, TwitterUserId) in message.Users)
+            //{
+            //    await context.Send(new StartDownloadingTweetsForUser(UserId, TwitterUserId));
+            //}
         }
     }
 }
