@@ -7,14 +7,22 @@ using NServiceBus;
 
 namespace NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.Commands
 {
-    public record StartDownloadingTweets(List<StartDownloadingTweets.UserData> Users)
-    {
-        public record UserData(int UserId, string TwitterUserId);
-    }
+    //public record StartDownloadingTweets(List<StartDownloadingTweets.UserData> Users)
+    //{
+    //    public record UserData(int UserId, string TwitterUserId);
+    //}
+
+    public record StartDownloadingTweets(List<(int UserId, string TwitterUserId)> Users);
 
     public record StartDownloadingTweetsForUser(int UserId, string TwitterUserId);
 
     public record DownloadTweets(int UserId, string TwitterUserId);
+
+    public record SaveTweetsData(int UserId, List<(string TweetId, string TweetText, DateTime? CreatedAt)> Tweets);
+
+    public record SaveTweetsApiData(int UserId, List<(int Identity, string TweetId, string TweetText, DateTime? CreatedAt)> Tweets);
+
+    public record SetUserTweetsDownloadingState(int UserId);
 
     public record ClearOldTweets(int UserId);
 }
@@ -29,8 +37,6 @@ namespace NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.SagaData
     public class DownloadTweetsSagaData : ContainSagaData
     {
         public int UserId { get; set; }
-
-        public bool IsInProgress { get; set; }
     }
 }
 
@@ -41,11 +47,11 @@ namespace NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.EntryPointH
     {
         public async Task Handle(StartDownloadingTweets message, IMessageHandlerContext context)
         {
-            await Console.Out.WriteLineAsync("users " + message.Users.Count);
-            //foreach (var (UserId, TwitterUserId) in message.Users)
-            //{
-            //    await context.Send(new StartDownloadingTweetsForUser(UserId, TwitterUserId));
-            //}
+            foreach (var (UserId, TwitterUserId) in message.Users)
+            {
+                await Console.Out.WriteLineAsync($"{UserId} {TwitterUserId}");
+                // await context.Send(new StartDownloadingTweetsForUser(UserId, TwitterUserId));
+            }
         }
     }
 }
@@ -59,9 +65,8 @@ namespace NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga
     {
         public async Task Handle(StartDownloadingTweetsForUser message, IMessageHandlerContext context)
         {
-            if (!this.Data.IsInProgress)
+            if (this.Data.UserId != 0)
             {
-                this.Data.IsInProgress = true;
                 await this.RequestClearOldTweetsTimeout(context);
             }
 
@@ -91,31 +96,62 @@ namespace NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.Handlers
 {
     public class DownloadTweetsHandlers :
         IHandleMessages<DownloadTweets>,
+        IHandleMessages<SaveTweetsData>,
+        IHandleMessages<SaveTweetsApiData>,
+        IHandleMessages<SetUserTweetsDownloadingState>,
         IHandleMessages<ClearOldTweets>
     {
         private readonly ILogger logger;
         private readonly ITwitterApiClient twitterApiClient;
-        private readonly ITwitterRepository twitterRepository;
 
         public DownloadTweetsHandlers(
             ILogger<DownloadTweetsHandlers> logger,
-            ITwitterApiClient twitterApiClient,
-            ITwitterRepository twitterRepository)
+            ITwitterApiClient twitterApiClient)
         {
             this.logger = logger;
             this.twitterApiClient = twitterApiClient;
-            this.twitterRepository = twitterRepository;
         }
 
         public async Task Handle(DownloadTweets message, IMessageHandlerContext context)
         {
-            Log(message, context);
+            this.Log(message, context);
 
             var tweets = await twitterApiClient.GetTweets(message.TwitterUserId);
+            var tweetsData = tweets.Select(t => (t.Id, t.Text, t.CreatedAt)).ToList();
 
-            ////TODO Best to split into separate handlers == shorter transactions
-            await twitterRepository.SaveTweets(message.UserId, tweets);
-            await twitterRepository.SetTweetsDownloadingState(message.UserId, false);
+            await context.Send(new SaveTweetsData(message.UserId, tweetsData));
+        }
+
+        public async Task Handle(SaveTweetsData message, IMessageHandlerContext context)
+        {
+            this.Log(message, context);
+
+            ////TODO: save tweets data and get ids
+            var tweetsData = new List<(int, string, string, DateTime?)> { new(0, "", "", DateTime.Now) };
+
+            await context.Send(new SaveTweetsApiData(message.UserId, tweetsData));
+        }
+
+        public async Task Handle(SaveTweetsApiData message, IMessageHandlerContext context)
+        {
+            this.Log(message, context);
+
+            ////TODO: save tweets data
+
+            await context.Send(new SetUserTweetsDownloadingState(message.UserId));
+        }
+
+        public async Task Handle(SetUserTweetsDownloadingState message, IMessageHandlerContext context)
+        {
+            this.Log(message, context);
+
+            var session = context.SynchronizedStorageSession.SqlPersistenceSession();
+
+            await TwitterCommon.SetUserIsDownloadingTweetsState(
+                session.Connection,
+                session.Transaction,
+                new List<int> { message.UserId },
+                false);
         }
 
         public Task Handle(ClearOldTweets message, IMessageHandlerContext context)

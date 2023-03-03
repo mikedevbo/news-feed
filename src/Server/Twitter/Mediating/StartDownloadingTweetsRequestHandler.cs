@@ -30,7 +30,9 @@ namespace NewsFeed.Server.Twitter.Mediating
 
         public async Task Command(StartDownloadingTweetsRequest request)
         {
-            var data = request.Users.Select(u => new StartDownloadingTweets.UserData(u.UserId, u.TwitterUserId)).ToList();
+            //var data = request.Users.Select(u => new StartDownloadingTweets.UserData(u.UserId, u.TwitterUserId)).ToList();
+            //var data = request.Users.ToDictionary(u => u.UserId, u => u.TwitterUserId);
+            var data = request.Users.Select(u => (u.UserId, u.TwitterUserId)).ToList();
             var command = new StartDownloadingTweets(data);
 
             await this.session.Open(new SqlPersistenceOpenSessionOptions());

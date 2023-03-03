@@ -25,6 +25,12 @@ GO
 CREATE SCHEMA nsb_p
 GO
 
+CREATE TYPE TwitterTweet AS TABLE(
+	IsPersisted bit not null
+    , IsRed bit not null
+);
+GO
+
 CREATE TABLE [dbo].[Accounts](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[Name] [varchar](50) NOT NULL,

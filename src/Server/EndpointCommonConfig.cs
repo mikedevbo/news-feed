@@ -22,6 +22,9 @@ namespace NewsFeed.Server
 
             LogManager.Use<DefaultFactory>();
 
+            ////Serialization
+            endpointConfiguration.UseSerialization<NewtonsoftJsonSerializer>();
+
             ////Conventions
             endpointConfiguration.Conventions().Add(new NewsFeedMessageConvention());
 
