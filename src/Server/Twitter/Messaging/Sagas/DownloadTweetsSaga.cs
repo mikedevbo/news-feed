@@ -20,8 +20,6 @@ namespace NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.Commands
 
     public record SaveTweetsData(int UserId, List<(string TweetId, string TweetText, DateTime? CreatedAt)> Tweets);
 
-    public record SaveTweetsApiData(int UserId, List<(int Identity, string TweetId, string TweetText, DateTime? CreatedAt)> Tweets);
-
     public record SetUserTweetsDownloadingState(int UserId);
 
     public record ClearOldTweets(int UserId);
@@ -97,7 +95,6 @@ namespace NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.Handlers
     public class DownloadTweetsHandlers :
         IHandleMessages<DownloadTweets>,
         IHandleMessages<SaveTweetsData>,
-        IHandleMessages<SaveTweetsApiData>,
         IHandleMessages<SetUserTweetsDownloadingState>,
         IHandleMessages<ClearOldTweets>
     {
@@ -127,16 +124,6 @@ namespace NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.Handlers
             this.Log(message, context);
 
             ////TODO: save tweets data and get ids
-            var tweetsData = new List<(int, string, string, DateTime?)> { new(0, "", "", DateTime.Now) };
-
-            await context.Send(new SaveTweetsApiData(message.UserId, tweetsData));
-        }
-
-        public async Task Handle(SaveTweetsApiData message, IMessageHandlerContext context)
-        {
-            this.Log(message, context);
-
-            ////TODO: save tweets data
 
             await context.Send(new SetUserTweetsDownloadingState(message.UserId));
         }
