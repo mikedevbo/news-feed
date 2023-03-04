@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using NewsFeed.Server.Twitter.Messaging.ClearTweetsPolicy.Commands;
 using NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.Commands;
 using NServiceBus;
 using System.Reflection;
@@ -25,10 +26,26 @@ namespace NewsFeed.Server.IntegrationTests.Twitter
                 new List<(Assembly, string)>
              {
                  (typeof(StartDownloadingTweets).Assembly, endpointName),
-                 (typeof(StartDownloadingTweetsForUser).Assembly, endpointName)
+                 (typeof(StartDownloadingTweetsForUser).Assembly, endpointName),
+                 (typeof(InitializeClearingTweets).Assembly, endpointName)
              });
 
             endpointInstance = await Endpoint.Start(endpointConfig);
+        }
+
+
+        [Test]
+        [Explicit]
+        public async Task InitializeClearingTweets_Send_Success()
+        {
+            // Arrange
+            var message = new InitializeClearingTweets(1);
+
+            // Act
+            await this.endpointInstance.Send(message);
+
+            // Assert
+            Assert.Pass();
         }
 
         [Test]

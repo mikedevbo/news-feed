@@ -1,17 +1,9 @@
-﻿using NewsFeed.Server.Twitter.Database;
-using NewsFeed.Server.Twitter.ExternalApi;
+﻿using NewsFeed.Server.Twitter.ExternalApi;
 using NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.Commands;
-using NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.Messages;
-using NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.SagaData;
 using NServiceBus;
 
 namespace NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.Commands
 {
-    //public record StartDownloadingTweets(List<StartDownloadingTweets.UserData> Users)
-    //{
-    //    public record UserData(int UserId, string TwitterUserId);
-    //}
-
     public record StartDownloadingTweets(List<(int UserId, string TwitterUserId)> Users);
 
     public record StartDownloadingTweetsForUser(int UserId, string TwitterUserId);
@@ -21,21 +13,6 @@ namespace NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.Commands
     public record SaveTweetsData(int UserId, List<(string TweetId, string TweetText, DateTime? CreatedAt)> Tweets);
 
     public record SetUserTweetsDownloadingState(int UserId);
-
-    public record ClearOldTweets(int UserId);
-}
-
-namespace NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.Messages
-{
-    public record ClearOldTweetsTimeout();
-}
-
-namespace NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.SagaData
-{
-    public class DownloadTweetsSagaData : ContainSagaData
-    {
-        public int UserId { get; set; }
-    }
 }
 
 namespace NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.EntryPointHandler
@@ -54,49 +31,12 @@ namespace NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.EntryPointH
     }
 }
 
-namespace NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga
-{
-    public class DownloadTweetsSaga :
-        Saga<DownloadTweetsSagaData>,
-        IAmStartedByMessages<StartDownloadingTweetsForUser>,
-        IHandleTimeouts<ClearOldTweetsTimeout>
-    {
-        public async Task Handle(StartDownloadingTweetsForUser message, IMessageHandlerContext context)
-        {
-            if (this.Data.UserId != 0)
-            {
-                await this.RequestClearOldTweetsTimeout(context);
-            }
-
-            await context.Send(new DownloadTweets(message.UserId, message.TwitterUserId));
-        }
-
-        public async Task Timeout(ClearOldTweetsTimeout state, IMessageHandlerContext context)
-        {
-            await context.Send(new ClearOldTweets(this.Data.UserId));
-            await this.RequestClearOldTweetsTimeout(context);
-        }
-
-        protected override void ConfigureHowToFindSaga(SagaPropertyMapper<DownloadTweetsSagaData> mapper)
-        {
-            mapper.MapSaga(s => s.UserId)
-                  .ToMessage<StartDownloadingTweetsForUser>(m => m.UserId);
-        }
-
-        private async Task RequestClearOldTweetsTimeout(IMessageHandlerContext context)
-        {
-            await this.RequestTimeout<ClearOldTweetsTimeout>(context, TimeSpan.FromDays(7));
-        }
-    }
-}
-
 namespace NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.Handlers
 {
     public class DownloadTweetsHandlers :
         IHandleMessages<DownloadTweets>,
         IHandleMessages<SaveTweetsData>,
-        IHandleMessages<SetUserTweetsDownloadingState>,
-        IHandleMessages<ClearOldTweets>
+        IHandleMessages<SetUserTweetsDownloadingState>
     {
         private readonly ILogger logger;
         private readonly ITwitterApiClient twitterApiClient;
@@ -139,12 +79,6 @@ namespace NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.Handlers
                 session.Transaction,
                 new List<int> { message.UserId },
                 false);
-        }
-
-        public Task Handle(ClearOldTweets message, IMessageHandlerContext context)
-        {
-            ////TODO: add logic
-            return Task.CompletedTask;
         }
 
         private void Log<TMessage>(
