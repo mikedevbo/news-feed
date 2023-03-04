@@ -36,11 +36,7 @@ namespace NewsFeed.Server.IntegrationTests.Twitter
         public async Task StartDownloadingTweets_Send_Success()
         {
             // Arrange
-            var message = new StartDownloadingTweets(new List<StartDownloadingTweets.UserData>
-            {
-                new StartDownloadingTweets.UserData(1, "1"),
-                new StartDownloadingTweets.UserData(2, "2")
-            });
+            var message = new StartDownloadingTweets(new List<(int, string)> { (1, "1"), (2, "2") });
 
             // Act
             await this.endpointInstance.Send(message);
