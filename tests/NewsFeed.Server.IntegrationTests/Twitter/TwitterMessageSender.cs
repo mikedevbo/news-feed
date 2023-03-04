@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
+using NewsFeed.Server.Twitter.Messaging;
 using NewsFeed.Server.Twitter.Messaging.ClearTweetsPolicy.Commands;
-using NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.Commands;
 using NServiceBus;
 using System.Reflection;
 
@@ -25,8 +25,6 @@ namespace NewsFeed.Server.IntegrationTests.Twitter
                 config,
                 new List<(Assembly, string)>
              {
-                 (typeof(StartDownloadingTweets).Assembly, endpointName),
-                 (typeof(StartDownloadingTweetsForUser).Assembly, endpointName),
                  (typeof(InitializeClearingTweets).Assembly, endpointName)
              });
 
@@ -40,48 +38,6 @@ namespace NewsFeed.Server.IntegrationTests.Twitter
         {
             // Arrange
             var message = new InitializeClearingTweets(1);
-
-            // Act
-            await this.endpointInstance.Send(message);
-
-            // Assert
-            Assert.Pass();
-        }
-
-        [Test]
-        [Explicit]
-        public async Task StartDownloadingTweets_Send_Success()
-        {
-            // Arrange
-            var message = new StartDownloadingTweets(new List<(int, string)> { (1, "1"), (2, "2") });
-
-            // Act
-            await this.endpointInstance.Send(message);
-
-            // Assert
-            Assert.Pass();
-        }
-
-        [Test]
-        [Explicit]
-        public async Task StartDownloadingTweetsForUser_Send_Success()
-        {
-            // Arrange
-            var message = new StartDownloadingTweetsForUser(1, "1");
-
-            // Act
-            await this.endpointInstance.Send(message);
-
-            // Assert
-            Assert.Pass();
-        }
-
-        [Test]
-        [Explicit]
-        public async Task DownloadTweets_Send_Success()
-        {
-            // Arrange
-            var message = new DownloadTweets(1, "1");
 
             // Act
             await this.endpointInstance.Send(message);

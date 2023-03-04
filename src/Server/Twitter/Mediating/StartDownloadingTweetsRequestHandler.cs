@@ -1,12 +1,8 @@
-﻿using Dapper;
-using MediatR;
-using Microsoft.Data.SqlClient;
-using NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.Commands;
+﻿using MediatR;
+using NewsFeed.Server.Twitter.Messaging.DownloadTweetsPolicy.Commands;
 using NewsFeed.Shared.Twitter;
 using NServiceBus;
 using NServiceBus.TransactionalSession;
-using System.Threading;
-using System.Transactions;
 
 namespace NewsFeed.Server.Twitter.Mediating
 {
@@ -30,8 +26,6 @@ namespace NewsFeed.Server.Twitter.Mediating
 
         public async Task Command(StartDownloadingTweetsRequest request)
         {
-            //var data = request.Users.Select(u => new StartDownloadingTweets.UserData(u.UserId, u.TwitterUserId)).ToList();
-            //var data = request.Users.ToDictionary(u => u.UserId, u => u.TwitterUserId);
             var data = request.Users.Select(u => (u.UserId, u.TwitterUserId)).ToList();
             var command = new StartDownloadingTweets(data);
 

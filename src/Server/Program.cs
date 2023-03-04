@@ -2,7 +2,8 @@ using MediatR;
 using NewsFeed.Server;
 using NewsFeed.Server.Twitter.Database;
 using NewsFeed.Server.Twitter.ExternalApi;
-using NewsFeed.Server.Twitter.Messaging.Sagas.DownloadTweetsSaga.Commands;
+using NewsFeed.Server.Twitter.Messaging;
+using NewsFeed.Server.Twitter.Messaging.DownloadTweetsPolicy.Commands;
 using NewsFeed.Shared.Twitter;
 using NServiceBus;
 using NServiceBus.Persistence.Sql;
@@ -23,7 +24,7 @@ builder.Host.UseNServiceBus(context =>
          config,
          new List<(Assembly, string)>
          {
-             (typeof(StartDownloadingTweetsForUser).Assembly, endpointName)
+             (typeof(StartDownloadingTweets).Assembly, endpointName)
          });
 
      //endpointConfig.RegisterComponents(c =>
