@@ -60,20 +60,9 @@ CREATE TABLE [dbo].[TwitterUsers](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[Name] [varchar](50) NOT NULL,
 	[GroupId] [int] NOT NULL,
-	[IsTweetsDownloading] [bit] NOT NULL
+	[IsTweetsDownloading] [bit] NOT NULL,
+	[UserIdApi] [varchar](50) NOT NULL,
  CONSTRAINT [PK_TwitterUsers] PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-
---
-
-CREATE TABLE [dbo].[TwitterUsersApi](
-	[Id] [int] NOT NULL,
-	[UserId] [varchar](50) NOT NULL,
- CONSTRAINT [PK_TwitterUsersApi] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
@@ -86,28 +75,13 @@ CREATE TABLE [dbo].[TwitterTweets](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[UserId] [int] NOT NULL,
 	[IsFavorite] [bit] NOT NULL,
-	[IsRead] [bit] NOT NULL
+	[IsRead] [bit] NOT NULL,
+	[TweetIdApi] [varchar](50) NOT NULL,
+	[TweetTextApi] [varchar](max) NOT NULL,
+	[TweetCreatedAtApi] [datetime] NOT NULL
  CONSTRAINT [PK_TwitterTweets] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-
---
-
-CREATE TABLE [dbo].[TwitterTweetsApi](
-	[Id] [int] NOT NULL,
-	[TweetId] [varchar](50) NOT NULL,
-	[Text] [varchar](max) NOT NULL,
-	[CreatedAt] [datetime] NOT NULL
- CONSTRAINT [PK_TwitterTweetsApi] PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-
-
-
-

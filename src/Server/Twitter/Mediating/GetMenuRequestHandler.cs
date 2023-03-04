@@ -23,9 +23,8 @@ namespace NewsFeed.Server.Twitter.Mediating
         {
             var sql = @"select [Group].Id, [Group].Name
 , (
-	select u.Id, u.Name, u.IsTweetsDownloading, u.GroupId, uapi.UserId as [TwitterUserId], tweet.UnreadTweetsCount
+	select u.Id, u.Name, u.IsTweetsDownloading, u.GroupId, u.UserIdApi as [TwitterUserId], tweet.UnreadTweetsCount
 	from dbo.TwitterUsers as [u]
-	left join dbo.TwitterUsersApi as uapi on u.Id = uapi.Id
 	left join
 	(
 		select t.UserId, count(*) as UnreadTweetsCount

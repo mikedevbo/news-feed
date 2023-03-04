@@ -26,9 +26,15 @@ namespace NewsFeed.Server.Twitter.Mediating
                 return "<Root />";
             }
 
-            var sql = @"SELECT tweet.[Id], tweet.[UserId], tweet.[IsFavorite], tweet.[IsRead] , tweetApi.[TweetId], tweetApi.[Text] ,tweetApi.[CreatedAt]
+            var sql = @"SELECT
+tweet.[Id]
+, tweet.[UserId]
+, tweet.[IsFavorite]
+, tweet.[IsRead]
+, tweet.[TweetIdApi] as TweetId
+, tweet.[TweetTextApi] as Text
+, tweet.[TweetCreatedAtApi] as CreatedAt
 FROM [dbo].[TwitterTweets] tweet
-INNER JOIN [dbo].[TwitterTweetsApi] tweetApi ON tweet.Id = tweetApi.Id
 WHERE tweet.[UserId] = @UserId
 for xml path ('Tweet'),root('Root')";
 
