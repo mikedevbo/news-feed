@@ -1,6 +1,8 @@
-﻿using NewsFeed.Server.Twitter.ExternalApi;
+﻿using Dapper;
+using NewsFeed.Server.Twitter.ExternalApi;
 using NewsFeed.Server.Twitter.Messaging.DownloadTweetsPolicy.Commands;
 using NServiceBus;
+using System.Data;
 
 namespace NewsFeed.Server.Twitter.Messaging.DownloadTweetsPolicy
 {
@@ -57,7 +59,7 @@ namespace NewsFeed.Server.Twitter.Messaging.DownloadTweetsPolicy
             {
                 this.Log(message, context);
 
-                ////TODO: save tweets data and get ids
+                await this.SaveTweets(message, context);
 
                 await context.Send(new SetUserTweetsDownloadingState(message.UserId));
             }
@@ -73,6 +75,42 @@ namespace NewsFeed.Server.Twitter.Messaging.DownloadTweetsPolicy
                     session.Transaction,
                     new List<int> { message.UserId },
                     false);
+            }
+
+            public async Task SaveTweets(
+                SaveTweetsData message,
+                IMessageHandlerContext context)
+            {
+
+                var sql = @"INSERT INTO dbo.TwitterTweets SELECT * FROM @TVP_Tweet";
+
+                var tvpTweets = new DataTable();
+                tvpTweets.Columns.Add("UserId", typeof(int));
+                tvpTweets.Columns.Add("IsFavorite", typeof(bool));
+                tvpTweets.Columns.Add("IsRead", typeof(bool));
+                tvpTweets.Columns.Add("TweetIdApi", typeof(string));
+                tvpTweets.Columns.Add("TweetTextApi", typeof(string));
+                tvpTweets.Columns.Add("TweetCreatedAtApi", typeof(DateTime));
+
+                foreach (var (TweetId, TweetText, CreatedAt) in message.Tweets)
+                {
+                    tvpTweets.Rows.Add(
+                        message.UserId,
+                        false,
+                        false,
+                        TweetId,
+                        TweetText,
+                        CreatedAt);
+                }
+
+                var session = context.SynchronizedStorageSession.SqlPersistenceSession();
+
+                var tvp = tvpTweets.AsTableValuedParameter("dbo.TwitterTweet");
+
+                await session.Connection.ExecuteAsync(
+                    sql,
+                    new { TVP_Tweet = tvp },
+                    session.Transaction);
             }
 
             private void Log<TMessage>(
