@@ -36,6 +36,7 @@ tweet.[Id]
 , tweet.[TweetCreatedAtApi] as CreatedAt
 FROM [dbo].[TwitterTweets] tweet
 WHERE tweet.[UserId] = @UserId
+order by tweet.TweetCreatedAtApi desc
 for xml path ('Tweet'),root('Root')";
 
             using var connection = new SqlConnection(configuration.GetValue<string>(Constants.ConnectionStringPersistenceKey));
