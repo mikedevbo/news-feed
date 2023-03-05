@@ -26,10 +26,16 @@ CREATE SCHEMA nsb_p
 GO
 
 CREATE TYPE TwitterTweet AS TABLE(
-	IsPersisted bit not null
-    , IsRed bit not null
+	[UserId] [int] NOT NULL,
+	[IsFavorite] [bit] NOT NULL,
+	[IsRead] [bit] NOT NULL,
+	[TweetIdApi] [varchar](50) NOT NULL,
+	[TweetTextApi] [varchar](max) NOT NULL,
+	[TweetCreatedAtApi] [datetime] NOT NULL
 );
 GO
+
+-- drop type TwitterTweet
 
 CREATE TABLE [dbo].[Accounts](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
