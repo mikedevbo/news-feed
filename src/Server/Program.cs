@@ -1,12 +1,9 @@
 using MediatR;
 using NewsFeed.Server;
-using NewsFeed.Server.Twitter.Database;
 using NewsFeed.Server.Twitter.ExternalApi;
-using NewsFeed.Server.Twitter.Messaging;
 using NewsFeed.Server.Twitter.Messaging.DownloadTweetsPolicy.Commands;
 using NewsFeed.Shared.Twitter;
 using NServiceBus;
-using NServiceBus.Persistence.Sql;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,19 +24,6 @@ builder.Host.UseNServiceBus(context =>
              (typeof(StartDownloadingTweets).Assembly, endpointName)
          });
 
-     //endpointConfig.RegisterComponents(c =>
-     //{
-     //    c.ConfigureComponent(b =>
-     //    {
-     //        var session = b.Build<ISqlStorageSession>();
-     //        var repository = new TwitterRepository(
-     //            session.Connection,
-     //            session.Transaction);
-
-     //        return repository;
-     //    }, DependencyLifecycle.InstancePerUnitOfWork);
-     //});
-
      return endpointConfig;
  });
 
@@ -47,16 +31,6 @@ builder.Host.UseNServiceBus(context =>
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
-
-builder.Services.AddScoped<ITwitterRepository, TwitterRepository>(b =>
-{
-    var session = b.GetRequiredService<ISqlStorageSession>();
-    var repository = new TwitterRepository(
-        session.Connection,
-        session.Transaction);
-
-    return repository;
-});
 
 if (config.GetValue<bool>("IsUseFake"))
 {
