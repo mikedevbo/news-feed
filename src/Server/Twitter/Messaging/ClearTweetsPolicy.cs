@@ -1,4 +1,5 @@
-﻿using NewsFeed.Server.Twitter.Messaging.ClearTweetsPolicy.Commands;
+﻿using Dapper;
+using NewsFeed.Server.Twitter.Messaging.ClearTweetsPolicy.Commands;
 using NewsFeed.Server.Twitter.Messaging.ClearTweetsPolicy.Messages;
 using NewsFeed.Server.Twitter.Messaging.ClearTweetsPolicy.SagaData;
 using NServiceBus;
@@ -77,12 +78,25 @@ namespace NewsFeed.Server.Twitter.Messaging.ClearTweetsPolicy
                 this.logger = logger;
             }
 
-            public Task Handle(ClearTweets message, IMessageHandlerContext context)
+            public async Task Handle(ClearTweets message, IMessageHandlerContext context)
             {
                 this.Log(message, context);
-                
-                ////TODO: add logic
-                return Task.CompletedTask;
+
+                await this.DeleteTweets(context);
+            }
+
+            public async Task DeleteTweets(
+                IMessageHandlerContext context)
+            {
+                var sql = @"delete from [dbo].[TwitterTweets]
+where IsRead = 1 and IsFavorite = 0 and TweetCreatedAtApi < @CreatedAt";
+
+                var session = context.SynchronizedStorageSession.SqlPersistenceSession();
+
+                await session.Connection.ExecuteAsync(
+                    sql,
+                    new { CreatedAt = DateTime.Now },
+                    session.Transaction);
             }
 
             private void Log<TMessage>(
