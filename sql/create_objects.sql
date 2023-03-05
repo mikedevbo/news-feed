@@ -31,7 +31,7 @@ CREATE TYPE TwitterTweet AS TABLE(
 	[IsRead] [bit] NOT NULL,
 	[TweetIdApi] [varchar](50) NOT NULL,
 	[TweetTextApi] [varchar](max) NOT NULL,
-	[TweetCreatedAtApi] [datetime] NOT NULL
+	[TweetCreatedAtApi] [datetime] NULL
 );
 GO
 
@@ -84,7 +84,7 @@ CREATE TABLE [dbo].[TwitterTweets](
 	[IsRead] [bit] NOT NULL,
 	[TweetIdApi] [varchar](50) NOT NULL,
 	[TweetTextApi] [varchar](max) NOT NULL,
-	[TweetCreatedAtApi] [datetime] NOT NULL
+	[TweetCreatedAtApi] [datetime] NULL
  CONSTRAINT [PK_TwitterTweets] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
