@@ -82,7 +82,11 @@ namespace NewsFeed.Server.Twitter.Messaging.DownloadTweetsPolicy
                 IMessageHandlerContext context)
             {
 
-                var sql = @"INSERT INTO dbo.TwitterTweets SELECT * FROM @TVP_Tweet";
+                var sql = @"INSERT INTO dbo.TwitterTweets
+SELECT tvp.UserId, tvp.IsFavorite, tvp.IsRead, tvp.TweetIdApi, tvp.TweetTextApi, tvp.TweetCreatedAtApi
+FROM @TVP_Tweet tvp
+left join dbo.TwitterTweets t on tvp.TweetIdApi = t.TweetIdApi
+where t.TweetIdApi is null";
 
                 var tvpTweets = new DataTable();
                 tvpTweets.Columns.Add("UserId", typeof(int));
