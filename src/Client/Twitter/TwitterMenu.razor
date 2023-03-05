@@ -102,6 +102,8 @@
         public int UserId { get; set; }
 
         public bool IsDownloadingTweets { get; set; }
+
+        public int UnreadTweetsCount { get; set; }
     }
 
     private async Task<List<Group>> Query(GetMenuRequest request)
@@ -116,12 +118,17 @@
         return result.DeserializeXml<List<UserDownladTweetsState>>();
     }
 
-    private void SetUserDownloadingState(int userId, bool state)
+    private void SetUserDownloadingState(int userId, bool state, int unreadTweetsCount = 0)
     {
         var user = this.groups.SelectMany(g => g.Users).FirstOrDefault(u => u.Id == userId);
         if(user is not null)
         {
             user.IsDownloadingTweets = state;
+
+            if (!state)
+            {
+                user.UnreadTweetsCount = unreadTweetsCount;
+            }
         }
     }
 }
@@ -232,7 +239,7 @@
             await Task.Delay(3000);
 
             var result = await this.Query(new GetDownloadingTweetsState(usersIds));
-            result.ForEach(r => this.SetUserDownloadingState(r.UserId, r.IsDownloadingTweets));
+            result.ForEach(r => this.SetUserDownloadingState(r.UserId, r.IsDownloadingTweets, r.UnreadTweetsCount));
             StateHasChanged();
 
             inProgress = result.Any(r => r.IsDownloadingTweets);

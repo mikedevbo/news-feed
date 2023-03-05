@@ -26,8 +26,15 @@ namespace NewsFeed.Server.Twitter.Mediating
                 return "<Root />";
             }
 
-            var sql = @"select u.Id as UserId, u.IsTweetsDownloading as IsDownloadingTweets
+            var sql = @"select u.Id as UserId, u.IsTweetsDownloading as IsDownloadingTweets, tweet.UnreadTweetsCount
 from dbo.TwitterUsers u
+left join
+	(
+		select t.UserId, count(*) as UnreadTweetsCount
+		from dbo.TwitterTweets t
+		where t.IsRead = 0
+		group by t.UserId
+	) as tweet on tweet.UserId = u.Id
 where u.Id in @UsersIds
 for xml path ('UserDownladTweetsState'), root('Root')";
 
