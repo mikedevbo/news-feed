@@ -10,6 +10,7 @@
     </div>
 
     <button class="w3-button w3-border w3-margin" @onclick="e => DownloadTweets()">Get</button>
+    <button class="w3-button w3-border" @onclick="e => SetReadAllState()">ReadAll</button>
 }
 
 @foreach(var tweet in this.tweets)
@@ -111,7 +112,17 @@
     {
         tweet.IsRead = !tweet.IsRead;
 
-        await Extensions.CallApi(Http, new SetReadStateRequest(tweet.Id, tweet.IsRead));
+        await Extensions.CallApi(Http, new SetReadStateRequest(new List<int> { tweet.Id }, tweet.IsRead));
+
+        this.NotifyTweetsLoaded();
+    }
+
+    private async Task SetReadAllState()
+    {
+        var tweetIds = new List<int>();
+        this.tweets.ForEach(t => { t.IsRead = true; tweetIds.Add(t.Id); });
+
+        await Extensions.CallApi(Http, new SetReadStateRequest(tweetIds, true));
 
         this.NotifyTweetsLoaded();
     }

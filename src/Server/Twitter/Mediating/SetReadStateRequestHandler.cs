@@ -24,12 +24,12 @@ namespace NewsFeed.Server.Twitter.Mediating
         {
             var sql = @"UPDATE [dbo].[TwitterTweets]
 SET IsRead = @IsRead
-WHERE Id = @TweetId";
+WHERE Id in @TweetIds";
 
             using var connection = new SqlConnection(configuration.GetValue<string>(Constants.ConnectionStringPersistenceKey));
             await connection.OpenAsync();
 
-            var groupId = await connection.ExecuteAsync(sql, new { request.TweetId, request.IsRead });
+            var groupId = await connection.ExecuteAsync(sql, new { request.TweetIds, request.IsRead });
         }
     }
 }
