@@ -26,7 +26,7 @@ namespace NewsFeed.Server.Twitter.Mediating
                 return "<Root />";
             }
 
-            var sql = @"select u.Id as UserId, u.IsTweetsDownloading as IsDownloadingTweets, tweet.UnreadTweetsCount
+            var sql = @"select u.Id as UserId, u.IsTweetsDownloading, tweet.UnreadTweetsCount
 from dbo.TwitterUsers u
 left join
 	(
