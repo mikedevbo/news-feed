@@ -2,8 +2,8 @@
 @inject StateContainer StateContainer
 @inject HttpClient Http
 
-<div class="w3-sidebar w3-bar-block w3-collapse" style="width: 200px; display: @isDisplaySidebar" id="mySidebar">
-    <div class="w3-sidebar w3-bar-block w3-card" style="width: 160px;">
+<div class="w3-sidebar w3-bar-block w3-collapse" style="width: 250px; display: @isDisplaySidebar" id="mySidebar">
+    <div class="w3-sidebar w3-bar-block w3-card" style="width: 200px;">
         <h3 class="w3-container">NewsFeed</h3>
         <button class="w3-bar-item w3-button w3-large w3-hide-large" @onclick="e => DisplaySidebar(false)">Close &times;</button>
         <hr />
@@ -33,7 +33,7 @@
     </div>
 </div>
 
-<div class="w3-main" style="margin-left:200px">
+<div class="w3-main" style="margin-left:250px">
     <button class="w3-button w3-xlarge w3-hide-large" @onclick="e => DisplaySidebar(true)">&#9776;</button>
     <TwitterTweets />
 </div>
@@ -60,7 +60,7 @@
     private string ShowUser(User user)
     {
         var unreadView = user.UnreadTweetsCount > 0 ? $"{user.Name} ({user.UnreadTweetsCount})" : user.Name;
-        var donwloadView = user.IsTweetsDownloading ? $"~{unreadView}" : unreadView;
+        var donwloadView = user.IsDownloadingTweets ? $"~{unreadView}" : unreadView;
 
         return donwloadView;
     }
@@ -94,7 +94,7 @@
 
         public string UnreadTweetsCss => UnreadTweetsCount > 0 ? "font-weight: bold" : "font-weight: normal";
 
-        public bool IsTweetsDownloading { get; set; }
+        public bool IsDownloadingTweets { get; set; }
     }
 
     public class UserDownladTweetsState
@@ -123,7 +123,7 @@
         var user = this.groups.SelectMany(g => g.Users).FirstOrDefault(u => u.Id == userId);
         if(user is not null)
         {
-            user.IsTweetsDownloading = state;
+            user.IsDownloadingTweets = state;
 
             if (!state)
             {
@@ -202,7 +202,7 @@
         var users = this.groups.SelectMany(g => g.Users).ToList();
         foreach(var user in users)
         {
-            user.IsTweetsDownloading = true;
+            user.IsDownloadingTweets = true;
         }
 
         await this.StartDownloadingTweets(users.Select(u => (u.Id, u.TwitterUserId)).ToList());
@@ -213,7 +213,7 @@
         var users = this.groups.Where(g => g.Id == group.Id).SelectMany(g => g.Users).ToList();
         foreach (var user in users)
         {
-            user.IsTweetsDownloading = true;
+            user.IsDownloadingTweets = true;
         }
 
         await this.StartDownloadingTweets(users.Select(u => (u.Id, u.TwitterUserId)).ToList());
