@@ -18,7 +18,7 @@
 <div class="w3-container w3-panel">
     <div class="w3-card-4 w3-mobile" style="width:50%;">
         <div class="w3-container" style="@IsReadCss(tweet)">
-            <p>@tweet.CreatedAt>?.ToString("yyyy-MM-dd HH:mm:ss")</p>
+            <p>@tweet.CreatedAt?.ToString("yyyy-MM-dd HH:mm:ss")</p>
             <p>@tweet.Text</p>
         </div>
         <button class="w3-button w3-border w3-margin" @onclick="e => SetReadState(tweet)">Read</button>
