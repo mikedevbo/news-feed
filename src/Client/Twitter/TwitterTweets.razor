@@ -19,6 +19,10 @@
     <div class="w3-card-4 w3-mobile" style="width:50%;">
         <div class="w3-container" style="@IsReadCss(tweet)">
             <p>@tweet.CreatedAt?.ToString("yyyy-MM-dd HH:mm:ss")</p>
+            @{
+                var link = $"https://twitter.com/{user.Name}/status/{tweet.TweetId}";
+            }
+            <a href="@link" target="_blank">Link</a>
             <p>@tweet.Text</p>
         </div>
         <button class="w3-button w3-border w3-margin" @onclick="e => SetReadState(tweet)">Read</button>
