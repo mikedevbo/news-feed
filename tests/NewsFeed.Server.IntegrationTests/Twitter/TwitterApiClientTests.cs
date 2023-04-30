@@ -8,7 +8,7 @@ namespace NewsFeed.Server.IntegrationTests.Twitter
     [Explicit]
     public class TwitterApiClientTests
     {
-        private TwitterApiClient twitterApiClient;
+        private TwitterApiClient? twitterApiClient;
 
         [SetUp]
         public void Setup()
@@ -28,7 +28,7 @@ namespace NewsFeed.Server.IntegrationTests.Twitter
             const string userName = "particularsw";
 
             // Act
-            var result = await twitterApiClient.GetUser(userName);
+            var result = await twitterApiClient!.GetUser(userName);
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -43,7 +43,7 @@ namespace NewsFeed.Server.IntegrationTests.Twitter
             const string userId = "some_Id";
 
             // Act
-            var result = await twitterApiClient.GetTweets(userId);
+            var result = await twitterApiClient!.GetTweets(userId);
 
             // Assert
             Assert.That(result, Is.Not.Null);

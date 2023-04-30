@@ -11,7 +11,7 @@ namespace NewsFeed.Server.IntegrationTests.Twitter
     public class TwitterMessageSender
     {
         private readonly string endpointName = typeof(EndpointCommonConfig).Assembly.GetName().Name!;
-        private IEndpointInstance endpointInstance;
+        private IEndpointInstance? endpointInstance;
 
         [SetUp]
         public async Task SetUp()
@@ -49,7 +49,7 @@ namespace NewsFeed.Server.IntegrationTests.Twitter
         [TearDown]
         public async Task TearDown()
         {
-            await endpointInstance.Stop();
+            await endpointInstance!.Stop();
         }
     }
 }
